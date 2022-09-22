@@ -1,6 +1,8 @@
 package com.intern.evtutors.di
 
 import com.intern.evtutors.BuildConfig
+import com.intern.evtutors.data.apis.AppInfoAPI
+import com.intern.evtutors.data.apis.LessonAPI
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -18,36 +20,38 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
-//    @Provides
-//    fun provideCustomerAPI(@Named("MainSite") retrofit: Retrofit): CustomerAPI {
-//        return retrofit.create(CustomerAPI::class.java)
-//    }
-
+    @Provides
+    fun provideLessonApi(@Named("LessonSite") retrofit: Retrofit):LessonAPI {
+        return retrofit.create(LessonAPI::class.java)
+    }
 
     @Provides
     @Singleton
-    @Named("MainSite")
-    fun provideRetrofit(
+    @Named("LessonSite")
+    fun provideRetrofitLesson(
         okHttpClient: OkHttpClient,
         moshiConverterFactory: MoshiConverterFactory
-    ): Retrofit {
-
+    ):Retrofit {
         return Retrofit.Builder().addConverterFactory(moshiConverterFactory)
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL_LESSON_DEV)
             .client(okHttpClient)
             .build()
     }
 
     @Provides
+    fun provideAppInfoApi(@Named("AppInfoSite") retrofit: Retrofit):AppInfoAPI {
+        return retrofit.create(AppInfoAPI::class.java)
+    }
+
+    @Provides
     @Singleton
-    @Named("FatherOfApps")
-    fun provideRetrofitNewYorkTime(
+    @Named("AppInfoSite")
+    fun provideRetrofitAppInfo(
         okHttpClient: OkHttpClient,
         moshiConverterFactory: MoshiConverterFactory
-    ): Retrofit {
+    ):Retrofit {
         return Retrofit.Builder().addConverterFactory(moshiConverterFactory)
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL_AGORA_VIDEO_CALL_DEV)
             .client(okHttpClient)
             .build()
     }
