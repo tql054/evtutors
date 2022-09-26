@@ -4,9 +4,9 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class MainSite(
+annotation class AppInfoSite(
 )
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FatherOfApps()
+annotation class LessonSite()

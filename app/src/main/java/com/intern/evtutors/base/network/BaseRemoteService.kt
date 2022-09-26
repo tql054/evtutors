@@ -1,8 +1,9 @@
 package com.intern.evtutors.base.network
 
+import android.util.Log
 import retrofit2.Response
 
-class BaseRemoteService : BaseService() {
+open class BaseRemoteService : BaseService() {
 
     protected suspend fun <T : Any> callApi(call: suspend () -> Response<T>): NetworkResult<T> {
         val response: Response<T>
@@ -11,7 +12,6 @@ class BaseRemoteService : BaseService() {
         } catch (t: Throwable) {
             return NetworkResult.Error(parseNetworkErrorException(t))
         }
-
         return if (response.isSuccessful) {
             if (response.body() == null) {
                 NetworkResult.Error(BaseNetworkException(responseMessage =  "Response without body", responseCode = 200))
