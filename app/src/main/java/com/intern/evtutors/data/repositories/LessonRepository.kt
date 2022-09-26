@@ -21,7 +21,7 @@ class LessonRepository @Inject constructor(
             }
 
             is NetworkResult.Error -> {
-                result.exception
+                throw result.exception
             }
         }
     }

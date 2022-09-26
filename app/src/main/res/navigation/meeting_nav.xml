@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/meeting_nav"
+    app:startDestination="@id/demoStreamFragment">
+
+    <fragment
+        android:id="@+id/demoStreamFragment"
+        android:name="com.intern.evtutors.ui.videocall.DemoStreamFragment"
+        android:label="DemoStreamFragment" >
+        <action
+            android:id="@+id/action_demoStreamFragment_to_videoCallFragment"
+            app:destination="@id/videoCallFragment" />
+        <argument
+            android:name="lesson"
+            app:argType="com.intern.evtutors.data.models.Lesson"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+    </fragment>
+    <fragment
+        android:id="@+id/videoCallFragment"
+        android:name="com.intern.evtutors.ui.videocall.VideoCallFragment"
+        android:label="VideoCallFragment" >
+        <argument
+            android:name="lesson"
+            app:argType="com.intern.evtutors.data.models.Lesson" />
+    </fragment>
+</navigation>

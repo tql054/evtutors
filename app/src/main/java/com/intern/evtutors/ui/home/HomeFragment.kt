@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.intern.evtutors.base.fragment.BaseFragment
@@ -27,10 +28,21 @@ class HomeFragment : BaseFragment() {
     ): View {
         dataBinding = FragmentHomeBinding.inflate(inflater)
         dataBinding.lifecycleOwner = viewLifecycleOwner
+
         return dataBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.lesson.observe(viewLifecycleOwner) {
+            listLesson ->
+            if(listLesson.isNotEmpty()) {
+                dataBinding.loadingStatement.isVisible = false
+                dataBinding.classList.adapter = HomeAdapter(activity, context, listLesson)
+            }
+            else {
+                dataBinding.loadingStatement.text = "Chưa đăng ký" //Handle situation that do not have any lesson
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.intern.evtutors.data.repositories
 
+import android.util.Log
 import com.intern.evtutors.base.network.NetworkResult
+import com.intern.evtutors.data.model_json.TokenJson
 import com.intern.evtutors.data.services.AppInfoServices
 import com.intern.evtutors.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,7 +32,7 @@ class AppInfoRepository @Inject constructor(
             }
 
             is NetworkResult.Error -> {
-                result.exception
+                throw result.exception
             }
         }
     }

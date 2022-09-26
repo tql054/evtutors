@@ -1,5 +1,6 @@
 package com.intern.evtutors.base.network
 
+import android.util.Log
 import retrofit2.Response
 
 open class BaseRemoteService : BaseService() {
@@ -11,7 +12,6 @@ open class BaseRemoteService : BaseService() {
         } catch (t: Throwable) {
             return NetworkResult.Error(parseNetworkErrorException(t))
         }
-
         return if (response.isSuccessful) {
             if (response.body() == null) {
                 NetworkResult.Error(BaseNetworkException(responseMessage =  "Response without body", responseCode = 200))
