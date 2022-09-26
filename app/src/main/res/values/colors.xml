@@ -24,5 +24,9 @@
 
 
     <color name="icon_color_normal">#B7B7B7</color>
-
+    <color name="purple_700">#FF3700B3</color>
+    <color name="custom_color_1">#8DA6F4</color>
+    <color name="custom_color_2">#4C6ED7</color>
+    <color name="backbtn">#4C6ED7</color>
+    <color name="red_500">#FF0303</color>
 </resources>

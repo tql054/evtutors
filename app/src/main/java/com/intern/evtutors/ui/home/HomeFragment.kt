@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.intern.evtutors.base.fragment.BaseFragment
 import com.intern.evtutors.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -13,11 +14,16 @@ class HomeFragment : BaseFragment() {
 
 
     private lateinit var dataBinding: FragmentHomeBinding
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val action = HomeFragmentDirections.actionHomeFragmentToRegisterFragment()
+        findNavController().navigate(action)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View {
         dataBinding = FragmentHomeBinding.inflate(inflater)
         dataBinding.lifecycleOwner = viewLifecycleOwner
