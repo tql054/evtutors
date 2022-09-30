@@ -17,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MeetingActivity:BaseActivity() {
-    private val navController by lazy { findNavController(R.id.container) }
     private var container: FragmentContainerView?=null
     lateinit var loadingLayout:FrameLayout
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -2,7 +2,7 @@ package com.intern.evtutors.data.model_json
 
 import com.intern.evtutors.data.models.Lesson
 
-class LessonJson(
+data class LessonJson(
     val id:Int,
     val channelName:String,
     val idTeacher:Int,

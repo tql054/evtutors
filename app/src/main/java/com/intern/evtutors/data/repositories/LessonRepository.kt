@@ -1,5 +1,6 @@
 package com.intern.evtutors.data.repositories
 
+import android.util.Log
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.data.models.Lesson
 import com.intern.evtutors.data.services.LessonServices
@@ -29,7 +30,16 @@ class LessonRepository @Inject constructor(
     suspend fun getLessonById(id:Int) = withContext(dispatcher) {
         when(val result = lessonServices.getLessonById(id)) {
             is NetworkResult.Success -> result.data.toLesson()
-            is NetworkResult.Error -> result.exception
+            is NetworkResult.Error -> throw result.exception
+        }
+    }
+
+    suspend fun updateLesson(id:Int, lesson:Lesson) = withContext(dispatcher) {
+        when(val result = lessonServices.updateLesson(id, lesson)) {
+            is NetworkResult.Success -> result.data
+            is NetworkResult.Error -> {
+                throw result.exception
+            }
         }
     }
 
