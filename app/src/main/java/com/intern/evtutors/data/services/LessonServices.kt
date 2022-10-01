@@ -1,5 +1,6 @@
 package com.intern.evtutors.data.services
 
+import android.util.Log
 import com.intern.evtutors.base.network.BaseRemoteService
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.data.apis.LessonAPI
@@ -19,7 +20,7 @@ class LessonServices @Inject constructor(private val lessonAPI: LessonAPI):BaseR
         return callApi { lessonAPI.getLessonById(id) }
     }
 
-    suspend fun updateLesson(lesson:Lesson):NetworkResult<JSONObject> {
-        return callApi { lessonAPI.updateLesson(lesson) }
+    suspend fun updateLesson(id:Int, lesson:Lesson):NetworkResult<LessonJson> {
+        return callApi { lessonAPI.updateLesson(id, lesson) }
     }
 }

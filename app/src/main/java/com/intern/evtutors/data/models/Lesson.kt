@@ -9,8 +9,8 @@ class Lesson(
     val idStudent:Int,
     val timeStart:String,
     val timeEnd:String,
-    val status:String,
-    val realTimeStart:String,
-    val realTimeEnd:String
+    var status:String,
+    var realTimeStart:String,
+    var realTimeEnd:String
 ):Serializable {
 }

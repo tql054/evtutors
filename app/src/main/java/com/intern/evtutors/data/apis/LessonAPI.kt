@@ -16,9 +16,11 @@ interface LessonAPI {
     @GET("/api/lessons/{id}")
     suspend fun getLessonById(
         @Path("id") id:Int,
-        // put body into request
     ):Response<LessonJson>
 
-    @PUT("api/lessons/status/{id}")
-    suspend fun updateLesson(lesson: Lesson):Response<JSONObject>
+    @PUT("/api/lessons/status/{id}")
+    suspend fun updateLesson(
+        @Path("id") id:Int,
+        @Body lesson:Lesson
+    ):Response<LessonJson>
 }

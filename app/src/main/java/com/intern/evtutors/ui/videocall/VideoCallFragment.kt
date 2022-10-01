@@ -1,6 +1,7 @@
 package com.intern.evtutors.ui.videocall
 
 
+import android.content.Intent
 import io.agora.rtc.Constants
 import io.agora.rtc.internal.LastmileProbeConfig
 import io.agora.rtc.ScreenCaptureParameters
@@ -20,6 +21,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.intern.evtutors.R
+import com.intern.evtutors.activities.MainActivity
+import com.intern.evtutors.activities.MeetingActivity
 import com.intern.evtutors.base.fragment.BaseFragment
 import com.intern.evtutors.data.models.Lesson
 import com.intern.evtutors.databinding.FragmentVideocallBinding
@@ -124,7 +127,6 @@ class VideoCallFragment:BaseFragment() {
     private val mRtcEngineHandler:IRtcEngineEventHandler = object:IRtcEngineEventHandler() {
         override fun onUserJoined(uid: Int, elapsed: Int) {
             activity!!.runOnUiThread { setupRemoteVideo(uid) }
-
         }
 
         override fun onLeaveChannel(stats: RtcStats?) {
@@ -161,33 +163,13 @@ class VideoCallFragment:BaseFragment() {
     }
 
     private fun handleLessonStarted() {
-//        val coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
-//        coroutineScope.launch {
-//            val lessonUpdated = lessonRepository.getLessonById(lesson!!.id)
-//            Log.d("lesson id", lessonUpdated.id.toString()  )
-//            if(lessonUpdated.status != "1") {
-//                lessonUpdated.status = "1"
-//                lessonRepository.updateLesson(lessonUpdated)
-//            }
-//        }
+        viewModel.updateBeganLesson(lesson.id)
     }
 
     private fun onRemoteUserLeft() {
-//        val coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
-//        coroutineScope.launch {
-//            val lessonUpdated = lessonRepository.getLessonById(lesson!!.id)
-//            val date = Date()
-//            if(numberAttendants<=1) {
-//                Log.d("lesson attendant", numberAttendants.toString())
-//                if(lessonUpdated.realTimeStart == "0000-00-00 00:00:00") {
-//                    lessonUpdated.realTimeStart = getRealTimeStart(totalDuration, date)
-//                }
-//                lessonUpdated.status = "2"
-//                lessonUpdated.realTimeEnd = formatDateTime(date)
-//                Log.d("lesson", lessonUpdated.toString())
-//            }
-//            lessonRepository.updateLesson(lessonUpdated)
-//        }
+        if(numberAttendants<=1) {
+            viewModel.updateEndedLesson(lesson.id, totalDuration)
+        }
     }
 
     private suspend fun checkingChannelStatus() {
@@ -197,17 +179,6 @@ class VideoCallFragment:BaseFragment() {
         }
     }
 
-
-    private fun getRealTimeStart(totalDuration:Int, date:Date):String {
-        val result = Date(date.time - (totalDuration*1000))
-        return formatDateTime(result)
-    }
-
-    private fun formatDateTime(date:Date):String {
-        val dateFormat:DateFormat = SimpleDateFormat("yyyy-M-dd hh:mm:ss")
-        return dateFormat.format(date)
-
-    }
 
     private fun handleLessonStatistic(stats: IRtcEngineEventHandler.RtcStats) {
         numberAttendants = stats.users
@@ -263,6 +234,8 @@ class VideoCallFragment:BaseFragment() {
 
     private fun handleFinish() {
         //change navigation
+        val intent: Intent = Intent(context, MainActivity::class.java)
+        activity?.startActivity(intent)
     }
 
 

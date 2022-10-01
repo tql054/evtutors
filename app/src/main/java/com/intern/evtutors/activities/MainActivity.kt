@@ -12,7 +12,6 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.intern.evtutors.R
 import com.intern.evtutors.base.activities.BaseActivity
 import com.intern.evtutors.ui.home.HomeFragment
-import com.intern.evtutors.ui.home.HomeFragmentDirections
 import com.intern.evtutors.ui.personal.PersonalFragment
 import dagger.hilt.android.AndroidEntryPoint
 
