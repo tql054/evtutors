@@ -57,22 +57,23 @@ android {
 
     flavorDimensions "default"
     productFlavors {
-
         dev {
             buildConfigField("String", "BASE_URL_AGORA_VIDEO_CALL_DEV", apikeyProperties['BASE_URL_AGORA_VIDEO_CALL_DEV'])
             buildConfigField("String", "BASE_URL_LESSON_DEV", apikeyProperties['BASE_URL_LESSON_DEV'])
+            buildConfigField("String", "BASE_URL_LOGIN", apikeyProperties['BASE_URL_JSON_LOGIN_DEV'])
         }
 
         staging {
             buildConfigField("String", "BASE_URL_AGORA_VIDEO_CALL_STAGING", apikeyProperties['BASE_URL_AGORA_VIDEO_CALL_STAGING'])
             buildConfigField("String", "BASE_URL_LESSON_STAGING", apikeyProperties['BASE_URL_LESSON_STAGING'])
+            buildConfigField("String", "BASE_URL_LOGIN", apikeyProperties['BASE_URL_JSON_LOGIN_DEV'])
         }
 
         live {
             buildConfigField("String", "BASE_URL_AGORA_VIDEO_CALL_LIVE", apikeyProperties['BASE_URL_AGORA_VIDEO_CALL_LIVE'])
             buildConfigField("String", "BASE_URL_LESSON_LIVE", apikeyProperties['BASE_URL_LESSON_LIVE'])
+            buildConfigField("String", "BASE_URL_LOGIN", apikeyProperties['BASE_URL_JSON_LOGIN_DEV'])
         }
-
     }
 
 }

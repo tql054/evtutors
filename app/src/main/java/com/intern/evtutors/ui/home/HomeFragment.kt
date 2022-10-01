@@ -25,6 +25,7 @@ class HomeFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View {
         dataBinding = FragmentHomeBinding.inflate(inflater)
         dataBinding.lifecycleOwner = viewLifecycleOwner

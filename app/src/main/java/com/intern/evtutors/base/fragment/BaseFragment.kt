@@ -31,7 +31,7 @@ open class BaseFragment : Fragment() {
         showErrorMessage(message)
     }
 
-    protected fun showErrorMessage(message: String){
+    protected open fun showErrorMessage(message: String){
         val activity = requireActivity()
         if (activity is BaseActivity) {
             activity.showErrorDialog(message)
