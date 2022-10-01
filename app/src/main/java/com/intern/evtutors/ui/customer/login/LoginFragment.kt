@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.intern.evtutors.base.activities.BaseActivity
 import com.intern.evtutors.base.fragment.BaseFragment
 import com.intern.evtutors.databinding.FragmentJsonLoginBinding
 import com.intern.evtutors.databinding.FragmentRegisterBinding
@@ -25,6 +26,12 @@ class RegisterFragment: BaseFragment() {
 //        viewModel.fetchDataLogin(dataBingding.UserName.text.toString(),dataBingding.passWord.text.toString())
     }
 
+    override fun showErrorMessage(message: String){
+        val activity = requireActivity()
+        if (activity is BaseActivity) {
+            activity.showErrorDialog("Fail")
+        }
+    }
     override fun onCreateView(
 
         inflater: LayoutInflater,
@@ -60,7 +67,7 @@ class RegisterFragment: BaseFragment() {
                 posts ->
             if(posts !=null){
                 val titles = posts.jwtToken
-                Toast.makeText(context,"Thanh cong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"Welcome", Toast.LENGTH_SHORT).show()
             }
             else{
                 Toast.makeText(context,"Fail", Toast.LENGTH_SHORT).show()

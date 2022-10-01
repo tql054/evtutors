@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.intern.evtutors.base.activities.BaseActivity
 import com.intern.evtutors.base.fragment.BaseFragment
 import com.intern.evtutors.databinding.FragmentRegisterBinding
 import com.intern.evtutors.ui.customer.login.RegisterFragmentDirections
@@ -24,6 +25,7 @@ class RegisterFragment: BaseFragment() {
 //        viewModel.fetchData()
     }
 
+
     override fun onCreateView(
 
         inflater: LayoutInflater,
@@ -39,10 +41,14 @@ class RegisterFragment: BaseFragment() {
 
         dataBingding.createAccount.setOnClickListener {
             if(dataBingding.RegisterTeacher.isChecked){
-                viewModel.fetchRegisterTeacher(dataBingding.email.text.toString(),dataBingding.pass.text.toString())
+                viewModel.fetchRegisterTeacher(
+                    dataBingding.email.text.toString(),
+                    dataBingding.pass.text.toString())
             }
             if (dataBingding.Registerstudent.isChecked){
-                viewModel.fetchRegisterStudent(dataBingding.email.text.toString(),dataBingding.pass.text.toString())
+                viewModel.fetchRegisterStudent(
+                    dataBingding.email.text.toString(),
+                    dataBingding.pass.text.toString())
             }
         }
 
