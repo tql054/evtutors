@@ -10,15 +10,19 @@
     <style name="Theme.FatherOfApps.Splash">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor" tools:targetApi="l">@color/background_splash_color</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/background_splash_color
+        </item>
     </style>
 
-    <style name="FullScreenDialog"
-        parent="Theme.AppCompat.Light.Dialog">
+    <style name="FullScreenDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
+
+    <style name="Theme.AppCompat.Light.NoActionBar" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/purple_700</item>
     </style>
 
 </resources>
