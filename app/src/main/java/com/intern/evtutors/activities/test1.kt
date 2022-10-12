@@ -222,7 +222,7 @@ fun SigInScreen() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    MyLogin01Theme {
+    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
         SigInScreen()
     }
 }
