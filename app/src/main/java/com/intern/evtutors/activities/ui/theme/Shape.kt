@@ -1,4 +1,4 @@
-package com.intern.evtutors.activities.ui.theme
+package com.intern.evtutors.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
