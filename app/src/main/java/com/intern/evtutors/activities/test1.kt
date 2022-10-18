@@ -1,9 +1,15 @@
 package com.intern.evtutors.activities
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -12,14 +18,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -27,36 +36,54 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.intern.evtutors.R
-import com.intern.evtutors.activities.ui.theme.FatherOfAppsTheme
-import com.intern.evtutors.databinding.FragmentJsonLoginBinding
 
+
+import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+
+public  var loadView = false
+@AndroidEntryPoint
 class test1 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // var loginViewModel : LoginViewModel by viewModels()
+
+
         setContent {
             FatherOfAppsTheme {
                 // A surface container using the 'background' color from the theme
-                SigInScreen()
+//                SigInScreen()
             }
         }
     }
 }
+@Composable
+ fun showMessage(message:String){
+    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+}
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SigInScreen() {
-    var dataBingding: FragmentJsonLoginBinding
+fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
-//    val loginViewModel = viewModel(modelClass = LoginViewModel::class.java)
-    //val state by loginViewModel.listPots.collectAsState()
+
+
+
 
     var username by remember{ mutableStateOf("") }
     var password by remember{ mutableStateOf("") }
+    var offset by remember { mutableStateOf(0) }
     val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
     val keyboardController =  LocalSoftwareKeyboardController.current
     var isPasswordVisible by remember{ mutableStateOf(false) }
@@ -65,38 +92,16 @@ fun SigInScreen() {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.40f),
-                Alignment.TopEnd,
-            ){
-                Image(painter = painterResource(id = R.drawable.onboar1), contentDescription = "",
-                    modifier = Modifier.fillMaxSize(),contentScale = ContentScale.FillBounds
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(horizontal = 20.dp, vertical = 50.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-//                    Image(painter = painterResource(id = R.drawable.ic_flower), contentDescription = "Logo App",
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .size(100.dp),
-//                        colorFilter = ColorFilter.tint(Color.White)
-//                    )
-//                    Text(text = "Welcome",fontSize = 20.sp,color = Color.White)
-                }
-
-            }
+            Spacer(modifier = Modifier.height(50.dp))
             Column(modifier = Modifier
                 .fillMaxWidth()
+                .clickable {offset = 0  }
+                .offset { IntOffset(offset, offset) }
                 .padding(horizontal = 40.dp)) {
                 Text(text = "Login", style = MaterialTheme.typography.h1)
+
                 OutlinedTextField(value = username, onValueChange = {username = it},
                     modifier = Modifier
                         .fillMaxWidth()
@@ -140,15 +145,8 @@ fun SigInScreen() {
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = {
-//                    loginViewModel.fetchDataLogin(username,password)
+                login(loginViewModel,username,password)
 
-                },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(text = "Log in")
-                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(), Arrangement.Center
@@ -208,21 +206,67 @@ fun SigInScreen() {
                         Text(text = "Register")
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(100.dp))
             }
+
+//            Box(modifier = Modifier
+//                .fillMaxWidth()
+//
+//                .fillMaxHeight(fraction = 0.30f),
+//                Alignment.TopEnd,
+//            ){
+//                Image(painter = painterResource(id = R.drawable.onboar1), contentDescription = "",
+//                    modifier = Modifier.fillMaxSize(),contentScale = ContentScale.FillBounds
+//                )
+//
+//
+//            }
         }
 
 
     }
+
 }
-
-
-
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
-        SigInScreen()
+fun login(loginViewModel:LoginViewModel,
+          username:String,
+          password:String ){
+    var log= false
+    val users by loginViewModel.listPots.observeAsState()
+    Button(onClick = {
+//                   loginViewModel.fetchDataLogin(username,password)
+        loadView= true
+        if(loadView){
+            loginViewModel.fetchDataLogin(username,password)
+            if(loadView){
+                Log.d("Login ",users!!.user.userName)
+            }
+            //users!!.user.userName.isNotEmpty()
+
+//            tan(loginViewModel,username,password)
+            loadView=false
+             log= true
+        }
+
+
+    },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(text = "Log in")
     }
+
 }
+
+
+
+
+//
+//@ExperimentalComposeUiApi
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    FatherOfAppsTheme {
+//        SigInScreen()
+//    }
+//}

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.intern.evtutors">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,28 +24,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <activity
-            android:name=".Login"
+            android:name=".activities.MeetingActivity"
             android:exported="false"
-            android:label="@string/title_activity_login"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".test1"
-            android:exported="false"
-            android:label="@string/title_activity_test1"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".MeetingActivity"
-            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SplashActivity"
-            android:exported="true"
+            android:name=".activities.SplashActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.main"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

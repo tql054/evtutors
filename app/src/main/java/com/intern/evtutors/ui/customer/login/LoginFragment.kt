@@ -16,8 +16,8 @@ import com.intern.evtutors.ui.customer.register.RegisterFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RegisterFragment: BaseFragment() {
-    private val viewModel by viewModels<RegisterViewModel>()
+class LoginFragment: BaseFragment() {
+    private val viewModel by viewModels<LoginViewModel>()
 
     private lateinit var dataBingding: FragmentJsonLoginBinding
 

@@ -99,6 +99,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:1.2.1"
     def kotlin_version = '1.3.61'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -109,6 +110,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+
 
 
     // constraint layout
@@ -142,6 +144,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
 
     // hilt
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
