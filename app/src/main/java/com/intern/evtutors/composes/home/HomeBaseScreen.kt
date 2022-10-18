@@ -32,6 +32,7 @@ fun HomeBaseScreen(
     val users by viewModel.course.observeAsState(arrayListOf())
     val isLoading by viewModel.isLoading.observeAsState(false)
     Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.padding(top = 10.dp))
         HomeHeader()
         HomeCourses(users)
     }
@@ -57,7 +58,7 @@ fun HomeCourses(
             verticalArrangement = Arrangement.Center
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -91,7 +92,12 @@ fun HomeCourse(
                 index ->
             val course = courses[index]
 //            Text(text = course.name)
-            CourseItem(course = course)
+                if(index%3==0) {
+                    CourseItem(course = course, color = 1)
+                } else {
+                    CourseItem(course = course, color = 0)
+                }
+
         }
     }
 }

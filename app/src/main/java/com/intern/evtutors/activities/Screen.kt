@@ -16,13 +16,13 @@ sealed class Screen(val route:String, val title:String, val icon:ImageVector) {
     )
 
     object Favourite:Screen(
-        route = "personal",
+        route = "favourite",
         title = "Info",
         icon = Icons.Default.Star
     )
 
     object Notifitication:Screen(
-        route = "personal",
+        route = "notification",
         title = "Info",
         icon = Icons.Default.Notifications
     )

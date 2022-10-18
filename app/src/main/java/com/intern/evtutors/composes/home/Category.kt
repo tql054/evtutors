@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intern.evtutors.activities.App
 import com.intern.evtutors.data.models.Course
+import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 
 @Composable
 fun Category(
@@ -102,11 +103,11 @@ fun CategoryItem(
 }
 
 
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
-        Category()
-    }
-}
+//@ExperimentalComposeUiApi
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    FatherOfAppsTheme {
+//        Category()
+//    }
+//}

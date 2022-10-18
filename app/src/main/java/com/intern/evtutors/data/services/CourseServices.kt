@@ -14,11 +14,10 @@ class CourseServices @Inject constructor(
 
 //        Begin faking API
         val results = mutableListOf<CourseJson>(
-            CourseJson(1, "Le Quoc Tuan", 123, 321, "1.000.000", "12/10/2022"),
-            CourseJson(2, "Quang Tran", 123, 321, "2.000.000", "12/10/2022"),
-            CourseJson(3, "Le Dang Khoa", 123, 321, "1.500.000", "12/10/2022"),
-            CourseJson(4, "Vo Tan", 123, 321, "1.300.000", "12/10/2022"),
-            CourseJson(5, "Pham Quoc Hung", 123, 321, "1.200.000", "12/10/2022"),
+            CourseJson(2, "Toeic 650+", 342, 321, "2.000.000", "12/10/2022"),
+            CourseJson(3, "Giao tiep co ban", 325, 321, "1.500.000", "12/10/2022"),
+            CourseJson(4, "Ielt từ con số 0", 423, 321, "1.300.000", "12/10/2022"),
+            CourseJson(5, "Sinh viên B1", 533, 321, "1.200.000", "12/10/2022"),
             )
         return NetworkResult.Success(results)
 //        End faking API

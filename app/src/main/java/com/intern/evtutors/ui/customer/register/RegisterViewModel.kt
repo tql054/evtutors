@@ -29,7 +29,7 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
 
 
 
-        var user: User= User("","","","","","","","")
+        var user: User= User(0,"",0,"","","","","","","")
         user.name=name
         user.email=name+"@gmail.com"
         user.userName=name
@@ -47,7 +47,7 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
 
 
 
-        var user: User= User("","","","","","","","")
+        var user: User= User(0,"",0,"","","","","","","")
         user.name=name
         user.email=name+"@gmail.com"
         user.userName=name

@@ -35,9 +35,14 @@ import com.intern.evtutors.data.models.Course
 @Composable
 fun CourseItem (
     modifier:Modifier = Modifier,
-    course: Course
+    course: Course,
+    color:Int
 ) {
+    var bg = Color.Blue
     val shape = RoundedCornerShape(15.dp)
+    if(color==1) {
+        bg = Color.Magenta
+    }
     Surface(
         modifier = Modifier
             .height(100.dp)
@@ -46,7 +51,7 @@ fun CourseItem (
     ) {
         Column(
             modifier = Modifier
-                .background(color = Color.Blue)
+                .background(color = bg)
                 .padding(5.dp)
                 .fillMaxHeight()
                 .fillMaxWidth()

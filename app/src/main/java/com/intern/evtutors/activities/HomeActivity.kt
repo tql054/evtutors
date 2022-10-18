@@ -16,8 +16,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.intern.evtutors.activities.ui.Screen
-import com.intern.evtutors.activities.ui.theme.FatherOfAppsTheme
+//import com.intern.evtutors.activities.ui.theme.FatherOfAppsTheme
 import com.intern.evtutors.view_models.HomeViewModel
+import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,21 +26,21 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FatherOfAppsTheme() {
+//            FatherOfAppsTheme() {
                 App()
-            }
+//            }
         }
     }
 }
 
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
-        App()
-    }
-}
+//@ExperimentalComposeUiApi
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    FatherOfAppsTheme {
+//        App()
+//    }
+//}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

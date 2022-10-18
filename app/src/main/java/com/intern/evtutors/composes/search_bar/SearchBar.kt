@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.intern.evtutors.activities.SigInScreen
+import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 
 @Composable
 fun SearchBar(
@@ -34,7 +35,7 @@ fun SearchBar(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
+    FatherOfAppsTheme {
         SearchBar("Search for")
     }
 }

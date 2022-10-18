@@ -1,9 +1,9 @@
 package com.intern.evtutors.data.models
 
 data class User(
-//    var id: String,
+    var id: Int,
     var name:String,
-//    var age: String,
+    var age: Int,
     var gender: String,
     var address: String,
     var phone: String,
