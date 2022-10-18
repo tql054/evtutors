@@ -1,6 +1,8 @@
 package com.intern.evtutors.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -77,6 +79,5 @@ class MainActivity : BaseActivity(){
     override fun showLoading(isShow: Boolean) {
         loadingLayout?.visibility = if(isShow) View.VISIBLE else View.GONE
     }
-
 
 }
