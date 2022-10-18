@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.intern.evtutors.R
 import com.intern.evtutors.activities.ui.theme.FatherOfAppsTheme
-import com.intern.evtutors.databinding.FragmentJsonLoginBinding
 
 class test1 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +49,6 @@ class test1 : ComponentActivity() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SigInScreen() {
-    var dataBingding: FragmentJsonLoginBinding
 
 //    val loginViewModel = viewModel(modelClass = LoginViewModel::class.java)
     //val state by loginViewModel.listPots.collectAsState()
@@ -218,11 +216,11 @@ fun SigInScreen() {
 
 
 
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
-        SigInScreen()
-    }
-}
+//@ExperimentalComposeUiApi
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    com.intern.evtutors.activities.ui.theme.ui.theme.FatherOfAppsTheme {
+//        SigInScreen()
+//    }
+//}

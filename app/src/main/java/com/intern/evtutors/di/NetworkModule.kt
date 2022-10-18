@@ -24,6 +24,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
     @Provides
+    fun provideAppInfoApi(@Named("AppInfoSite") retrofit: Retrofit):AppInfoAPI {
+        return retrofit.create(AppInfoAPI::class.java)
+    }
+
+    @Provides
     fun provideLessonApi(@Named("LessonSite") retrofit: Retrofit):LessonAPI {
         return retrofit.create(LessonAPI::class.java)
     }
@@ -95,11 +100,6 @@ class NetworkModule {
             .baseUrl(BuildConfig.BASE_URL_LOGIN)
             .client(okHttpClient)
             .build()
-    }
-
-    @Provides
-    fun provideAppInfoApi(@Named("AppInfoSite") retrofit: Retrofit):AppInfoAPI {
-        return retrofit.create(AppInfoAPI::class.java)
     }
 
     @Provides
