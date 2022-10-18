@@ -255,6 +255,9 @@ fun login(loginViewModel:LoginViewModel,
                 var intent: Intent = Intent(context, HomeActivity::class.java)
                 context.startActivity(intent)
             }
+            else{
+                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+            }
 
 //            tan(loginViewModel,username,password)
         }
