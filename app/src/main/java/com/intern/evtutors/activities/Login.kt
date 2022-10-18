@@ -53,6 +53,10 @@ import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 public  var loadView = false
 @AndroidEntryPoint
@@ -235,22 +239,29 @@ fun login(loginViewModel:LoginViewModel,
           password:String ){
     var log= false
     val users by loginViewModel.listPots.observeAsState()
-
     val context = LocalContext.current
+    val scope = CoroutineScope(Dispatchers.IO + Job())
+
+
     Button(onClick = {
 //                   loginViewModel.fetchDataLogin(username,password)
-        loadView= true
-        if(loadView){
-            loginViewModel.fetchDataLogin(username,password)
 
-            var intent: Intent = Intent(context, HomeActivity::class.java)
-            context.startActivity(intent)
-            //users!!.user.userName.isNotEmpty()
+        loadView= true
+        scope.launch {
+            val user = loginViewModel.fetchDataLogi(username,password)
+//            val user = users!!.user.userName
+
+            if(user != null){
+                var intent: Intent = Intent(context, HomeActivity::class.java)
+                context.startActivity(intent)
+            }
 
 //            tan(loginViewModel,username,password)
-            loadView=false
-             log= true
         }
+
+
+
+
 
 
     },

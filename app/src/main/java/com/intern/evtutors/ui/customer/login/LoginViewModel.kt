@@ -53,22 +53,19 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
 
     }
 
-    override fun fetchDataLogin(email:String,passWord: String) {
-        showLoading(true)
+    suspend fun fetchDataLogi(email:String,passWord: String):getjwtToken? {
+        var token:getjwtToken? = null
         var account = Account()
         account.userName=email
         account.userPassword=passWord
-        parentJob = viewModelScope.launch(handler) {
             val post = jsonLoginRepositories.getAllAccount(account)
+            token = post
             _listPosts.postValue(post)
             if(post.user.userName.length > 0){
                 var a= cover(post.user.id,post.user.userName,post.user.age)
                 create(a)
             }
-
-
-        }
-        registerJobFinish()
+    return token
     }
     //    private var _listPosts = MutableStateFlow(emptyList<getjwtToken>())
 //    val listPots: StateFlow<List<getjwtToken>>
