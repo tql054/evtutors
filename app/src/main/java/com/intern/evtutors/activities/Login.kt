@@ -245,8 +245,8 @@ fun login(loginViewModel:LoginViewModel,
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcom", Toast.LENGTH_SHORT).show()
                 }
-//                var intent: Intent = Intent(context, HomeActivity::class.java)
-//                context.startActivity(intent)
+                var intent: Intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
             }
             else{
 
