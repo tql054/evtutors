@@ -39,18 +39,18 @@ class RegisterFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        dataBingding.createAccount.setOnClickListener {
-            if(dataBingding.RegisterTeacher.isChecked){
-                viewModel.fetchRegisterTeacher(
-                    dataBingding.email.text.toString(),
-                    dataBingding.pass.text.toString())
-            }
-            if (dataBingding.Registerstudent.isChecked){
-                viewModel.fetchRegisterStudent(
-                    dataBingding.email.text.toString(),
-                    dataBingding.pass.text.toString())
-            }
-        }
+//        dataBingding.createAccount.setOnClickListener {
+//            if(dataBingding.RegisterTeacher.isChecked){
+//                viewModel.fetchRegisterTeacher(
+//                    dataBingding.email.text.toString(),
+//                    dataBingding.pass.text.toString())
+//            }
+//            if (dataBingding.Registerstudent.isChecked){
+//                viewModel.fetchRegisterStudent(
+//                    dataBingding.email.text.toString(),
+//                    dataBingding.pass.text.toString())
+//            }
+//        }
 
 
         registerAllExceptionEvent(viewModel,viewLifecycleOwner)

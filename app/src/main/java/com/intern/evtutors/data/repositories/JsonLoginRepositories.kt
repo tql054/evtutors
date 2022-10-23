@@ -1,7 +1,9 @@
 package com.intern.evtutors.data.repositories
 
 import com.intern.evtutors.base.network.NetworkResult
+import com.intern.evtutors.base.network.NetworkResult2
 import com.intern.evtutors.data.models.Account
+import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.data.services.JsonLoginServer
 import com.intern.evtutors.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,14 +18,18 @@ class JsonLoginRepositories @Inject constructor(
 
 
         suspend fun getAllAccount(account: Account) = withContext(dispatcher){
+           val data:getjwtToken?=null
             when (val result =jsonLessonRemoteServer.getAllAccount(account)){
 
-                is NetworkResult.Success ->{
+                is NetworkResult2.Success<*> ->{
 
                   result.data
                 }
-                is NetworkResult.Error ->{
-                    throw result.exception
+                is NetworkResult2.Error ->{
+                    data
+                }
+                NetworkResult2.Loading->{
+
                 }
             }
         }

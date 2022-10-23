@@ -24,32 +24,29 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
     val listPots: LiveData<UserJson>
         get() = _listPosts
 
-    override fun fetchRegisterTeacher(name:String,pass:String) {
+     fun fetchRegisterTeacher(name:String,pass:String,email:String) {
         showLoading(true)
-
-
-
         var user: User= User(0,"",0,"","","","","","","")
         user.name=name
-        user.email=name+"@gmail.com"
+        user.email=email
         user.userName=name
         user.password=pass
-
         parentJob = viewModelScope.launch(handler) {
             val post = jsonRegisterTeacherReposititory.toRegitser(user)
             _listPosts.postValue(post)
+            val user =post
 
         }
-        registerJobFinish()
+      //  registerJobFinish()
     }
-    override fun fetchRegisterStudent(name:String,pass:String) {
+     suspend fun fetchRegisterStudent(name:String,pass:String,email:String) {
         showLoading(true)
 
 
 
         var user: User= User(0,"",0,"","","","","","","")
         user.name=name
-        user.email=name+"@gmail.com"
+        user.email=email
         user.userName=name
         user.password=pass
 

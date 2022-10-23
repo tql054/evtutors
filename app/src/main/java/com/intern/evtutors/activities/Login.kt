@@ -1,13 +1,13 @@
 package com.intern.evtutors.activities
 
-import android.content.Context
+
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,12 +22,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -35,26 +33,24 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.intern.evtutors.R
-
-
 import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.concurrent.ExecutorService
 
 public  var loadView = false
+
 @AndroidEntryPoint
-class test1 : ComponentActivity() {
+class Login : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,7 +58,7 @@ class test1 : ComponentActivity() {
         setContent {
             FatherOfAppsTheme {
                 // A surface container using the 'background' color from the theme
-//                SigInScreen()
+                SigInScreen()
             }
         }
     }
@@ -80,7 +76,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
 
 
-
+    val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
     var password by remember{ mutableStateOf("") }
     var offset by remember { mutableStateOf(0) }
@@ -202,7 +198,10 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 Row(modifier = Modifier.fillMaxWidth(),
                     Arrangement.Center,verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "Don't have account?",fontSize = 14.sp)
-                    TextButton(onClick = { /*TODO*/ }) {
+                    TextButton(onClick = {
+                        var intent: Intent = Intent(context, Register::class.java)
+                        context.startActivity(intent)
+                    }) {
                         Text(text = "Register")
                     }
                 }
@@ -231,21 +230,34 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 fun login(loginViewModel:LoginViewModel,
           username:String,
           password:String ){
+    val handler = Handler()
     var log= false
     val users by loginViewModel.listPots.observeAsState()
+    val context = LocalContext.current
+    val scope = CoroutineScope(Dispatchers.IO + Job())
     Button(onClick = {
 //                   loginViewModel.fetchDataLogin(username,password)
-        loadView= true
-        if(loadView){
-            loginViewModel.fetchDataLogin(username,password)
-            if(loadView){
-                Log.d("Login ",users!!.user.userName)
+        scope.launch {
+            val user = loginViewModel.DataLogin(username,password)
+//            val user = users!!.user.userName
+
+            if(user != null){
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Welcom", Toast.LENGTH_SHORT).show()
+                }
+//                var intent: Intent = Intent(context, HomeActivity::class.java)
+//                context.startActivity(intent)
             }
-            //users!!.user.userName.isNotEmpty()
+            else{
+
+
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+                }
+
+            }
 
 //            tan(loginViewModel,username,password)
-            loadView=false
-             log= true
         }
 
 
