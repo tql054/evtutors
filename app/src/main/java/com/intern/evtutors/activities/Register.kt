@@ -2,6 +2,7 @@ package com.intern.evtutors.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 
 
@@ -9,15 +10,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -70,16 +74,18 @@ fun RegisterActivity() {
 
 
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+    Box(modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+        ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SecondaryColor),
-            contentAlignment = Alignment.TopCenter
+                .background(SecondaryColor)
 
-        ) {
-//            Image(image)
-        }
+            //contentAlignment = Alignment.TopCenter
+
+        )
+
 
         view()
 
@@ -107,10 +113,12 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .fillMaxHeight(0.85f)
             .clip(shape = RoundedCornerShape(topStart=30.dp, topEnd=30.dp))
             .background(whiteBackground)
             .padding(8.dp),
+
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -165,7 +173,8 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                         IconButton(onClick = {
                             passwordVisibility.value = !passwordVisibility.value
                         }) {
-
+                            Icon(imageVector = if(confirmPasswordVisibility.value) Icons.Default.Lock else Icons.Default.Lock,
+                                contentDescription ="Password Toggle" )
                         }
                     },
                     visualTransformation = if (passwordVisibility.value) VisualTransformation.None
@@ -174,7 +183,8 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
 
                 OutlinedTextField(
                     value = confirmPasswordValue.value,
-                    onValueChange = { confirmPasswordValue.value = it },
+                    onValueChange = { confirmPasswordValue.value = it
+                                     },
                     label = { Text(text = "Confirm Password") },
                     placeholder = { Text(text = "Confirm Password") },
                     singleLine = true,
@@ -184,8 +194,8 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                         IconButton(onClick = {
                             confirmPasswordVisibility.value = !confirmPasswordVisibility.value
                         }) {
-//                                Icon(imageVector = if(confirmPasswordVisibility.value) Icons.Default.Lock else Icons.Default.Lock,
-//                                    contentDescription ="Password Toggle" )
+                                Icon(imageVector = if(confirmPasswordVisibility.value) Icons.Default.Lock else Icons.Default.Lock,
+                                    contentDescription ="Password Toggle" )
                         }
                     },
                     visualTransformation = if (confirmPasswordVisibility.value) VisualTransformation.None
@@ -193,8 +203,9 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+//                    verticalAlignment = Alignment
 
                 ){
 
@@ -213,10 +224,12 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                                 onClick = {
                                     selectedValue.value = item
                                 }
+
                             )
                             Text(
                                 text = item,
-                                // modifier = Modifier.fillMaxWidth(0.40f)
+                                modifier = Modifier.padding(top = 10.dp)
+
                             )
                         }
                     }
@@ -225,30 +238,57 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
-
-                    if(selectedValue.value.length==7){
-                        scope.launch {
-                                registerViewModel.fetchRegisterTeacher(nameValue.value,
-                                                                    passwordValue.value,
-                                                                    emailValue.value)
-
-                                if(user != null){
-                                    var intent: Intent = Intent(context, Login::class.java)
-                                    context.startActivity(intent)
-                                }
+                    val texterro=valiPassword( passwordValue.value)
+                    val gmailerro=valiGmail(emailValue.value)
+                    if(gmailerro!= null){
+                        Toast.makeText(context, gmailerro, Toast.LENGTH_SHORT).show()
+                    }else{
+                        if(texterro != null){
+                            Toast.makeText(context, texterro, Toast.LENGTH_SHORT).show()
                         }
+                        else{
+                            if( passwordValue.value != (confirmPasswordValue.value)){
+                                Toast.makeText(context, "confirm PasswordValue erro", Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                if(selectedValue.value.length==7){
+                                    scope.launch {
+                                        val userT =registerViewModel.fetchRegisterTeacher(nameValue.value,
+                                            passwordValue.value,
+                                            emailValue.value)
 
-                    }else
-                        if(selectedValue.value.length==8){
-                            scope.launch {
-                                registerViewModel.fetchRegisterStudent(nameValue.toString(),
-                                                                        passwordValue.toString(),
-                                                                        emailValue.toString())
+                                        if(userT != null){
+                                            var intent: Intent = Intent(context, Login::class.java)
+                                            context.startActivity(intent)
+                                        }else{
+                                            Toast.makeText(context, "Sign up again", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                                }else
+                                    if(selectedValue.value.length==8){
+                                        scope.launch {
+                                            val userT =registerViewModel.fetchRegisterStudent(nameValue.value,
+                                                passwordValue.value,
+                                                emailValue.value)
+
+                                            if(userT != null){
+                                                var intent: Intent = Intent(context, Login::class.java)
+                                                context.startActivity(intent)
+                                            }
+                                        }
+
+                                    }else{
+                                        Toast.makeText(context, "Sign up again", Toast.LENGTH_SHORT).show()
+                                    }
                             }
 
-                        }else{
-
                         }
+                    }
+
+
+
+
 
                 },
 
@@ -269,13 +309,53 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
 //                            }
                     })
                 )
-                Spacer(modifier = Modifier.padding(20.dp))
+                spacer(1)
+
 
             }
 
         }
+
+    }
+
+
+}
+
+fun spacer1() {
+    @Composable
+    fun spacer(i: Int){
+
     }
 }
+
+@Composable
+fun spacer(i: Int){
+    Spacer(modifier = Modifier.padding(20.dp))
+}
+
+
+private fun valiPassword(pass: String): String? {
+    if(pass.length < 8){
+        return "Minimum 8 character"
+    }
+    if(!pass.matches(".*[A-Z].*".toRegex())){
+        return "Must contain 1 upper-case character"
+    }
+    if(!pass.matches(".*[a-].*".toRegex())){
+        return "Must contain 1 lower-case character"
+    }
+    if(!pass.matches(".*[@#$%^*&+=].*".toRegex())){
+        return "Must contain 1 special character (@#\$%^*&+=)"
+    }
+    return null
+}
+private fun valiGmail(gmail: String):String?{
+    if(gmail.equals("@gmail.com")){
+        return "Gmail erro"
+    }
+    return null
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

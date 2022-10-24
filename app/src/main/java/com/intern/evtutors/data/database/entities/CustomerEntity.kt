@@ -7,6 +7,13 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "customerUser")
 data class CustomerEntity (@PrimaryKey
                            val constans:Int,
-                           val id: Int,
-                           val name: String?,
-                           val age: Int?,)
+                           var id: Int,
+                           var name:String,
+                           var age: Int,
+                           var gender: String,
+                           var address: String,
+                           var phone: String,
+                           var avatar: String,
+                           var email: String,
+                           var userName:String,
+                           var password: String,)

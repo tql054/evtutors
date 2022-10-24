@@ -12,7 +12,7 @@ import com.intern.evtutors.data.repositories.JsonLoginRepositories
 import com.intern.evtutors.data.repositories.jsonRegisterStudentReposititory
 import com.intern.evtutors.data.repositories.jsonRegisterTeacherReposititory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,22 +24,26 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
     val listPots: LiveData<UserJson>
         get() = _listPosts
 
-     fun fetchRegisterTeacher(name:String,pass:String,email:String) {
+     suspend fun fetchRegisterTeacher(name:String, pass:String, email:String):UserJson? {
         showLoading(true)
         var user: User= User(0,"",0,"","","","","","","")
         user.name=name
         user.email=email
         user.userName=name
         user.password=pass
-        parentJob = viewModelScope.launch(handler) {
-            val post = jsonRegisterTeacherReposititory.toRegitser(user)
-            _listPosts.postValue(post)
-            val user =post
 
-        }
+         val post = jsonRegisterTeacherReposititory.toRegitser(user)
+//        parentJob = viewModelScope.launch(handler) {
+//            val post = jsonRegisterTeacherReposititory.toRegitser(user)
+//            _listPosts.postValue(post)
+//            val user =post
+//            return@launch user
+//        }
+
+         return post as UserJson?
       //  registerJobFinish()
     }
-     suspend fun fetchRegisterStudent(name:String,pass:String,email:String) {
+     suspend fun fetchRegisterStudent(name:String,pass:String,email:String):UserJson? {
         showLoading(true)
 
 
@@ -49,13 +53,16 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
         user.email=email
         user.userName=name
         user.password=pass
-
-        parentJob = viewModelScope.launch(handler) {
-            val post = jsonRegisterStudentReposititory.toRegitser(user)
-            _listPosts.postValue(post)
-
-        }
-        registerJobFinish()
+         val post = jsonRegisterStudentReposititory.toRegitser(user)
+         return post as UserJson?
+//        parentJob = viewModelScope.launch(handler) {
+//            val post = jsonRegisterStudentReposititory.toRegitser(user)
+//            _listPosts.postValue(post)
+//
+//        }
+        //registerJobFinish()
     }
 
 }
+
+

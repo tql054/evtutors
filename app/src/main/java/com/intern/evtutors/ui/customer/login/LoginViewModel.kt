@@ -43,12 +43,19 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         registerJobFinish()
     }
 
-    private fun cover(a : Int, b: String, c: Int): CustomerEntity{
+    private fun cover( user: getjwtToken): CustomerEntity{
         return CustomerEntity(
             constans =1,
-            id = a,
-            name = b,
-            age = c
+            id=user.user.id,
+            name=user.user.name,
+            age= user.user.age,
+            gender= user.user.gender,
+            address= user.user.address,
+            phone= user.user.phone,
+            avatar=user.user.avatar,
+            email= user.user.email,
+            userName=user.user.userName,
+            password= user.user.password,
         )
 
     }
@@ -61,10 +68,10 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         val post = jsonLoginRepositories.getAllAccount(account)
         token = post as getjwtToken?
 //        _listPosts.postValue(post)
-//        if(post.user.userName.length > 0){
-//            var a= cover(post.user.id,post.user.userName,post.user.age)
-//            create(a)
-//        }
+        if(post !=null){
+            var a= cover(post)
+            create(a)
+        }
         return token
     }
     //    private var _listPosts = MutableStateFlow(emptyList<getjwtToken>())

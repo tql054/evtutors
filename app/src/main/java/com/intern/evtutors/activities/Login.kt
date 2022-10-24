@@ -26,6 +26,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -245,8 +246,8 @@ fun login(loginViewModel:LoginViewModel,
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcom", Toast.LENGTH_SHORT).show()
                 }
-                var intent: Intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
+//                var intent: Intent = Intent(context, main::class.java)
+//                context.startActivity(intent)
             }
             else{
 
