@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.intern.evtutors.activities.App
 import com.intern.evtutors.data.models.Course
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
+import com.miggue.mylogin01.ui.theme.PrimaryColor
 
 @Composable
 fun Category(
@@ -41,16 +42,21 @@ fun Category(
         "IELTS Certificate"
     )
 
-    Surface(
-        modifier = Modifier
-            .clip(shape = RoundedCornerShape(25.dp))
-    ) {
-
-    }
+//    Surface(
+//        modifier = Modifier
+//            .clip(shape = RoundedCornerShape(25.dp))
+//    ) {
+//
+//    }
     Column(
         modifier = Modifier
             .width(340.dp)
-            .padding(20.dp),
+            .padding(
+                top = 300.dp,
+                end = 20.dp,
+                start = 20.dp,
+            )
+            .background(PrimaryColor),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceAround
     ) {
@@ -59,15 +65,18 @@ fun Category(
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold
         )
-        LazyColumn() {
-            var size = categoryList.size
-            items(count = size) { index ->
-                val item = categoryList[index]
-                CategoryItem(title = item)
-            }
+        for(category in categoryList) {
+            CategoryItem(title = category)
         }
-
-
+//        LazyColumn(
+//            modifier = Modifier.height(600.dp)
+//        ) {
+//            var size = categoryList.size
+//            items(count = size) { index ->
+//                val item = categoryList[index]
+//
+//            }
+//        }
     }
 }
 

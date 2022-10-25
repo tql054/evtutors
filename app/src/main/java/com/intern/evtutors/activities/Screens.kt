@@ -8,28 +8,40 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
 
-sealed class Screen(val route:String, val title:String, val icon:ImageVector) {
-    object Home:Screen(
-        route = "home",
+sealed class Screens(val route:String, val title:String, val icon:ImageVector) {
+    object StudentHome:Screens(
+        route = "home/student",
         title = "Home",
         icon = Icons.Default.Home
     )
 
-    object Favourite:Screen(
+    object TutorsHome:Screens(
+        route = "home/tutor",
+        title = "Home",
+        icon = Icons.Default.Home
+    )
+
+    object Favourite:Screens(
         route = "favourite",
-        title = "Info",
+        title = "",
         icon = Icons.Default.Star
     )
 
-    object Notifitication:Screen(
+    object Notifitication:Screens(
         route = "notification",
-        title = "Info",
+        title = "",
         icon = Icons.Default.Notifications
     )
 
-    object Personal:Screen(
+    object Personal:Screens(
         route = "personal",
-        title = "Info",
+        title = "",
+        icon = Icons.Default.Person
+    )
+
+    object TutorPersonal:Screens(
+        route = "personal/tutor",
+        title = "",
         icon = Icons.Default.Person
     )
 }
