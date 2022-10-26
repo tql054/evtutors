@@ -107,14 +107,14 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
     val scope = CoroutineScope(Dispatchers.IO + Job())
-    val user by registerViewModel.listPots.observeAsState()
+
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .fillMaxHeight(0.85f)
+            .fillMaxHeight(0.90f)
             .clip(shape = RoundedCornerShape(topStart=30.dp, topEnd=30.dp))
             .background(whiteBackground)
             .padding(8.dp),
@@ -142,7 +142,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
-
+                Spacer(modifier = Modifier.padding(10.dp))
                 OutlinedTextField(
                     value = emailValue.value,
                     onValueChange = { emailValue.value = it },
@@ -151,17 +151,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
-
-//                    OutlinedTextField(
-//                        value = phoneValue.value,
-//                        onValueChange = { phoneValue.value = it },
-//                        label = { Text(text = "Phone Number") },
-//                        placeholder = { Text(text = "Phone Number") },
-//                        singleLine = true,
-//                        modifier = Modifier.fillMaxWidth(0.8f),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-//                    )
-
+                Spacer(modifier = Modifier.padding(10.dp))
                 OutlinedTextField(
                     value = passwordValue.value,
                     onValueChange = { passwordValue.value = it },
@@ -180,7 +170,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                     visualTransformation = if (passwordVisibility.value) VisualTransformation.None
                     else PasswordVisualTransformation()
                 )
-
+                Spacer(modifier = Modifier.padding(10.dp))
                 OutlinedTextField(
                     value = confirmPasswordValue.value,
                     onValueChange = { confirmPasswordValue.value = it

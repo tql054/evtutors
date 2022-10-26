@@ -40,15 +40,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.R
 import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.miggue.mylogin01.ui.theme.BlackText
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
+import com.miggue.mylogin01.ui.theme.PrimaryColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.concurrent.ExecutorService
 
-public  var loadView = false
 
 @AndroidEntryPoint
 class Login : ComponentActivity() {
@@ -64,18 +64,10 @@ class Login : ComponentActivity() {
         }
     }
 }
-@Composable
- fun showMessage(message:String){
-    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
-}
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
-
-
-
 
     val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
@@ -106,7 +98,8 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = {focusPassword.requestFocus()}),
                     singleLine = true,
-                    label = {Text(text = "Username")}
+                    label = {Text(text = "Username")},
+                    colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -116,6 +109,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     value = password,
                     onValueChange ={password = it},
                     label = { Text(text = "Password")},
+                    colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions (onDone = {keyboardController?.hide()}),
@@ -208,19 +202,6 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 }
                 Spacer(modifier = Modifier.height(100.dp))
             }
-
-//            Box(modifier = Modifier
-//                .fillMaxWidth()
-//
-//                .fillMaxHeight(fraction = 0.30f),
-//                Alignment.TopEnd,
-//            ){
-//                Image(painter = painterResource(id = R.drawable.onboar1), contentDescription = "",
-//                    modifier = Modifier.fillMaxSize(),contentScale = ContentScale.FillBounds
-//                )
-//
-//
-//            }
         }
 
 
@@ -231,17 +212,12 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 fun login(loginViewModel:LoginViewModel,
           username:String,
           password:String ){
-    val handler = Handler()
-    var log= false
-    val users by loginViewModel.listPots.observeAsState()
+
     val context = LocalContext.current
     val scope = CoroutineScope(Dispatchers.IO + Job())
     Button(onClick = {
-//                   loginViewModel.fetchDataLogin(username,password)
         scope.launch {
             val user = loginViewModel.DataLogin(username,password)
-//            val user = users!!.user.userName
-
             if(user != null){
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcom", Toast.LENGTH_SHORT).show()
@@ -255,13 +231,8 @@ fun login(loginViewModel:LoginViewModel,
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                 }
-
             }
-
-//            tan(loginViewModel,username,password)
         }
-
-
     },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp)

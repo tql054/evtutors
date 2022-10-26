@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Account
+import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.data.repositories.CustomerRepository
 import com.intern.evtutors.data.repositories.JsonLoginRepositories
@@ -44,6 +45,11 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
     }
 
     private fun cover( user: getjwtToken): CustomerEntity{
+        var ID :Int =0
+        for (i in user.user.role){
+             ID = i.id!!
+        }
+
         return CustomerEntity(
             constans =1,
             id=user.user.id,
@@ -56,6 +62,7 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
             email= user.user.email,
             userName=user.user.userName,
             password= user.user.password,
+            roleID = ID ,
         )
 
     }
@@ -74,20 +81,5 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         }
         return token
     }
-    //    private var _listPosts = MutableStateFlow(emptyList<getjwtToken>())
-//    val listPots: StateFlow<List<getjwtToken>>
-//        get() = _listPosts
-//    override fun fetchDataLogin(email:String,passWord: String) {
-//        showLoading(true)
-//        var account = Account()
-//        account.userName=email
-//        account.userPassword=passWord
-//        parentJob = viewModelScope.launch(handler) {
-//            val series = seri
-//            val post = jsonLoginRepositories.getAllAccount(account)
-//            _listPosts.postValue(post)
-//
-//        }
-//        registerJobFinish()
-//    }
+
 }

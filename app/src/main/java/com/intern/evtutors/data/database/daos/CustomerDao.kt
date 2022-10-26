@@ -9,7 +9,7 @@ import com.intern.evtutors.data.database.entities.CustomerEntity
 @Dao
 interface CustomerDao {
 
-    @Query("select * from customerUser")
+    @Query("select * from customerUser1")
     suspend fun getUser(): CustomerEntity
 
 

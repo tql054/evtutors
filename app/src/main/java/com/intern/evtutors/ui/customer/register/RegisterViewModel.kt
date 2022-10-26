@@ -2,13 +2,11 @@ package com.intern.evtutors.ui.customer.register
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.modeljson.UserJson
-import com.intern.evtutors.data.models.Account
+import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
-import com.intern.evtutors.data.models.getjwtToken
-import com.intern.evtutors.data.repositories.JsonLoginRepositories
+
 import com.intern.evtutors.data.repositories.jsonRegisterStudentReposititory
 import com.intern.evtutors.data.repositories.jsonRegisterTeacherReposititory
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +24,9 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
 
      suspend fun fetchRegisterTeacher(name:String, pass:String, email:String):UserJson? {
         showLoading(true)
-        var user: User= User(0,"",0,"","","","","","","")
+         var role     : MutableSet<Role> = mutableSetOf()
+        // var user: User= User(0,"",0,"","","","","","","")
+        var user: User= User(0,"",0,"","","","","","","",role)
         user.name=name
         user.email=email
         user.userName=name
@@ -47,8 +47,9 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
         showLoading(true)
 
 
-
-        var user: User= User(0,"",0,"","","","","","","")
+         var role     : MutableSet<Role> = mutableSetOf()
+       //  var user: User= User(0,"",0,"","","","","","","")
+        var user: User= User(0,"",0,"","","","","","","",role)
         user.name=name
         user.email=email
         user.userName=name

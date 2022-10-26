@@ -18,19 +18,19 @@ class UserJson(
 
     )
 {
-    fun toUser(): User {
-        return User(
-            id=id,
-            name=name,
-            age=age,
-            gender=gender,
-            address=address,
-            phone=phone,
-            avatar=avatar,
-            email=email,
-            userName=userName,
-            password=password,
-
-            )
-    }
+//    fun toUser(): User {
+//        return User(
+//            id=id,
+//            name=name,
+//            age=age,
+//            gender=gender,
+//            address=address,
+//            phone=phone,
+//            avatar=avatar,
+//            email=email,
+//            userName=userName,
+//            password=password,
+//
+//            )
+//    }
 }

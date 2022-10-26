@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "customerUser")
+@Entity(tableName = "customerUser1")
 data class CustomerEntity (@PrimaryKey
                            val constans:Int,
                            var id: Int,
@@ -16,4 +16,5 @@ data class CustomerEntity (@PrimaryKey
                            var avatar: String,
                            var email: String,
                            var userName:String,
-                           var password: String,)
+                           var password: String,
+                           var roleID:Int)
