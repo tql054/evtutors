@@ -13,17 +13,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.*
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -96,6 +91,8 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
     val selectedValue = remember { mutableStateOf("") }
     val nameValue = remember { mutableStateOf("") }
     val emailValue = remember { mutableStateOf("") }
+
+    val i = remember { mutableStateOf(false) }
 
     val isSelectedItem: (String) -> Boolean = { selectedValue.value == it }
     val onChangeState: (String) -> Unit = { selectedValue.value = it }
@@ -299,7 +296,12 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
 //                            }
                     })
                 )
-                spacer(1)
+                if(nameValue.value.isNotEmpty()){
+                    Spacer(modifier = Modifier.padding(150.dp))
+                }else{
+                    Spacer(modifier = Modifier.padding(20.dp))
+                }
+
 
 
             }
@@ -318,10 +320,7 @@ fun spacer1() {
     }
 }
 
-@Composable
-fun spacer(i: Int){
-    Spacer(modifier = Modifier.padding(20.dp))
-}
+
 
 
 private fun valiPassword(pass: String): String? {

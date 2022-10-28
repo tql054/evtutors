@@ -3,6 +3,7 @@ package com.intern.evtutors.data.repositories
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.base.network.NetworkResult2
 import com.intern.evtutors.data.models.Account
+import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.data.services.JsonLoginServer
 import com.intern.evtutors.di.IoDispatcher
@@ -33,6 +34,23 @@ class JsonLoginRepositories @Inject constructor(
                 }
             }
         }
+
+    suspend fun UpdateAccount(idUser: Int,user: User) = withContext(dispatcher){
+        val data:User?=null
+        when (val result =jsonLessonRemoteServer.UpdateAccount(idUser,user)){
+
+            is NetworkResult2.Success<*> ->{
+
+                result.data
+            }
+            is NetworkResult2.Error ->{
+                data
+            }
+            NetworkResult2.Loading->{
+
+            }
+        }
+    }
     }
 
 

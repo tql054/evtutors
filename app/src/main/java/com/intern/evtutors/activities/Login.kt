@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.R
 import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.intern.evtutors.ui.customer.profile.Profile_activity
 import com.miggue.mylogin01.ui.theme.BlackText
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.PrimaryColor
@@ -222,8 +223,8 @@ fun login(loginViewModel:LoginViewModel,
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcom", Toast.LENGTH_SHORT).show()
                 }
-//                var intent: Intent = Intent(context, main::class.java)
-//                context.startActivity(intent)
+                var intent: Intent = Intent(context, Profile_activity::class.java)
+                context.startActivity(intent)
             }
             else{
 

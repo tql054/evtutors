@@ -9,6 +9,7 @@ import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.base.network.NetworkResult2
 import com.intern.evtutors.data.apis.LoginAPI
 import com.intern.evtutors.data.models.Account
+import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 import javax.inject.Inject
 
@@ -17,6 +18,10 @@ class JsonLoginServer @Inject constructor(private val jsonLessonAPI: LoginAPI):
     BaseRemoteService2() {
     suspend fun getAllAccount(account: Account): NetworkResult2<getjwtToken> {
         return callApi {jsonLessonAPI.getLesson(account) }
+    }
+
+    suspend fun UpdateAccount(idUser: Int,user: User): NetworkResult2<User> {
+        return callApi {jsonLessonAPI.UpdataInfo(idUser,user) }
     }
 
 }
