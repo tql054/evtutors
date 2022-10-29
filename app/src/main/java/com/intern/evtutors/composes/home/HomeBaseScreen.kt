@@ -50,7 +50,12 @@ fun HomeBaseScreen(
                 }
 
                 3 -> {
-                    TutorHomePage()
+//                    TutorHomePage()
+                    viewModel.fetchData()
+                    val users by viewModel.course.observeAsState(arrayListOf())
+                    val tutors by viewModel.tutors.observeAsState(arrayListOf())
+                    StudentHomePage(users, tutors)
+
                 }
             }
         }
@@ -147,7 +152,7 @@ fun HomeCourse(
     courses:List<Course>
 ) {
     LazyVerticalGrid(
-        modifier =Modifier.height(230.dp),
+        modifier = Modifier.height(230.dp),
         cells = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),

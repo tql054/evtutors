@@ -43,10 +43,7 @@ fun TeacherItem(
                 .width(130.dp)
                 .height(140.dp)
                 .clip(shape = roundedShape)
-                .border(
-                    BorderStroke(1.dp, color = PrimaryColor),
-                    shape = roundedShape
-                )
+
         ) {
             Box(
                 modifier = Modifier

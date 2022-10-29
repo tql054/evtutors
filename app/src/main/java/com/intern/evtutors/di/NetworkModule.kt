@@ -1,11 +1,8 @@
 package com.intern.evtutors.di
 
+import androidx.navigation.Navigator
 import com.intern.evtutors.BuildConfig
-import com.intern.evtutors.data.apis.AppInfoAPI
-import com.intern.evtutors.data.apis.LessonAPI
-import com.intern.evtutors.data.apis.LoginAPI
-import com.intern.evtutors.data.apis.RegisterStudentAPI
-import com.intern.evtutors.data.apis.RegisterTeacherAPI
+import com.intern.evtutors.data.apis.*
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -40,14 +37,24 @@ class NetworkModule {
     fun provideLoginAPI(@Named("Login") retrofit: Retrofit): LoginAPI {
         return retrofit.create(LoginAPI::class.java)
     }
+
     @Provides
     fun provideRegisterTeacherAPI(@Named("RegisterTeacher") retrofit: Retrofit): RegisterTeacherAPI {
         return retrofit.create(RegisterTeacherAPI::class.java)
     }
+
     @Provides
     fun provideRegisterStudentAPI(@Named("RegisterStudent") retrofit: Retrofit): RegisterStudentAPI {
         return retrofit.create(RegisterStudentAPI::class.java)
     }
+
+    @Provides
+    fun provideCertificateAPI(@Named("RegisterStudent") retrofit: Retrofit): ProfileAPI{
+        return retrofit.create(ProfileAPI::class.java)
+    }
+
+
+
     @Provides
     @Singleton
     @Named("RegisterStudent")

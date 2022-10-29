@@ -6,7 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.intern.evtutors.activities.ui.Screens
 import com.intern.evtutors.composes.home.HomeBaseScreen
-import com.intern.evtutors.composes.personal.PersonalScreen
+import com.intern.evtutors.composes.notification.NotificationScreen
+import com.intern.evtutors.composes.profile.ProfileScreen
 
 @Composable
 fun Navigation(navController:NavHostController, startScreen:String) {
@@ -16,16 +17,16 @@ fun Navigation(navController:NavHostController, startScreen:String) {
             HomeBaseScreen(2)
         }
 
-        composable((Screens.Personal.route)) {
-            PersonalScreen(2)
+        composable((Screens.Profile.route)) {
+            ProfileScreen(2)
         }
 
         composable((Screens.Favourite.route)) {
-            PersonalScreen(2)
+            ProfileScreen(2)
         }
 
         composable((Screens.Notifitication.route)) {
-            PersonalScreen(2)
+            NotificationScreen()
         }
 
 //        Tutor's Site
@@ -33,8 +34,8 @@ fun Navigation(navController:NavHostController, startScreen:String) {
             HomeBaseScreen(3)
         }
 
-        composable((Screens.TutorPersonal.route)) {
-            PersonalScreen(3)
+        composable((Screens.TutorProfile.route)) {
+            ProfileScreen(3)
         }
     }
 }

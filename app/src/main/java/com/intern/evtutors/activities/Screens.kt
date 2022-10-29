@@ -33,14 +33,14 @@ sealed class Screens(val route:String, val title:String, val icon:ImageVector) {
         icon = Icons.Default.Notifications
     )
 
-    object Personal:Screens(
-        route = "personal",
+    object Profile:Screens(
+        route = "profile",
         title = "",
         icon = Icons.Default.Person
     )
 
-    object TutorPersonal:Screens(
-        route = "personal/tutor",
+    object TutorProfile:Screens(
+        route = "profile/tutor",
         title = "",
         icon = Icons.Default.Person
     )

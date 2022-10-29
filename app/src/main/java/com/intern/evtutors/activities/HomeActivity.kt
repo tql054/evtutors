@@ -3,9 +3,12 @@ package com.intern.evtutors.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -20,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val viewModel = viewModel<LoginViewModel>()
             viewModel.getuser()
@@ -37,9 +41,9 @@ fun App(
     TypeOfUser:Int
 ) {
     val navController = rememberNavController()
-    var items = listOf(Screens.StudentHome, Screens.Favourite, Screens.Notifitication, Screens.Personal)
+    var items = listOf(Screens.StudentHome, Screens.Favourite, Screens.Notifitication, Screens.Profile)
     if(TypeOfUser == 3) {
-        items = listOf(Screens.TutorsHome, Screens.Favourite, Screens.Notifitication, Screens.TutorPersonal)
+        items = listOf(Screens.TutorsHome, Screens.Favourite, Screens.Notifitication, Screens.TutorProfile)
     }
     Scaffold(
         bottomBar = {
