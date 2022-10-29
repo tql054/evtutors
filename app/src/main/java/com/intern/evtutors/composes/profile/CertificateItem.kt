@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.intern.evtutors.common.DataLocal
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.PrimaryColor
@@ -26,9 +27,10 @@ import com.miggue.mylogin01.ui.theme.RedColor
 
 @Composable
 fun CertificateItem(
+    index:Int,
     certificate:String,
     url: String,
-    viewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel
 ) {
     val shape = RoundedCornerShape(25.dp)
     FatherOfAppsTheme {
@@ -49,11 +51,10 @@ fun CertificateItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp, top = 5.dp),
+                        .padding(start = 30.dp, end = 30.dp, top = 5.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -63,17 +64,17 @@ fun CertificateItem(
                             .weight(1f)
                             .wrapContentHeight(Alignment.CenterVertically)
                         ,
-                        text = certificate,
+                        text = "Certificate $certificate",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
                         textAlign = TextAlign.Left
                     )
 
-                    if(viewModel.isUpdating) {
+                    if(profileViewModel.stateUpdating) {
                         Button(
                             modifier = Modifier.height(20.dp),
-                            onClick = {},
+                            onClick = {profileViewModel.deleteCertificate(index)},
                             contentPadding = PaddingValues(
                                 start = 15.dp,
                                 end = 15.dp,
@@ -96,26 +97,9 @@ fun CertificateItem(
                         .fillMaxWidth()
                         .height(190.dp)
                         .clip(shape = shape),
-                    painter = rememberAsyncImagePainter(url),
+                    painter = rememberAsyncImagePainter(DataLocal.BUCKET_API + url),
                     contentDescription = "Uploaded image"
                 )
-
-//                Image(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(190.dp)
-//                        .clip(shape = shape),
-//                    painter = painterResource(id = R.drawable.home_spaceship_launch),
-//                    contentDescription = "Uploaded image")
-
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(95.dp)
-//                        .clip(shape = shape)
-//                ) {
-//
-//                }
             }
         }
 
