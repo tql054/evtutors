@@ -1,5 +1,8 @@
 package com.intern.evtutors.ui.customer.login
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,37 +13,30 @@ import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.data.repositories.CustomerRepository
 import com.intern.evtutors.data.repositories.JsonLoginRepositories
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val jsonLoginRepositories: JsonLoginRepositories,
                                          private val customerRepository: CustomerRepository
-)
-    : BaseViewModel() {
-
-
-
+): BaseViewModel() {
     private var _listPosts = MutableLiveData<getjwtToken>()
     val listPots: LiveData<getjwtToken> get() = _listPosts
+    var user by mutableStateOf(CustomerEntity(0,0,"",0))
+
 
     fun create(customerEntity: CustomerEntity){
-        showLoading(true)
         parentJob = viewModelScope.launch  (handler){
             customerRepository.creatercustomer(customerEntity)
         }
-        registerJobFinish()
     }
-    fun getuser():Boolean{
-        showLoading(true)
-        parentJob = viewModelScope.launch  (handler){
-            if(customerRepository.getcustomer().name?.length ==null){
-
+    fun getuser(){
+        parentJob = viewModelScope.launch(handler){
+            val result = customerRepository.getcustomer()
+            if(result.name?.length !=0){
+                user = result
             }
         }
-        return true
-        registerJobFinish()
     }
 
     private fun cover(a : Int, b: String, c: Int): CustomerEntity{

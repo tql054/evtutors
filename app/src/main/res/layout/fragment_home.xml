@@ -58,10 +58,10 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_women"
+                android:layout_width="43dp"
+                android:layout_height="36dp"
                 android:padding="4dp"
+                android:src="@drawable/ic_women"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,23 +1,21 @@
 package com.intern.evtutors.activities
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.intern.evtutors.activities.ui.Screen
-//import com.intern.evtutors.activities.ui.theme.FatherOfAppsTheme
-import com.intern.evtutors.view_models.HomeViewModel
+import com.intern.evtutors.activities.ui.Screens
+import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,29 +23,28 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-//            FatherOfAppsTheme() {
-                App()
-//            }
+            val viewModel = viewModel<LoginViewModel>()
+            viewModel.getuser()
+            val user = viewModel.user
+            FatherOfAppsTheme() {
+                App(user.id)
+            }
         }
     }
 }
 
-//@ExperimentalComposeUiApi
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    FatherOfAppsTheme {
-//        App()
-//    }
-//}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App(
+    TypeOfUser:Int
 ) {
     val navController = rememberNavController()
-    val items = listOf(Screen.Home, Screen.Favourite, Screen.Notifitication, Screen.Personal)
+    var items = listOf(Screens.StudentHome, Screens.Favourite, Screens.Notifitication, Screens.Profile)
+    if(TypeOfUser == 3) {
+        items = listOf(Screens.TutorsHome, Screens.Favourite, Screens.Notifitication, Screens.TutorProfile)
+    }
     Scaffold(
         bottomBar = {
             BottomNavigation() {
@@ -73,7 +70,9 @@ fun App(
             }
         }
     ) {
-        Navigation(navController = navController)
+        if(TypeOfUser!=0) {
+            Navigation(navController = navController, startScreen = items[0].route)
+        }
     }
 }
 

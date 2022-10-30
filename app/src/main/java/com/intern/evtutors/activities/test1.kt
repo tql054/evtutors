@@ -47,6 +47,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.intern.evtutors.R
+import com.intern.evtutors.data.database.entities.CustomerEntity
 
 
 import com.intern.evtutors.ui.customer.login.LoginViewModel
@@ -78,11 +79,6 @@ class test1 : ComponentActivity() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
-
-
-
-
-
     var username by remember{ mutableStateOf("") }
     var password by remember{ mutableStateOf("") }
     var offset by remember { mutableStateOf(0) }
@@ -238,21 +234,9 @@ fun login(loginViewModel:LoginViewModel,
 
     val context = LocalContext.current
     Button(onClick = {
-//                   loginViewModel.fetchDataLogin(username,password)
-        loadView= true
-        if(loadView){
-            loginViewModel.fetchDataLogin(username,password)
-
-            var intent: Intent = Intent(context, HomeActivity::class.java)
-            context.startActivity(intent)
-            //users!!.user.userName.isNotEmpty()
-
-//            tan(loginViewModel,username,password)
-            loadView=false
-             log= true
-        }
-
-
+        loginViewModel.create(CustomerEntity(1,3,"Le Tuan", 21))
+        var intent: Intent = Intent(context, HomeActivity::class.java)
+        context.startActivity(intent)
     },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp)
@@ -264,11 +248,11 @@ fun login(loginViewModel:LoginViewModel,
 
 
 
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    FatherOfAppsTheme {
-        SigInScreen()
-    }
-}
+//@ExperimentalComposeUiApi
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    FatherOfAppsTheme {
+//        SigInScreen()
+//    }
+//}

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 fun HomeHeader(
     modifier: Modifier = Modifier
 ) {
+    var toggleCategory by remember { mutableStateOf(false) }
     var searchKey by remember{ mutableStateOf("")}
     val (focusSearchBar) = remember { FocusRequester.createRefs()}
     val keyboardController =  LocalSoftwareKeyboardController.current
@@ -43,7 +44,9 @@ fun HomeHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.padding(top = 5.dp)
     ) {
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = {
+            toggleCategory = !toggleCategory
+        }) {
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Category button",
@@ -58,16 +61,20 @@ fun HomeHeader(
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {focusSearchBar.freeFocus()}),
-            modifier = Modifier.weight(1f).padding(end = 20.dp).focusRequester(focusSearchBar),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 20.dp)
+                .focusRequester(focusSearchBar),
             textStyle = TextStyle(fontSize = 18.sp,fontWeight = FontWeight.Bold),
             trailingIcon = {
                 IconButton(onClick = {/*TODO*/ }) {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription ="Icon Search" )
-
                 }
             }
         )
     }
+
+//    Category()
 }
 

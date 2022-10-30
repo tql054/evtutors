@@ -97,9 +97,9 @@ class VideoCallFragment:BaseFragment() {
             handleMicroOnOff()
         });
 
-        dataBinding.call.setOnClickListener {
-            handleFinish()
-        }
+//        dataBinding.call.setOnClickListener {
+//            handleFinish()
+//        }
         dataBinding.share.setOnClickListener(View.OnClickListener { View->
             evenShare()
             isshare=!isshare
