@@ -29,7 +29,7 @@ class HomeActivity : ComponentActivity() {
             viewModel.getuser()
             val user = viewModel.user
             FatherOfAppsTheme() {
-                App(user.id)
+                App(user.roleID)
             }
         }
     }

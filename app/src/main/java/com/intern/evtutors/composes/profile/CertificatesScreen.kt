@@ -61,7 +61,7 @@ fun ProfileScreen(
                 Surface() {
                     Column() {
                         var user = viewModel.user
-                        Text(text = "Count: ${user.name}")
+                        Text(text = "Count: ${user.roleID}")
                     }
                 }
             }

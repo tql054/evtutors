@@ -97,7 +97,5 @@ open class BaseViewModel : ViewModel() {
     open fun fetchRegisterTeacher(name:String,pass:String){
 
     }
-    open fun fetchRegisterStudent(name:String,pass:String){
 
-    }
 }

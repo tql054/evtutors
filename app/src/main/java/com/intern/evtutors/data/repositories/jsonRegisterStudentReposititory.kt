@@ -2,6 +2,8 @@ package com.intern.evtutors.data.repositories
 
 
 import com.intern.evtutors.base.network.NetworkResult
+import com.intern.evtutors.base.network.NetworkResult2
+import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.services.RegisterStudentRemoteServer
 import com.intern.evtutors.data.services.RegisterTeacherRemoteServer
@@ -17,15 +19,19 @@ class jsonRegisterStudentReposititory @Inject constructor(
 ){
 
     suspend fun toRegitser(user: User) = withContext(dispatcher){
+        val data: UserJson?=null
         when (val result =registerTeacherRemoteServer.todoRegister(user)){
 
-            is NetworkResult.Success ->{
+            is NetworkResult2.Success ->{
 
                 result.data
                 //true
             }
-            is NetworkResult.Error ->{
-                throw result.exception
+            is NetworkResult2.Error ->{
+                data
+            }
+            NetworkResult2.Loading->{
+
             }
         }
     }

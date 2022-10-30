@@ -11,7 +11,7 @@ data class User(
     var email: String,
     var userName:String,
     var password: String,
+    var role: MutableSet<Role>
+){
 
-                ){
-   // constructor() : this("","","","","","","","","","",[role.id="",role.name=""])
 }

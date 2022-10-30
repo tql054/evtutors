@@ -11,3 +11,5 @@ val RedColor = Color(0XFFFF0000)
 val ModalColor = Color(0x45000000)
 val ClearColor = Color(0xFF000000)
 
+val whiteBackground = Color(0xFFF7F7F7)
+val BlackText = Color(0xFF3025e8)
