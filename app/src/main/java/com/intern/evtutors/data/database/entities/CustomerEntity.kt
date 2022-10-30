@@ -16,5 +16,5 @@ data class CustomerEntity (@PrimaryKey
                            var avatar: String,
                            var email: String,
                            var userName:String,
-                           var password: String,
+                           var password: String?,
                            var roleID:Int)

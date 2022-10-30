@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Account
+import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.data.repositories.CustomerRepository
@@ -20,13 +21,15 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val jsonLoginRepositories: JsonLoginRepositories,
                                          private val customerRepository: CustomerRepository
-): BaseViewModel() {
+)
+    : BaseViewModel() {
+    var role     : MutableSet<Role> = mutableSetOf()
+    var user: User= User(0,"",0,"","","","","","","",role)
+    var myuserupdate : User by mutableStateOf(user)
     private var _listPosts = MutableLiveData<getjwtToken>()
     val listPots: LiveData<getjwtToken> get() = _listPosts
-    var user by mutableStateOf(CustomerEntity(0,3,"",0, "",
+    var localUser by mutableStateOf(CustomerEntity(0,3,"",0, "",
         "", "", "", "", "", "", 3))
-
-
     fun create(customerEntity: CustomerEntity){
         parentJob = viewModelScope.launch  (handler){
             customerRepository.creatercustomer(customerEntity)
@@ -36,7 +39,7 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         parentJob = viewModelScope.launch(handler){
             val result = customerRepository.getcustomer()
             if(result.name?.length !=0){
-                user = result
+                localUser = result
             }
         }
     }
@@ -77,6 +80,18 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
             create(a)
         }
         return token
+    }
+
+    fun UpdateAccount(idUser: Int,user: User) {
+
+        parentJob = viewModelScope.launch  (handler){
+            myuserupdate = jsonLoginRepositories.UpdateAccount(idUser,user) as User
+
+        }
+
+
+
+
     }
 
 }

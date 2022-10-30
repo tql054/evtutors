@@ -8,6 +8,7 @@ import com.intern.evtutors.activities.ui.Screens
 import com.intern.evtutors.composes.home.HomeBaseScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
+import com.intern.evtutors.ui.customer.profile.Profile_Greeting
 
 @Composable
 fun Navigation(navController:NavHostController, startScreen:String) {
@@ -18,7 +19,8 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         composable((Screens.Profile.route)) {
-            ProfileScreen(2)
+//            ProfileScreen(2)
+            Profile_Greeting()
         }
 
         composable((Screens.Favourite.route)) {
@@ -35,7 +37,8 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         composable((Screens.TutorProfile.route)) {
-            ProfileScreen(3)
+//            ProfileScreen(3)
+            Profile_Greeting()
         }
     }
 }

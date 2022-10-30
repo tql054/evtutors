@@ -27,7 +27,7 @@ class HomeActivity : ComponentActivity() {
         setContent {
             val viewModel = viewModel<LoginViewModel>()
             viewModel.getuser()
-            val user = viewModel.user
+            val user = viewModel.localUser
             FatherOfAppsTheme() {
                 App(user.roleID)
             }
