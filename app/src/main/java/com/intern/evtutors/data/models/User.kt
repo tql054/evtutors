@@ -10,7 +10,7 @@ data class User(
     var avatar: String,
     var email: String,
     var userName:String,
-    var password: String,
+    var password: String? =null,
     var role: MutableSet<Role>
 
                 ){

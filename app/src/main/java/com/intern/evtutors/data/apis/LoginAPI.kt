@@ -6,10 +6,7 @@ import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface   LoginAPI {
     @POST("/api/authenticate")
@@ -18,7 +15,7 @@ interface   LoginAPI {
     ): Response<getjwtToken>
 
 
-    @POST("/api/updateUserInfo/idUser={idUser}")
+    @PUT("/api/updateUserInfo/idUser={idUser}")
     suspend fun UpdataInfo(
        @Path("idUser") idUser:Int,
        @Body user:User
