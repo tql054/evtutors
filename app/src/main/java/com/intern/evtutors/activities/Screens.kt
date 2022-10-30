@@ -1,10 +1,7 @@
 package com.intern.evtutors.activities.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 
@@ -23,25 +20,25 @@ sealed class Screens(val route:String, val title:String, val icon:ImageVector) {
 
     object Favourite:Screens(
         route = "favourite",
-        title = "",
-        icon = Icons.Default.Star
+        title = "Schedule",
+        icon = Icons.Default.List
     )
 
     object Notifitication:Screens(
         route = "notification",
-        title = "",
+        title = "News",
         icon = Icons.Default.Notifications
     )
 
     object Profile:Screens(
         route = "profile",
-        title = "",
+        title = "Me",
         icon = Icons.Default.Person
     )
 
     object TutorProfile:Screens(
         route = "profile/tutor",
-        title = "",
+        title = "Me",
         icon = Icons.Default.Person
     )
 }

@@ -115,8 +115,11 @@ fun TutorInfoPage(
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Center
                             )
-                            val number = profileViewModel.certificates.size
-                            Text(text = "Number of certificate: $number")
+//                            var newCertificates = profileViewModel.certificates
+//                            newCertificates.remove("")
+//                            Text(text = "Number of certificate: ${newCertificates.size}")
+                            Text(text = "Number of certificate: ${profileViewModel.certificates.size}")
+
                             Box(
                                 Modifier
                                     .fillMaxWidth()
@@ -312,7 +315,7 @@ fun TutorInfoHeader(
                 Text(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     text = "Merit of:",
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
             }
@@ -345,7 +348,12 @@ fun TutorInfoHeader(
 
                     Button(
                         modifier = Modifier.align(Alignment.CenterEnd),
-                        onClick = {profileViewModel.toggleCancellation()},
+                        onClick = {
+                            if(profileViewModel.stateChanging)
+                                profileViewModel.toggleCancellation()
+                            else
+                                profileViewModel.toggleUpdating()
+                        },
                         contentPadding = PaddingValues(
                             start = 15.dp,
                             top = 7.dp,
@@ -362,16 +370,20 @@ fun TutorInfoHeader(
                     }
                 }
             } else {
-                Button(
-                    onClick = {onToggleUpdate(currentUpdating)},
-                    contentPadding = PaddingValues(
-                        start = 15.dp,
-                        top = 7.dp,
-                        end = 15.dp,
-                        bottom = 7.dp
-                    )
-                ) {
-                    Text(text = "Update")
+                if(profileViewModel.certificates != null) {
+                    if(profileViewModel.certificates.size > 0) {
+                        Button(
+                            onClick = {onToggleUpdate(currentUpdating)},
+                            contentPadding = PaddingValues(
+                                start = 15.dp,
+                                top = 7.dp,
+                                end = 15.dp,
+                                bottom = 7.dp
+                            )
+                        ) {
+                            Text(text = "Update")
+                        }
+                    }
                 }
             }
         }
@@ -445,7 +457,7 @@ fun uploadImage(
                         contentDescription = "Image icon")
                 }
             }
-            
+
             Row() {
                 if(filePath!=null) {
                     Button(onClick = { onUpload(filePath!!, context, profileViewModel) }) {
@@ -485,7 +497,7 @@ fun onUpload(
 
     profileViewModel.toggle()
     observer.setTransferListener(object : TransferListener {
-//        Must be handled enabling the adding button until successfully uploading
+        //        Must be handled enabling the adding button until successfully uploading
         override fun onStateChanged(id: Int, state: TransferState) {
             if (state == TransferState.COMPLETED) {
                 profileViewModel.addCertificate(resultUrl)
