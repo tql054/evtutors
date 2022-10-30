@@ -598,7 +598,7 @@ class Profile_activity : ComponentActivity() {
 
 
 
-        Spacer(modifier = Modifier.height(45.dp))
+        Spacer(modifier = Modifier.height(35.dp))
         Button(modifier = Modifier.height(45.dp)
             .fillMaxWidth(0.7f)
             .background(Color.White),
@@ -611,13 +611,15 @@ class Profile_activity : ComponentActivity() {
         ){
             Text(text = "Become Premium", color = BlueText )
         }
-        Spacer(modifier = Modifier.height(35.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         TextButton(onClick = {
             var intent: Intent = Intent(context, Login::class.java)
                         context.startActivity(intent)
         }) {
             Text(text = "LOG OUT",fontSize = 30.sp, color = BlueText)
         }
+
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
