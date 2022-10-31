@@ -2,6 +2,7 @@ package com.intern.evtutors.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 
@@ -66,9 +67,6 @@ class Register : ComponentActivity() {
 
 @Composable
 fun RegisterActivity() {
-
-
-
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
         ) {
@@ -76,14 +74,9 @@ fun RegisterActivity() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(SecondaryColor)
-
             //contentAlignment = Alignment.TopCenter
-
         )
-
-
         view()
-
     }
 }
 @Composable
@@ -225,26 +218,26 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
-                    val texterro=valiPassword( passwordValue.value)
-                    val gmailerro=valiGmail(emailValue.value)
-                    if(gmailerro!= null){
-                        Toast.makeText(context, gmailerro, Toast.LENGTH_SHORT).show()
+                    val texterror=valiPassword( passwordValue.value)
+                    val gmailerror=valiGmail(emailValue.value)
+                    if(gmailerror!= null){
+                        Toast.makeText(context, gmailerror, Toast.LENGTH_SHORT).show()
                     }else{
-                        if(texterro != null){
-                            Toast.makeText(context, texterro, Toast.LENGTH_SHORT).show()
+                        if(texterror != null){
+                            Toast.makeText(context, texterror, Toast.LENGTH_SHORT).show()
                         }
                         else{
                             if( passwordValue.value != (confirmPasswordValue.value)){
-                                Toast.makeText(context, "confirm PasswordValue erro", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "confirm PasswordValue error", Toast.LENGTH_SHORT).show()
                             }
                             else{
                                 if(selectedValue.value.length==7){
                                     scope.launch {
-                                        val userT =registerViewModel.fetchRegisterTeacher(nameValue.value,
+                                        val newUser =registerViewModel.fetchRegisterTeacher(nameValue.value,
                                             passwordValue.value,
                                             emailValue.value)
-
-                                        if(userT != null){
+                                        registerViewModel.generateCertificates(newUser!!.id)
+                                        if(newUser != null){
                                             var intent: Intent = Intent(context, Login::class.java)
                                             context.startActivity(intent)
                                         }else{
@@ -255,11 +248,10 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                                 }else
                                     if(selectedValue.value.length==8){
                                         scope.launch {
-                                            val userT =registerViewModel.fetchRegisterStudent(nameValue.value,
+                                            val newUser =registerViewModel.fetchRegisterStudent(nameValue.value,
                                                 passwordValue.value,
                                                 emailValue.value)
-
-                                            if(userT != null){
+                                            newUser?.let {
                                                 var intent: Intent = Intent(context, Login::class.java)
                                                 context.startActivity(intent)
                                             }

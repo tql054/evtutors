@@ -64,7 +64,7 @@ fun CertificateItem(
                             .weight(1f)
                             .wrapContentHeight(Alignment.CenterVertically)
                         ,
-                        text = "Certificate $certificate",
+                        text = "Certificate ${certificate+1}",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,

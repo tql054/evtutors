@@ -218,7 +218,7 @@ fun login(loginViewModel:LoginViewModel,
             val user = loginViewModel.DataLogin(username,password)
             if(user != null){
                 Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(context, "Welcom", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show()
                 }
                 var intent: Intent = Intent(context, HomeActivity::class.java)
                 context.startActivity(intent)

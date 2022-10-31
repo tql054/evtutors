@@ -1,9 +1,11 @@
 package com.intern.evtutors.ui.customer.register
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.modeljson.UserJson
+import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
 
@@ -23,7 +25,6 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
         get() = _listPosts
 
      suspend fun fetchRegisterTeacher(name:String, pass:String, email:String):UserJson? {
-        showLoading(true)
          var role     : MutableSet<Role> = mutableSetOf()
         // var user: User= User(0,"",0,"","","","","","","")
         var user: User= User(0,"",0,"","","","","","","",role)
@@ -33,16 +34,15 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
         user.password=pass
 
          val post = jsonRegisterTeacherReposititory.toRegitser(user)
-//        parentJob = viewModelScope.launch(handler) {
-//            val post = jsonRegisterTeacherReposititory.toRegitser(user)
-//            _listPosts.postValue(post)
-//            val user =post
-//            return@launch user
-//        }
-
          return post as UserJson?
-      //  registerJobFinish()
     }
+
+    suspend fun generateCertificates(userId:Int) {
+        val certificates = Certificates(userId, "", "", "", "", "")
+        Log.d("Return certifcates","")
+        val result = jsonRegisterTeacherReposititory.renerateCertificates(certificates)
+    }
+
      suspend fun fetchRegisterStudent(name:String,pass:String,email:String):UserJson? {
         showLoading(true)
 
@@ -56,12 +56,6 @@ class RegisterViewModel @Inject constructor(private val jsonRegisterTeacherRepos
         user.password=pass
          val post = jsonRegisterStudentReposititory.toRegitser(user)
          return post as UserJson?
-//        parentJob = viewModelScope.launch(handler) {
-//            val post = jsonRegisterStudentReposititory.toRegitser(user)
-//            _listPosts.postValue(post)
-//
-//        }
-        //registerJobFinish()
     }
 
 }

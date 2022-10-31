@@ -52,11 +52,11 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun clearCertificate() {
+    fun clearCertificate(idTutor:Int) {
         toggleUpdating()
         if(stateChanging) {
             certificates = mutableListOf<String?>()
-            fetchCetificate( 1234)
+            fetchCetificate( idTutor)
             stateChanging = false
         }
     }
