@@ -153,7 +153,7 @@ fun TutorInfoPage(
                         }
                     } else {
                         item{
-                            Text(text = "Loading")
+                            Text(text = "Loading...")
                             user?.let {
                                 profileViewModel.fetchCetificate(user.id)
                             }
@@ -165,10 +165,10 @@ fun TutorInfoPage(
                     uploadImage(profileViewModel)
                 }
                 if(profileViewModel.stateConfirmSave) {
-                    ConfirmSaveBox(profileViewModel = profileViewModel)
+                    ConfirmSaveBox(profileViewModel = profileViewModel,viewModel = viewModel)
                 }
                 if(profileViewModel.stateConfirmCancel) {
-                    ConfirmCancelBox(profileViewModel = profileViewModel)
+                    ConfirmCancelBox(profileViewModel = profileViewModel,viewModel = viewModel)
                 }
 
             },
@@ -201,7 +201,8 @@ fun TutorInfoPage(
 
 @Composable
 fun ConfirmSaveBox(
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    viewModel: LoginViewModel
 ) {
     Box(
         modifier = Modifier
@@ -225,7 +226,10 @@ fun ConfirmSaveBox(
             Row {
                 Button(onClick = {
                     if(profileViewModel.stateChanging) {
-                        profileViewModel.putCertificate(1234)
+                        val user = viewModel.localUser
+                        user?.let {
+                            profileViewModel.putCertificate(user.id)
+                        }
                         profileViewModel.toggleSaving()
                     }
                 }) {
@@ -248,7 +252,8 @@ fun ConfirmSaveBox(
 
 @Composable
 fun ConfirmCancelBox(
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    viewModel: LoginViewModel
 ) {
     Box(
         modifier = Modifier
@@ -271,7 +276,10 @@ fun ConfirmCancelBox(
             Text(text = "Are you sure removing all change?")
             Row {
                 Button(onClick = {
-                    profileViewModel.clearCertificate()
+                    val user = viewModel.localUser
+                    user?.let {
+                        profileViewModel.clearCertificate(user.id)
+                    }
                     profileViewModel.toggleCancellation()
                 }) {
                     Text(

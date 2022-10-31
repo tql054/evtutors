@@ -4,6 +4,7 @@ package com.intern.evtutors.data.repositories
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.base.network.NetworkResult2
 import com.intern.evtutors.data.modeljson.UserJson
+import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.data.services.RegisterTeacherRemoteServer
@@ -30,6 +31,23 @@ class jsonRegisterTeacherReposititory @Inject constructor(
             is NetworkResult2.Error ->{
                 data
             }
+            NetworkResult2.Loading->{
+
+            }
+        }
+    }
+
+    suspend fun renerateCertificates(certificates: Certificates) = withContext(dispatcher) {
+        val data: UserJson?=null
+        when (val result =registerTeacherRemoteServer.generateCertificate(certificates)){
+            is NetworkResult2.Success ->{
+                result.data
+            }
+
+            is NetworkResult2.Error ->{
+                data
+            }
+
             NetworkResult2.Loading->{
 
             }
