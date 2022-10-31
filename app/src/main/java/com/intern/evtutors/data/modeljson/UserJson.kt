@@ -14,8 +14,6 @@ class UserJson(
     var email: String,
     var userName:String,
     var password: String,
-
-
     )
 {
 //    fun toUser(): User {

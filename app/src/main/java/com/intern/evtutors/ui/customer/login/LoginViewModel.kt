@@ -23,13 +23,12 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
                                          private val customerRepository: CustomerRepository
 )
     : BaseViewModel() {
-    var role     : MutableSet<Role> = mutableSetOf()
+    var role: MutableSet<Role> = mutableSetOf()
     var user: User= User(0,"",0,"","","","","","","",role)
     var myuserupdate : User by mutableStateOf(user)
     private var _listPosts = MutableLiveData<getjwtToken>()
     val listPots: LiveData<getjwtToken> get() = _listPosts
-    var localUser by mutableStateOf(CustomerEntity(0,3,"",0, "",
-        "", "", "", "", "", "", 3))
+    var localUser by mutableStateOf<CustomerEntity?>(null)
     fun create(customerEntity: CustomerEntity){
         parentJob = viewModelScope.launch  (handler){
             customerRepository.creatercustomer(customerEntity)
@@ -49,7 +48,6 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         for (i in user.user.role){
              ID = i.id!!
         }
-
         return CustomerEntity(
             constans =1,
             id=user.user.id,
@@ -83,15 +81,10 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
     }
 
     fun UpdateAccount(idUser: Int,user: User) {
-
         parentJob = viewModelScope.launch  (handler){
             myuserupdate = jsonLoginRepositories.UpdateAccount(idUser,user) as User
 
         }
-
-
-
-
     }
 
 }

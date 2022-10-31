@@ -14,7 +14,7 @@ class ProfileRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ){
     suspend fun getCertificates(idTutor:Int) = withContext(dispatcher) {
-        when(val result = profileServices.getAllCertificate(idTutor)) {
+        when(val result = profileServices.getAllCertificate(1234)) { //fake idTutor
             is NetworkResult.Success -> {
                 result.data.toCertificates()
             }
@@ -26,7 +26,7 @@ class ProfileRepository @Inject constructor(
     }
 
     suspend fun putCertificates(idTutor: Int, certificates: Certificates) = withContext(dispatcher) {
-        when(val result = profileServices.putCertificates(idTutor, certificates)) {
+        when(val result = profileServices.putCertificates(1234, certificates)) { //fake idTutor
             is NetworkResult.Success -> {
                 result.data.toCertificates()
             }

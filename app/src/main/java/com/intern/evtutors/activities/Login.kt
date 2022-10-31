@@ -224,8 +224,6 @@ fun login(loginViewModel:LoginViewModel,
                 context.startActivity(intent)
             }
             else{
-
-
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                 }
