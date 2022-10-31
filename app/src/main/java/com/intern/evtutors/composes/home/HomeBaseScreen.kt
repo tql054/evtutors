@@ -50,11 +50,11 @@ fun HomeBaseScreen(
                 }
 
                 3 -> {
-//                    TutorHomePage()
+//                    TutorHomePage(users, tutors)
                     viewModel.fetchData()
                     val users by viewModel.course.observeAsState(arrayListOf())
                     val tutors by viewModel.tutors.observeAsState(arrayListOf())
-                    StudentHomePage(users, tutors)
+                    TutorHomePage(users, tutors)
 
                 }
             }
@@ -96,7 +96,8 @@ fun StudentHomePage(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorHomePage(
-
+    courses:List<Course>,
+    tutors:List<Teacher>
 ) {
     Surface(
         modifier = Modifier
@@ -114,11 +115,11 @@ fun TutorHomePage(
         ) {
             HomeTopic(title = "Your offers")
             Spacer(modifier = Modifier.padding(top = 5.dp))
-//            HomeCourse(courses)
+            HomeCourse(courses)
             Spacer(modifier = Modifier.padding(top = 10.dp))
             HomeTopic(title = "Available offers")
             Spacer(modifier = Modifier.padding(top = 5.dp))
-//            HomeTutors(tutors = tutors)
+            HomeTutors(tutors = tutors)
         }
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -26,6 +27,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.*
 import com.amazonaws.services.s3.AmazonS3Client
@@ -50,6 +54,7 @@ import java.io.OutputStream
 
 @Composable
 fun ProfileScreen(
+    navHostController: NavHostController,
     TypeOfUser:Int,
     viewModel: LoginViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
@@ -61,7 +66,7 @@ fun ProfileScreen(
                 Surface() {
                     Column() {
                         var user = viewModel.localUser
-                        Text(text = "Count: ${user.roleID}")
+                        Text(text = "Count: ${user?.roleID}")
                     }
                 }
             }
@@ -83,7 +88,7 @@ fun TutorInfoPage(
     profileViewModel: ProfileViewModel,
     viewModel:LoginViewModel,
 ) {
-    val user = viewModel.user
+    val user = viewModel.localUser
     FatherOfAppsTheme {
         Scaffold(
             content = {
@@ -105,20 +110,23 @@ fun TutorInfoPage(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            TutorInfoHeader(user.id, profileViewModel, profileViewModel.stateUpdating) {
-                                profileViewModel.toggleUpdating()
-                            }
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = "${user.name}",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Center
-                            )
+                            user?.let {
+                                TutorInfoHeader(user.id, profileViewModel, profileViewModel.stateUpdating) {
+                                    profileViewModel.toggleUpdating()
+                                }
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "${user.name}",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    textAlign = TextAlign.Center
+                                )
 //                            var newCertificates = profileViewModel.certificates
 //                            newCertificates.remove("")
 //                            Text(text = "Number of certificate: ${newCertificates.size}")
-                            Text(text = "Number of certificate: ${profileViewModel.certificates.size}")
+                                Text(text = "Number of certificate: ${profileViewModel.certificates.size}")
+
+                            }
 
                             Box(
                                 Modifier
@@ -146,7 +154,9 @@ fun TutorInfoPage(
                     } else {
                         item{
                             Text(text = "Loading")
-                            profileViewModel.fetchCetificate(1234)
+                            user?.let {
+                                profileViewModel.fetchCetificate(user.id)
+                            }
                         }
                     }
                 }
@@ -412,14 +422,15 @@ fun uploadImage(
             .background(ModalColor)
             .padding(
                 top = 5.dp,
-                start = 10.dp,
-                end = 10.dp
+                start = 20.dp,
+                end = 20.dp
             )
     ) {
         Column (
             modifier = Modifier
-                .fillMaxWidth()
+                .width(500.dp)
                 .align(Alignment.Center)
+                .clip(shape = RoundedCornerShape(15.dp))
                 .background(Color.White)
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -440,9 +451,6 @@ fun uploadImage(
                             contentDescription = "Uploaded Image",
                             modifier = Modifier.size(400.dp)
                         )
-//                        Button(onClick = {uploadImage(filePath!!)}) {
-//                            Text(text = "Upload to S3")
-//                        }
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                 }
@@ -525,8 +533,32 @@ fun onUpload(
 @Composable
 fun DefaultPreview() {
     FatherOfAppsTheme {
-        Text(text = "abc")
-//        uploadImage()
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .clip(shape = RoundedCornerShape(15.dp))
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+                IconButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {}
+                ){
+                    Icon(
+                        modifier = Modifier.size(200.dp),
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Image icon")
+                }
+
+            Row() {
+                Button(onClick = {}) {
+                    Text(
+                        text = "Cancel"
+                    )
+                }
+            }
+        }
     }
 }
 

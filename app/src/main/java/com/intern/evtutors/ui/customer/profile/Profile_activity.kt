@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.intern.evtutors.activities.Login
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Role
@@ -57,7 +58,7 @@ class Profile_activity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Profile_Greeting()
+//                    Profile_Greeting()
                 }
             }
         }
@@ -65,9 +66,13 @@ class Profile_activity : ComponentActivity() {
 }
 
 @Composable
- fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),loginViewModel: LoginViewModel= hiltViewModel()) {
+ fun Profile_Greeting(
+    navHostController: NavHostController,
+    ProfileViewModel  : ProfileViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel= hiltViewModel())
+ {
     var user = CustomerEntity(0,0,"",0,"","","","","","","",0)
-    var role     : MutableSet<Role> = mutableSetOf()
+    var role: MutableSet<Role> = mutableSetOf()
     var userupdate: User = User(0,"",0,"","","","","","", password = null,role = role)
     val scope = CoroutineScope(Dispatchers.IO + Job())
     val context = LocalContext.current
@@ -400,7 +405,9 @@ class Profile_activity : ComponentActivity() {
                         Column(modifier = Modifier
                             .fillMaxWidth(0.7f)
                         ){
-                            TextButton(onClick = {}) {
+                            TextButton(onClick = {
+                                navHostController.navigate("home/profile/certificates")
+                            }) {
                                 Text(text = "Edit",fontSize = 16.sp, color = GrayText)
                             }
                         }
@@ -953,6 +960,6 @@ fun PaymentOutlinedTextField(){
 @Composable
 fun DefaultPreview2() {
     FatherOfAppsTheme {
-        Profile_Greeting()
+//        Profile_Greeting()
     }
 }
