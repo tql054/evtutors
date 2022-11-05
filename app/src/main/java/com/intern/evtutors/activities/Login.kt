@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,16 +39,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.intern.evtutors.R
+import com.intern.evtutors.composes.loading.CircularIndeterminateProgressBar
+import com.intern.evtutors.data.database.entities.CustomerEntity
+import com.intern.evtutors.data.models.Role
+import com.intern.evtutors.data.models.User
+import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.miggue.mylogin01.ui.theme.BlackText
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.PrimaryColor
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 @AndroidEntryPoint
@@ -69,11 +73,19 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
+    var checkStatus by remember{ mutableStateOf(false) }
+    var colorSpaceErro by remember{ mutableStateOf(Color.White) }
+
     var password by remember{ mutableStateOf("") }
     var offset by remember { mutableStateOf(0) }
     val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
     val keyboardController =  LocalSoftwareKeyboardController.current
     var isPasswordVisible by remember{ mutableStateOf(false) }
+    if(!checkStatus){
+        colorSpaceErro =Color.White
+    }else{
+        colorSpaceErro=Color.Red
+    }
 
     Scaffold() {
         Column(
@@ -99,6 +111,8 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     label = {Text(text = "Username")},
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 )
+
+                Spacer(modifier = Modifier.height(5.dp).background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier
@@ -120,6 +134,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                         }
                     }
                 )
+                Spacer(modifier = Modifier.height(5.dp).background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
@@ -134,7 +149,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                login(loginViewModel,username,password)
+                login(loginViewModel,username,password, onchanecheckStatus = {checkStatus=!checkStatus})
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -209,23 +224,34 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 @Composable
 fun login(loginViewModel:LoginViewModel,
           username:String,
-          password:String ){
-
+          password:String,
+          onchanecheckStatus:(Boolean)-> Unit){
+    var checkloading by mutableStateOf<Boolean>(false)
     val context = LocalContext.current
-    val scope = CoroutineScope(Dispatchers.IO + Job())
+    val scope = CoroutineScope( Job()+ Dispatchers.Main)
+    if(checkloading){
+        CircularIndeterminateProgressBar(isDisplayed = true, verticalBias = 0.3f)
+    }
     Button(onClick = {
+        checkloading= true
+
         scope.launch {
-            val user = loginViewModel.DataLogin(username,password)
-            if(user != null){
+
+
+             loginViewModel.DataLogin(username, password)
+
+            if (loginViewModel.dataUserLogin?.user != null) {
+                checkloading= false
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show()
                 }
                 var intent: Intent = Intent(context, HomeActivity::class.java)
                 context.startActivity(intent)
-            }
-            else{
+            } else {
+                checkloading= false
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+                    onchanecheckStatus
                 }
             }
         }

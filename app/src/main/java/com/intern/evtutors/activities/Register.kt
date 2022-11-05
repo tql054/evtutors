@@ -2,6 +2,8 @@ package com.intern.evtutors.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -35,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.intern.evtutors.composes.loading.CircularIndeterminateProgressBar
 import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.intern.evtutors.ui.customer.register.RegisterViewModel
 
@@ -84,8 +87,9 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
     val selectedValue = remember { mutableStateOf("") }
     val nameValue = remember { mutableStateOf("") }
     val emailValue = remember { mutableStateOf("") }
+    val IDloading = remember { mutableStateOf(false) }
 
-    val i = remember { mutableStateOf(false) }
+    val checkloading = remember { mutableStateOf(false) }
 
     val isSelectedItem: (String) -> Boolean = { selectedValue.value == it }
     val onChangeState: (String) -> Unit = { selectedValue.value = it }
@@ -99,6 +103,9 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
     val scope = CoroutineScope(Dispatchers.IO + Job())
 
     val context = LocalContext.current
+    if(IDloading.value){
+        CircularIndeterminateProgressBar(isDisplayed = true, verticalBias = 0.3f)
+    }
 
     Column(
         modifier = Modifier
@@ -151,6 +158,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                     modifier = Modifier.fillMaxWidth(0.8f),
                     trailingIcon = {
                         IconButton(onClick = {
+
                             passwordVisibility.value = !passwordVisibility.value
                         }) {
                             Icon(imageVector = if(confirmPasswordVisibility.value) Icons.Default.Lock else Icons.Default.Lock,
@@ -218,6 +226,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
+                    IDloading.value=true
                     val texterror=valiPassword( passwordValue.value)
                     val gmailerror=valiGmail(emailValue.value)
                     if(gmailerror!= null){
@@ -236,12 +245,19 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                                         val newUser =registerViewModel.fetchRegisterTeacher(nameValue.value,
                                             passwordValue.value,
                                             emailValue.value)
-                                        registerViewModel.generateCertificates(newUser!!.id)
+
                                         if(newUser != null){
+
+                                            registerViewModel.generateCertificates(newUser!!.id)
                                             var intent: Intent = Intent(context, Login::class.java)
                                             context.startActivity(intent)
+                                            IDloading.value =false
                                         }else{
-                                            Toast.makeText(context, "Sign up again", Toast.LENGTH_SHORT).show()
+                                            IDloading.value =false
+                                            Handler(Looper.getMainLooper()).post {
+                                                Toast.makeText(context, "Sign up again", Toast.LENGTH_SHORT).show()
+                                            }
+
                                         }
                                     }
 
@@ -254,21 +270,16 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                                             newUser?.let {
                                                 var intent: Intent = Intent(context, Login::class.java)
                                                 context.startActivity(intent)
+                                                IDloading.value =false
                                             }
                                         }
-
                                     }else{
+                                        IDloading.value =false
                                         Toast.makeText(context, "Sign up again", Toast.LENGTH_SHORT).show()
                                     }
                             }
-
                         }
                     }
-
-
-
-
-
                 },
 
                     modifier = Modifier

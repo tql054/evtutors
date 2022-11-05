@@ -185,6 +185,10 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.0.0-beta12"
     implementation "androidx.camera:camera-view:1.0.0-alpha19"
 
+    def constraint_layout = "2.0.4"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
+
     //agora sdk
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
