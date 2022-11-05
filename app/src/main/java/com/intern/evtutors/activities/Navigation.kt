@@ -20,7 +20,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
 
         composable((Screens.Profile.route)) {
 //            ProfileScreen(2)
-            Profile_Greeting(navController)
+            Profile_Greeting()
         }
 
         composable((Screens.Favourite.route)) {
@@ -38,7 +38,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
 
         composable((Screens.TutorProfile.route)) {
 //            ProfileScreen(3)
-            Profile_Greeting(navController)
+            Profile_Greeting()
         }
 
         composable("home/profile/certificates") {

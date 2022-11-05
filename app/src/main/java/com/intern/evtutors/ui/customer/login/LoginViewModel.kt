@@ -26,6 +26,7 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
     var role: MutableSet<Role> = mutableSetOf()
     var user: User= User(0,"",0,"","","","","","","",role)
     var myuserupdate : User by mutableStateOf(user)
+    var dataUserLogin by mutableStateOf<getjwtToken?>(null)
     private var _listPosts = MutableLiveData<getjwtToken>()
     val listPots: LiveData<getjwtToken> get() = _listPosts
     var localUser by mutableStateOf<CustomerEntity?>(null)
@@ -65,26 +66,28 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
 
     }
 
-    suspend fun DataLogin(email:String,passWord: String):getjwtToken? {
-        var token:getjwtToken? = null
+    suspend fun DataLogin(email:String,passWord: String) {
+
         var account = Account()
         account.userName=email
         account.userPassword=passWord
-        val post = jsonLoginRepositories.getAllAccount(account)
-        token = post as getjwtToken?
-//        _listPosts.postValue(post)
-        if(post !=null){
-            var a= cover(post)
-            create(a)
-        }
-        return token
+
+            dataUserLogin  = jsonLoginRepositories.getAllAccount(account) as getjwtToken?
+            if(dataUserLogin !=null){
+                var a= cover(dataUserLogin!!)
+                create(a)
+            }
+
+
+
+        registerJobFinish()
     }
 
-    fun UpdateAccount(idUser: Int,user: User) {
-        parentJob = viewModelScope.launch  (handler){
+    suspend fun UpdateAccount(idUser: Int, user: User) {
+
             myuserupdate = jsonLoginRepositories.UpdateAccount(idUser,user) as User
 
-        }
+
     }
 
 }
