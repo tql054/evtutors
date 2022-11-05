@@ -19,30 +19,30 @@ class ConfirmDialog constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_confirm)
-
-        val tvTitle = findViewById<TextView>(R.id.tvTitle)
-        tvTitle.text = title
-
-        message?.let {
-            val tvContent = findViewById<TextView>(R.id.tvContent)
-            tvContent.visibility = View.VISIBLE
-            tvContent.text = message
-        }
-
-        val btnNegative = findViewById<Button>(R.id.btnNegative)
-        btnNegative.text = negativeButtonTitle
-        btnNegative.setOnClickListener {
-            callback?.negativeAction()
-            dismiss()
-        }
-
-        val btnPositive = findViewById<Button>(R.id.btnPositive)
-        btnPositive.text = positiveButtonTitle
-        btnPositive.setOnClickListener {
-            callback?.positiveAction()
-            dismiss()
-        }
+//        setContentView(R.layout.dialog_confirm)
+//
+//        val tvTitle = findViewById<TextView>(R.id.tvTitle)
+//        tvTitle.text = title
+//
+//        message?.let {
+//            val tvContent = findViewById<TextView>(R.id.tvContent)
+//            tvContent.visibility = View.VISIBLE
+//            tvContent.text = message
+//        }
+//
+//        val btnNegative = findViewById<Button>(R.id.btnNegative)
+//        btnNegative.text = negativeButtonTitle
+//        btnNegative.setOnClickListener {
+//            callback?.negativeAction()
+//            dismiss()
+//        }
+//
+//        val btnPositive = findViewById<Button>(R.id.btnPositive)
+//        btnPositive.text = positiveButtonTitle
+//        btnPositive.setOnClickListener {
+//            callback?.positiveAction()
+//            dismiss()
+//        }
 
     }
 

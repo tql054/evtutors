@@ -1,4 +1,4 @@
-package com.intern.evtutors.ui.customer.login
+package com.intern.evtutors.view_models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,18 +29,10 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
     var dataUserLogin by mutableStateOf<getjwtToken?>(null)
     private var _listPosts = MutableLiveData<getjwtToken>()
     val listPots: LiveData<getjwtToken> get() = _listPosts
-    var localUser by mutableStateOf<CustomerEntity?>(null)
+
     fun create(customerEntity: CustomerEntity){
         parentJob = viewModelScope.launch  (handler){
             customerRepository.creatercustomer(customerEntity)
-        }
-    }
-    fun getuser(){
-        parentJob = viewModelScope.launch(handler){
-            val result = customerRepository.getcustomer()
-            if(result.name?.length !=0){
-                localUser = result
-            }
         }
     }
 
@@ -84,10 +76,7 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
     }
 
     suspend fun UpdateAccount(idUser: Int, user: User) {
-
             myuserupdate = jsonLoginRepositories.UpdateAccount(idUser,user) as User
-
-
     }
 
 }

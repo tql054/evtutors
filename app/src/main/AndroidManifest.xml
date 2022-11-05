@@ -40,19 +40,9 @@
             android:exported="false"
 
             android:theme="@style/Theme.FatherOfApps" />
-
-        <activity
-            android:name=".activities.main"
-            android:exported="false"
-            android:label="@string/title_activity_test1"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activities.MeetingActivity"
             android:exported="true"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.MainActivity"
-            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SplashActivity"

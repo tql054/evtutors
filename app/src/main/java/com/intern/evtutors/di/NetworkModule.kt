@@ -30,31 +30,11 @@ class NetworkModule {
     fun provideLessonApi(@Named("LessonSite") retrofit: Retrofit):LessonAPI {
         return retrofit.create(LessonAPI::class.java)
     }
-//    @Provides
-//    fun provideCustomerAPI(@Named("MainSite") retrofit: Retrofit): CustomerAPI {
-//        return retrofit.create(CustomerAPI::class.java)
- //   }
-    @Provides
-    fun provideLoginAPI(@Named("Login") retrofit: Retrofit): LoginAPI {
-        return retrofit.create(LoginAPI::class.java)
-    }
-
-    @Provides
-    fun provideRegisterTeacherAPI(@Named("RegisterTeacher") retrofit: Retrofit): RegisterTeacherAPI {
-        return retrofit.create(RegisterTeacherAPI::class.java)
-    }
-
-    @Provides
-    fun provideRegisterStudentAPI(@Named("RegisterStudent") retrofit: Retrofit): RegisterStudentAPI {
-        return retrofit.create(RegisterStudentAPI::class.java)
-    }
 
     @Provides
     fun provideCertificateAPI(@Named("RegisterStudent") retrofit: Retrofit): ProfileAPI{
         return retrofit.create(ProfileAPI::class.java)
     }
-
-
 
     @Provides
     @Singleton
@@ -79,35 +59,6 @@ class NetworkModule {
     ):Retrofit {
         return Retrofit.Builder().addConverterFactory(moshiConverterFactory)
             .baseUrl(BuildConfig.BASE_URL_LESSON_DEV)
-            .client(okHttpClient)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    @Named("Login")
-    fun provideRetrofit(
-             okHttpClient: OkHttpClient
-
-        ,
-        moshiConverterFactory: MoshiConverterFactory
-    ):Retrofit {
-        return Retrofit.Builder().addConverterFactory(moshiConverterFactory)
-            .baseUrl(BuildConfig.BASE_URL_LOGIN)
-            .client(okHttpClient)
-            .build()
-    }
-    
-    @Provides
-    @Singleton
-    @Named("RegisterTeacher")
-    fun provideRegisterTeacherRetrofit(
-        okHttpClient: OkHttpClient,
-        moshiConverterFactory: MoshiConverterFactory
-    ): Retrofit {
-
-        return Retrofit.Builder().addConverterFactory(moshiConverterFactory)
-            .baseUrl(BuildConfig.BASE_URL_LOGIN)
             .client(okHttpClient)
             .build()
     }

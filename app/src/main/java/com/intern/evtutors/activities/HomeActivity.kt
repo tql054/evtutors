@@ -3,19 +3,16 @@ package com.intern.evtutors.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.intern.evtutors.activities.ui.Screens
-import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.intern.evtutors.screens.Screens
+import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +22,7 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val viewModel = viewModel<LoginViewModel>()
+            val viewModel = viewModel<ProfileViewModel>()
             viewModel.getuser()
             val user = viewModel.localUser
             user?.let {
@@ -44,9 +41,9 @@ fun App(
     TypeOfUser:Int
 ) {
     val navController = rememberNavController()
-    var items = listOf(Screens.StudentHome, Screens.Favourite, Screens.Notifitication, Screens.Profile)
+    var items = listOf(Screens.StudentHome, Screens.Favourite, Screens.Notification, Screens.Profile)
     if(TypeOfUser == 3) {
-        items = listOf(Screens.TutorsHome, Screens.Favourite, Screens.Notifitication, Screens.TutorProfile)
+        items = listOf(Screens.TutorsHome, Screens.Favourite, Screens.Notification, Screens.TutorProfile)
     }
     Scaffold(
         bottomBar = {

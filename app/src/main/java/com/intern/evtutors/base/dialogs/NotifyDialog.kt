@@ -18,22 +18,22 @@ class NotifyDialog (
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.dialog_notify)
-
-        val tvTitle = findViewById<TextView>(R.id.tvTitle)
-        tvTitle.text = title
-
-        val tvContent = findViewById<TextView>(R.id.tvContent)
-        tvContent.text = HtmlCompat.fromHtml(message, HtmlCompat.FROM_HTML_MODE_LEGACY)
-
-        val btnOK = findViewById<AppCompatButton>(R.id.btnOK)
-        textButton?.let {
-            btnOK.text = textButton
-        }
-        btnOK.setOnClickListener {
-            dismiss()
-        }
+//        requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        setContentView(R.layout.dialog_notify)
+//
+//        val tvTitle = findViewById<TextView>(R.id.tvTitle)
+//        tvTitle.text = title
+//
+//        val tvContent = findViewById<TextView>(R.id.tvContent)
+//        tvContent.text = HtmlCompat.fromHtml(message, HtmlCompat.FROM_HTML_MODE_LEGACY)
+//
+//        val btnOK = findViewById<AppCompatButton>(R.id.btnOK)
+//        textButton?.let {
+//            btnOK.text = textButton
+//        }
+//        btnOK.setOnClickListener {
+//            dismiss()
+//        }
 
     }
 

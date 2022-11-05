@@ -18,7 +18,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -26,7 +26,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -37,7 +36,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.intern.evtutors.R
@@ -46,10 +44,8 @@ import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
-import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.intern.evtutors.view_models.LoginViewModel
 import com.miggue.mylogin01.ui.theme.BlackText
-import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
-import com.miggue.mylogin01.ui.theme.PrimaryColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -96,7 +92,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
             Spacer(modifier = Modifier.height(50.dp))
             Column(modifier = Modifier
                 .fillMaxWidth()
-                .clickable {offset = 0  }
+                .clickable { offset = 0 }
                 .offset { IntOffset(offset, offset) }
                 .padding(horizontal = 40.dp)) {
                 Text(text = "Login", style = MaterialTheme.typography.h1)
@@ -112,7 +108,9 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 )
 
-                Spacer(modifier = Modifier.height(5.dp).background(colorSpaceErro))
+                Spacer(modifier = Modifier
+                    .height(5.dp)
+                    .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier
@@ -134,7 +132,9 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(5.dp).background(colorSpaceErro))
+                Spacer(modifier = Modifier
+                    .height(5.dp)
+                    .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
@@ -222,11 +222,13 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
 }
 @Composable
-fun login(loginViewModel:LoginViewModel,
+fun login(loginViewModel: LoginViewModel,
           username:String,
           password:String,
           onchanecheckStatus:(Boolean)-> Unit){
-    var checkloading by mutableStateOf<Boolean>(false)
+    var checkloading by rememberSaveable() {
+        mutableStateOf<Boolean>(false)
+    }
     val context = LocalContext.current
     val scope = CoroutineScope( Job()+ Dispatchers.Main)
     if(checkloading){

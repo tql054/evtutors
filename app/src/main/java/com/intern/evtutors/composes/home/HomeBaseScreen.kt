@@ -1,7 +1,6 @@
 package com.intern.evtutors.composes.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -14,21 +13,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.intern.evtutors.data.model_json.CourseJson
 import com.intern.evtutors.data.models.Course
 import com.intern.evtutors.data.models.Teacher
-import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.intern.evtutors.view_models.HomeViewModel
-import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
