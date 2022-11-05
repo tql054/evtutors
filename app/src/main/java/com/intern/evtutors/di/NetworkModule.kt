@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -86,7 +87,9 @@ class NetworkModule {
     @Singleton
     @Named("Login")
     fun provideRetrofit(
-        okHttpClient: OkHttpClient,
+             okHttpClient: OkHttpClient
+
+        ,
         moshiConverterFactory: MoshiConverterFactory
     ):Retrofit {
         return Retrofit.Builder().addConverterFactory(moshiConverterFactory)
@@ -128,6 +131,10 @@ class NetworkModule {
         httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES) // write timeout
+            .readTimeout(5, TimeUnit.MINUTES) // read timeout
+
 
         builder.interceptors().add(httpLoggingInterceptor)
         return builder.build()
