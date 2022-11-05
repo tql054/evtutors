@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,11 +11,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.sharp.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.textInputServiceFactory
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,14 +34,13 @@ import com.intern.evtutors.activities.Login
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
-import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.intern.evtutors.view_models.LoginViewModel
 import com.intern.evtutors.ui.customer.profile.ui.theme.*
 import com.miggue.mylogin01.ui.theme.SecondaryColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class Profile_activity : ComponentActivity() {
@@ -69,7 +63,7 @@ class Profile_activity : ComponentActivity() {
  fun Profile_Greeting(
     navHostController: NavHostController,
     ProfileViewModel  : ProfileViewModel = hiltViewModel(),
-    loginViewModel: LoginViewModel= hiltViewModel())
+    loginViewModel: LoginViewModel = hiltViewModel())
  {
     var user = CustomerEntity(0,0,"",0,"","","","","","","",0)
     var role: MutableSet<Role> = mutableSetOf()

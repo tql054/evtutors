@@ -18,8 +18,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -27,7 +25,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -36,16 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.*
 import com.amazonaws.services.s3.AmazonS3Client
 import com.intern.evtutors.common.DataLocal
-import com.intern.evtutors.composes.home.CourseItem
-import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.intern.evtutors.view_models.ProfileViewModel
-import com.intern.evtutors.view_models.UserViewModel
 import com.miggue.mylogin01.ui.theme.*
 import java.io.File
 import java.io.FileOutputStream
@@ -56,16 +49,15 @@ import java.io.OutputStream
 fun ProfileScreen(
     navHostController: NavHostController,
     TypeOfUser:Int,
-    viewModel: LoginViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    viewModel.getuser()
+    profileViewModel.getuser()
     FatherOfAppsTheme {
         when(TypeOfUser) {
             2 -> {
                 Surface() {
                     Column() {
-                        var user = viewModel.localUser
+                        var user = profileViewModel.localUser
                         Text(text = "Count: ${user?.roleID}")
                     }
                 }
@@ -73,8 +65,7 @@ fun ProfileScreen(
 
             3 -> {
                 TutorInfoPage(
-                    profileViewModel,
-                    viewModel
+                    profileViewModel
                 )
             }
         }
@@ -85,10 +76,9 @@ fun ProfileScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorInfoPage(
-    profileViewModel: ProfileViewModel,
-    viewModel:LoginViewModel,
+    profileViewModel: ProfileViewModel
 ) {
-    val user = viewModel.localUser
+    val user = profileViewModel.localUser
     FatherOfAppsTheme {
         Scaffold(
             content = {
@@ -165,10 +155,10 @@ fun TutorInfoPage(
                     uploadImage(profileViewModel)
                 }
                 if(profileViewModel.stateConfirmSave) {
-                    ConfirmSaveBox(profileViewModel = profileViewModel,viewModel = viewModel)
+                    ConfirmSaveBox(profileViewModel = profileViewModel)
                 }
                 if(profileViewModel.stateConfirmCancel) {
-                    ConfirmCancelBox(profileViewModel = profileViewModel,viewModel = viewModel)
+                    ConfirmCancelBox(profileViewModel = profileViewModel)
                 }
 
             },
@@ -201,8 +191,7 @@ fun TutorInfoPage(
 
 @Composable
 fun ConfirmSaveBox(
-    profileViewModel: ProfileViewModel,
-    viewModel: LoginViewModel
+    profileViewModel: ProfileViewModel
 ) {
     Box(
         modifier = Modifier
@@ -226,7 +215,7 @@ fun ConfirmSaveBox(
             Row {
                 Button(onClick = {
                     if(profileViewModel.stateChanging) {
-                        val user = viewModel.localUser
+                        val user = profileViewModel.localUser
                         user?.let {
                             profileViewModel.putCertificate(user.id)
                         }
@@ -252,8 +241,7 @@ fun ConfirmSaveBox(
 
 @Composable
 fun ConfirmCancelBox(
-    profileViewModel: ProfileViewModel,
-    viewModel: LoginViewModel
+    profileViewModel: ProfileViewModel
 ) {
     Box(
         modifier = Modifier
@@ -276,7 +264,7 @@ fun ConfirmCancelBox(
             Text(text = "Are you sure removing all change?")
             Row {
                 Button(onClick = {
-                    val user = viewModel.localUser
+                    val user = profileViewModel.localUser
                     user?.let {
                         profileViewModel.clearCertificate(user.id)
                     }

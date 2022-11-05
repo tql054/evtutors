@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.intern.evtutors.activities.ui.Screens
+import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.composes.home.HomeBaseScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
@@ -27,7 +27,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
             ProfileScreen(navController,2)
         }
 
-        composable((Screens.Notifitication.route)) {
+        composable((Screens.Notification.route)) {
             NotificationScreen()
         }
 

@@ -17,7 +17,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,7 +24,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -36,13 +34,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.R
-import com.intern.evtutors.ui.customer.login.LoginViewModel
+import com.intern.evtutors.view_models.LoginViewModel
 import com.miggue.mylogin01.ui.theme.BlackText
-import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
-import com.miggue.mylogin01.ui.theme.PrimaryColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -207,7 +202,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
 }
 @Composable
-fun login(loginViewModel:LoginViewModel,
+fun login(loginViewModel: LoginViewModel,
           username:String,
           password:String ){
 

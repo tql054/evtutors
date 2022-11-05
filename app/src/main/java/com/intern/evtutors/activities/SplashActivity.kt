@@ -17,14 +17,14 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
         findViewById<ImageView>(R.id.imgLaunch).postDelayed({
-            openMainActivity()
+//            openMainActivity()
         }, 1000)
     }
 
-    private fun openMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
+//    private fun openMainActivity() {
+//        val intent = Intent(this, MainActivity::class.java)
+//        startActivity(intent)
+//        finish()
+//    }
 
 }

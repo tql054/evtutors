@@ -7,8 +7,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
+import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.data.repositories.AppInfoRepository
+import com.intern.evtutors.data.repositories.CustomerRepository
 import com.intern.evtutors.data.repositories.LessonRepository
 import com.intern.evtutors.data.repositories.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val customerRepository: CustomerRepository
 ):BaseViewModel() {
     var stateUpdating by mutableStateOf(false)
     var stateAdding by mutableStateOf(false)
@@ -49,6 +52,16 @@ class ProfileViewModel @Inject constructor(
             val result = profileRepository.getCertificates(idTutor)
             val listResult = mutableListOf<String?>(result.img1, result.img2, result.img3, result.img4, result.img5)
             certificates = listResult
+        }
+    }
+
+    var localUser by mutableStateOf<CustomerEntity?>(null)
+    fun getuser(){
+        parentJob = viewModelScope.launch(handler){
+            val result = customerRepository.getcustomer()
+            if(result.name?.length !=0){
+                localUser = result
+            }
         }
     }
 
@@ -94,9 +107,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun putCertificate(idTutor: Int) {
-        val certificates = Certificates(idTutor, certificates[0], certificates[1], certificates[2], certificates[3], certificates[4])
+        val newCertificates = Certificates(idTutor, certificates[0], certificates[1], certificates[2], certificates[3], certificates[4])
         viewModelScope.launch(handler) {
-            profileRepository.putCertificates(idTutor, certificates)
+            profileRepository.putCertificates(idTutor, newCertificates)
             stateChanging = false
             toggleUpdating()
         }

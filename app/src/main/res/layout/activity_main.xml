@@ -14,17 +14,6 @@
         android:id="@+id/container">
     </FrameLayout>
 
-
-    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        app:mbn_circleColor="@color/main_color"
-        app:mbn_defaultIconColor="@color/main_color"
-        app:mbn_selectedIconColor="#000000"
-        app:mbn_shadowColor="@color/main_color" />
     <FrameLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
