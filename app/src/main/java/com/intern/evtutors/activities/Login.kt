@@ -50,6 +50,7 @@ import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.miggue.mylogin01.ui.theme.BlackText
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.PrimaryColor
+import com.miggue.mylogin01.ui.theme.RedColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -111,9 +112,13 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     label = {Text(text = "Username")},
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 )
-
-                Spacer(modifier = Modifier.height(5.dp).background(colorSpaceErro))
-                Spacer(modifier = Modifier.height(8.dp))
+//                if(!checkStatus){
+//                    Spacer(modifier = Modifier.height(5.dp).background(Color.White))
+//                }else{
+//                    Spacer(modifier = Modifier.height(5.dp).background(Color.Red))
+//                }
+//                Spacer(modifier = Modifier.height(5.dp).background(RedColor))
+//                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
