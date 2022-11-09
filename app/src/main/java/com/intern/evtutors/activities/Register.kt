@@ -219,7 +219,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
                     val texterror=valiPassword( passwordValue.value)
-                    val gmailerror=valiGmail(emailValue.value)
+                    val gmailerror=validateGmail(emailValue.value)
                     if(gmailerror!= null){
                         Toast.makeText(context, gmailerror, Toast.LENGTH_SHORT).show()
                     }else{
@@ -236,8 +236,9 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                                         val newUser =registerViewModel.fetchRegisterTeacher(nameValue.value,
                                             passwordValue.value,
                                             emailValue.value)
-                                        registerViewModel.generateCertificates(newUser!!.id)
+
                                         if(newUser != null){
+                                            registerViewModel.generateCertificates(newUser!!.id)
                                             var intent: Intent = Intent(context, Login::class.java)
                                             context.startActivity(intent)
                                         }else{
@@ -330,8 +331,8 @@ private fun valiPassword(pass: String): String? {
     }
     return null
 }
-private fun valiGmail(gmail: String):String?{
-    if(gmail.equals("@gmail.com")){
+private fun validateGmail(gmail: String):String?{
+    if(!gmail.endsWith("@gmail.com")){
         return "Gmail erro"
     }
     return null

@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         }
     }
 
-    private fun cover( user: getjwtToken): CustomerEntity{
+     fun cover( user: getjwtToken): CustomerEntity{
         var ID :Int =0
         for (i in user.user.role){
              ID = i.id!!
@@ -80,11 +80,11 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         return token
     }
 
-    fun UpdateAccount(idUser: Int,user: User) {
-        parentJob = viewModelScope.launch  (handler){
+    suspend fun UpdateAccount(idUser: Int, user: User) {
+
             myuserupdate = jsonLoginRepositories.UpdateAccount(idUser,user) as User
 
-        }
+
     }
 
 }
