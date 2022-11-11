@@ -141,7 +141,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                         .padding(start = 40.dp)
                     ){
                         if(EdittextStatusName.value){
-                            var nameinput= NameOutlinedTextField()
+                            var nameinput= OutlinedTextField("User name",myuser.value.name)
                             if(nameinput.isNotEmpty()){
                                 myuserUpdate.value.name =nameinput
                                 update.value=true
@@ -175,7 +175,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                         .fillMaxWidth()
                         .padding(start = 40.dp)){
                         if(EdittextStatusGmail.value){
-                            var gmailinput = OutlinedTextField("email","email")
+                            var gmailinput = OutlinedTextField("email",myuser.value.email)
                             if(gmailinput.isNotEmpty() && validateGmail(gmailinput)  ==null){
                                 myuserUpdate.value.email =gmailinput
                                 update.value=true
@@ -236,7 +236,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                         .fillMaxWidth()
                         .padding(start = 40.dp)){
                         if(EdittextStatusPhone.value){
-                            var phoneinput = OutlinedTextField("Phone","Phone")
+                            var phoneinput = OutlinedTextField("Phone",myuser.value.phone)
                             if(phoneinput.isNotEmpty() && validatePhone(phoneinput)){
                                 myuserUpdate.value.phone =phoneinput
                                 update.value=true
@@ -343,7 +343,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                         .padding(start = 40.dp)){
                         if(EdittextStatusAge.value){
 
-                            age.value = OutlinedTextField("age","age")
+                            age.value = OutlinedTextField("age",myuser.value.age.toString())
                             if( age.value !="" && age.value.toInt()>0 ){
                                 update.value=true
                                 age.value.let { myuserUpdate.value.age=it.toInt() }
@@ -449,7 +449,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                         .fillMaxWidth()
                         .padding(start = 40.dp)){
                         if(EdittextStatusadress.value){
-                            var addressinput= OutlinedTextField("address","address")
+                            var addressinput= OutlinedTextField("address",myuser.value.address)
                             if(addressinput!= null){
                                 update.value =true
                                 myuserUpdate.value.address=addressinput
@@ -631,24 +631,6 @@ fun header( name :String, gmail:String):Boolean{
 @Composable
 fun Text(name: String){
     Text(text = name,fontSize = 13.sp)
-}
-
-@Composable
-fun NameOutlinedTextField():String{
-    var username = remember { mutableStateOf("") }
-    OutlinedTextField(
-        value = username.value,
-        onValueChange = { username.value = it },
-        label = { Text(text = "username", fontSize = 11.sp) },
-        placeholder = { Text(text = "username",fontSize = 12.sp) },
-        textStyle = TextStyle(fontSize = 12.sp),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(0.8f)
-            .height(55.dp)
-            .padding(bottom = 0.dp)
-            .defaultMinSize(minHeight = 0 .dp),
-    )
-    return username.value
 }
 
 private fun validateGmail(gmail: String):String?{

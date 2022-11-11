@@ -127,8 +127,8 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                 OutlinedTextField(
                     value = nameValue.value,
                     onValueChange = { nameValue.value = it },
-                    label = { Text(text = "Name") },
-                    placeholder = { Text(text = "Name") },
+                    label = { Text(text = "User name") },
+                    placeholder = { Text(text = "User name") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
