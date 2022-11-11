@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,10 +23,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -38,16 +42,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.intern.evtutors.R
+
+import com.intern.evtutors.data.database.entities.CustomerEntity
+import com.intern.evtutors.data.models.Role
+import com.intern.evtutors.data.models.User
+import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.ui.customer.login.LoginViewModel
 import com.miggue.mylogin01.ui.theme.BlackText
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.PrimaryColor
+import com.miggue.mylogin01.ui.theme.RedColor
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 @AndroidEntryPoint
@@ -56,11 +64,11 @@ class Login : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //            FatherOfAppsTheme {
-                // A surface container using the 'background' color from the theme
-                SigInScreen()
-            }
+            // A surface container using the 'background' color from the theme
+            SigInScreen()
         }
     }
+}
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -69,11 +77,16 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
+    var checkStatus by remember{ mutableStateOf(false) }
+    var checkStatusInput by remember{ mutableStateOf(false) }
+    var colorSpaceErro by remember{ mutableStateOf(Color.White) }
+
     var password by remember{ mutableStateOf("") }
     var offset by remember { mutableStateOf(0) }
     val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
     val keyboardController =  LocalSoftwareKeyboardController.current
     var isPasswordVisible by remember{ mutableStateOf(false) }
+
 
     Scaffold() {
         Column(
@@ -87,25 +100,41 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 .clickable {offset = 0  }
                 .offset { IntOffset(offset, offset) }
                 .padding(horizontal = 40.dp)) {
-                Text(text = "Login", style = MaterialTheme.typography.h1)
+                if(!checkStatusInput){
+                    Column(modifier = Modifier.fillMaxWidth(),
+                        Arrangement.Center,
+                        Alignment.CenterHorizontally
+                    ) {
+                        Image(painter = painterResource(id = R.drawable.welcomlogin), contentDescription = "",
+                            modifier = Modifier.size(150.dp).clip(RectangleShape),contentScale = ContentScale.FillBounds
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "Login", style = MaterialTheme.typography.h5)
 
-                OutlinedTextField(value = username, onValueChange = {username = it},
+                OutlinedTextField(value = username, onValueChange = {username = it
+                    checkStatusInput=true
+                },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(focusUsername),
+                        .focusRequester(focusUsername)
+                    ,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = {focusPassword.requestFocus()}),
                     singleLine = true,
                     label = {Text(text = "Username")},
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 )
+                Column(modifier = Modifier.height(5.dp).fillMaxWidth().background(colorSpaceErro)){}
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusPassword),
                     value = password,
-                    onValueChange ={password = it},
+                    onValueChange ={password = it
+                        checkStatusInput=true},
                     label = { Text(text = "Password")},
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                     singleLine = true,
@@ -120,6 +149,10 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                         }
                     }
                 )
+                if(checkStatus){
+                    Column(modifier = Modifier.height(5.dp).fillMaxWidth().background(RedColor)){}
+                }
+                Column(modifier = Modifier.height(5.dp).fillMaxWidth().background(colorSpaceErro)){}
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
@@ -134,7 +167,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                login(loginViewModel,username,password)
+                checkStatus = login(loginViewModel,username,password, onchanecheckStatus = {checkStatus= true})
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -201,7 +234,12 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.height(100.dp))
             }
         }
+        if(checkStatus){
+            colorSpaceErro=Color.Red
 
+        }else{
+            colorSpaceErro =Color.White
+        }
 
     }
 
@@ -209,33 +247,51 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 @Composable
 fun login(loginViewModel:LoginViewModel,
           username:String,
-          password:String ){
-
+          password:String,
+          onchanecheckStatus:(Boolean)-> Unit):Boolean{
+    var checkloading by mutableStateOf<Boolean>(false)
+    var check by mutableStateOf<Boolean>(false)
     val context = LocalContext.current
-    val scope = CoroutineScope(Dispatchers.IO + Job())
+    val scope = CoroutineScope( Job()+ Dispatchers.Main)
+    if(checkloading){
+//        CircularIndeterminateProgressBar(isDisplayed = true, verticalBias = 0.3f)
+    }
+
     Button(onClick = {
+        checkloading= true
+
         scope.launch {
+
+
             val user = loginViewModel.DataLogin(username,password)
             if(user != null){
+                checkloading= false
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show()
                 }
                 var intent: Intent = Intent(context, HomeActivity::class.java)
                 context.startActivity(intent)
-            }
-            else{
+                check=false
+            } else {
+                checkloading= false
+                onchanecheckStatus
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+
+                    check =true
                 }
             }
+
+
         }
+
     },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp)
     ) {
         Text(text = "Log in")
     }
-
+    return check
 }
 
 
