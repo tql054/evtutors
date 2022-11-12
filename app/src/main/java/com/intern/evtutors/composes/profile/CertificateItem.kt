@@ -1,9 +1,6 @@
 package com.intern.evtutors.composes.profile
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -20,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.intern.evtutors.common.DataLocal
+import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.PrimaryColor
@@ -27,9 +25,7 @@ import com.miggue.mylogin01.ui.theme.RedColor
 
 @Composable
 fun CertificateItem(
-    index:Int,
-    certificate:String,
-    url: String,
+    certificateJson: CertificateJson,
     profileViewModel: ProfileViewModel
 ) {
     val shape = RoundedCornerShape(25.dp)
@@ -42,14 +38,16 @@ fun CertificateItem(
                 .border(
                     BorderStroke(1.dp, color = PrimaryColor),
                     shape = shape
-                )
+                ),
+
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PrimaryColor),
+                    .background(PrimaryColor)
+                    .clickable { profileViewModel.currentCertificate = certificateJson },
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
                     modifier = Modifier
@@ -64,7 +62,7 @@ fun CertificateItem(
                             .weight(1f)
                             .wrapContentHeight(Alignment.CenterVertically)
                         ,
-                        text = "Certificate ${certificate+1}",
+                        text = "Certificate ${certificateJson.ten}",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
@@ -74,7 +72,7 @@ fun CertificateItem(
                     if(profileViewModel.stateUpdating) {
                         Button(
                             modifier = Modifier.height(20.dp),
-                            onClick = {profileViewModel.deleteCertificate(index)},
+                            onClick = {},
                             contentPadding = PaddingValues(
                                 start = 15.dp,
                                 end = 15.dp,
@@ -89,7 +87,6 @@ fun CertificateItem(
                             )
                         }
                     }
-
                 }
 
                 Image(
@@ -97,7 +94,7 @@ fun CertificateItem(
                         .fillMaxWidth()
                         .height(190.dp)
                         .clip(shape = shape),
-                    painter = rememberAsyncImagePainter(DataLocal.BUCKET_API + url),
+                    painter = rememberAsyncImagePainter(certificateJson.anh1),
                     contentDescription = "Uploaded image"
                 )
             }
@@ -114,10 +111,6 @@ fun CertificateItem(
 @Composable
 fun CertificatePreview() {
     FatherOfAppsTheme {
-//        CertificateItem(
-//            "abc",
-//            "https://ev-certificate-images.s3.us-east-2.amazonaws.com/87f41f44849fb91c85d4be49f894990d.jpg",
-//        true
-//        )
+//        CertificateItem()
     }
 }

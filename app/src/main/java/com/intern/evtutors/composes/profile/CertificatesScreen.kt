@@ -1,49 +1,26 @@
 package com.intern.evtutors.composes.profile
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.mobileconnectors.s3.transferutility.*
-import com.amazonaws.services.s3.AmazonS3Client
-import com.intern.evtutors.common.DataLocal
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 
 @Composable
 fun ProfileScreen(
@@ -127,14 +104,14 @@ fun TutorInfoPage(
                         }
 
                     }
-                    val certificates = profileViewModel.certificates
-                    if(certificates.isNotEmpty()) {
-                        var itemCertificate = certificates.size
+                    val userCertificates = profileViewModel.userCertificates
+                    if(userCertificates.isNotEmpty()) {
+                        var itemCertificate = userCertificates.size
                         items(count = itemCertificate) {
                                 index ->
-                            val certificate = certificates[index]
-                            if(certificate!="") {
-                                CertificateItem(index, certificate = "$index", url = certificate!!, profileViewModel = profileViewModel )
+                            val certificate = userCertificates[index]
+                            if(certificate!=null) {
+                                CertificateItem(certificate, profileViewModel)
                                 Spacer(modifier = Modifier.height(10.dp))
                             }
                         }
@@ -145,14 +122,18 @@ fun TutorInfoPage(
                         item{
                             Text(text = "Loading...")
                             user?.let {
-                                profileViewModel.fetchCetificate(user.id)
+//                                profileViewModel.fetchCetificate(user.id)
+                                profileViewModel.getUserCertificates()
                             }
                         }
                     }
                 }
 
+                if(profileViewModel.currentCertificate != null) {
+                    CertificatesInfo(1, profileViewModel)
+                }
                 if(profileViewModel.stateAdding) {
-                    uploadImage(profileViewModel)
+                    CertificatesAdding(profileViewModel = profileViewModel)
                 }
                 if(profileViewModel.stateConfirmSave) {
                     ConfirmSaveBox(profileViewModel = profileViewModel)
@@ -160,23 +141,24 @@ fun TutorInfoPage(
                 if(profileViewModel.stateConfirmCancel) {
                     ConfirmCancelBox(profileViewModel = profileViewModel)
                 }
-
             },
             bottomBar = {
-                if(profileViewModel.stateUpdating && profileViewModel.certificates[4]=="") {
+//                Must fix: handle arrived of add certificate button
+                if(profileViewModel.stateUpdating) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(bottom = 70.dp, end = 20.dp)
                     ) {
-                        OutlinedButton(onClick = {profileViewModel.toggle()},
-                            modifier= Modifier
+                        OutlinedButton(
+                            onClick = { profileViewModel.toggle() },
+                            modifier = Modifier
                                 .size(70.dp)
                                 .align(Alignment.BottomEnd),  //avoid the oval shape
                             shape = CircleShape,
-                            border= BorderStroke(1.dp, Color.Blue),
+                            border = BorderStroke(1.dp, Color.Blue),
                             contentPadding = PaddingValues(0.dp),  //avoid the little icon
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor =  ItemColor_1),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = ItemColor_1),
                         ) {
                             Icon(
                                 Icons.Default.AddCircle, contentDescription = "content description"
@@ -217,6 +199,7 @@ fun ConfirmSaveBox(
                     if(profileViewModel.stateChanging) {
                         val user = profileViewModel.localUser
                         user?.let {
+                            Log.d("User Id: ", user.id.toString())
                             profileViewModel.putCertificate(user.id)
                         }
                         profileViewModel.toggleSaving()
@@ -356,9 +339,9 @@ fun TutorInfoHeader(
                         modifier = Modifier.align(Alignment.CenterEnd),
                         onClick = {
                             if(profileViewModel.stateChanging)
-                                profileViewModel.toggleCancellation()
+                                profileViewModel.toggleCancellation() //turn off pop up with request
                             else
-                                profileViewModel.toggleUpdating()
+                                profileViewModel.toggleUpdating() //turn off pop up without request
                         },
                         contentPadding = PaddingValues(
                             start = 15.dp,
@@ -376,8 +359,8 @@ fun TutorInfoHeader(
                     }
                 }
             } else {
-                if(profileViewModel.certificates != null) {
-                    if(profileViewModel.certificates.size > 0) {
+                if(profileViewModel.userCertificates != null) {
+                    if(profileViewModel.userCertificates.size > 0) {
                         Button(
                             onClick = {onToggleUpdate(currentUpdating)},
                             contentPadding = PaddingValues(
@@ -395,166 +378,3 @@ fun TutorInfoHeader(
         }
     }
 }
-
-@Composable
-fun uploadImage(
-//    filePath: Uri
-    profileViewModel: ProfileViewModel
-) {
-    var filePath by rememberSaveable() {
-        mutableStateOf<Uri?>(null)
-    }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()) {
-            uri: Uri? -> filePath = uri
-    }
-    val context = LocalContext.current.applicationContext
-    val bitmap = rememberSaveable {
-        mutableStateOf<Bitmap?>(null)
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(ModalColor)
-            .padding(
-                top = 5.dp,
-                start = 20.dp,
-                end = 20.dp
-            )
-    ) {
-        Column (
-            modifier = Modifier
-                .width(500.dp)
-                .align(Alignment.Center)
-                .clip(shape = RoundedCornerShape(15.dp))
-                .background(Color.White)
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            filePath?.let {
-                if(Build.VERSION.SDK_INT < 28) {
-                    bitmap.value = MediaStore.Images
-                        .Media.getBitmap(context.contentResolver, it)
-                } else {
-                    val source = ImageDecoder
-                        .createSource(context.contentResolver, it)
-                    bitmap.value = ImageDecoder.decodeBitmap(source)
-                }
-
-                bitmap.value?.let {
-                    Column() {
-                        Image(bitmap = it.asImageBitmap(),
-                            contentDescription = "Uploaded Image",
-                            modifier = Modifier.size(400.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-            }
-            if(filePath==null) {
-                IconButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { launcher.launch("image/jpeg") }) {
-                    Icon(
-                        modifier = Modifier.size(200.dp),
-                        imageVector = Icons.Default.AddCircle,
-                        contentDescription = "Image icon")
-                }
-            }
-
-            Row() {
-                if(filePath!=null) {
-                    Button(onClick = { onUpload(filePath!!, context, profileViewModel) }) {
-                        Text(
-                            text = "Add",
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(20.dp))
-                }
-                Button(onClick = { profileViewModel.toggle() }) {
-                    Text(
-                        text = "Cancel"
-                    )
-                }
-            }
-        }
-    }
-}
-
-var creds: BasicAWSCredentials = BasicAWSCredentials(DataLocal.ACCESS_ID, DataLocal.SECRET_KEY)
-var s3Client: AmazonS3Client = AmazonS3Client(creds)
-fun onUpload(
-    filePath:Uri,
-    context:Context,
-    profileViewModel: ProfileViewModel
-) {
-    val inputStream: InputStream? = context.contentResolver.openInputStream(filePath!!)
-    val file = File.createTempFile("image",filePath!!.lastPathSegment + ".jpg")
-
-    val outStream: OutputStream = FileOutputStream(file)
-    outStream.write(inputStream!!.readBytes())
-    TransferNetworkLossHandler.getInstance(context)
-
-    val resultUrl = filePath!!.lastPathSegment!!.replace(":", "")+".jpg"
-    val trans = TransferUtility.builder().context(context.applicationContext).s3Client(s3Client).build()
-    val observer: TransferObserver = trans.upload(DataLocal.BUCKET_NAME, resultUrl, file)
-
-    profileViewModel.toggle()
-    observer.setTransferListener(object : TransferListener {
-        //        Must be handled enabling the adding button until successfully uploading
-        override fun onStateChanged(id: Int, state: TransferState) {
-            if (state == TransferState.COMPLETED) {
-                profileViewModel.addCertificate(resultUrl)
-                Log.d("msg","success")
-            } else if (state == TransferState.FAILED) {
-                Log.d("msg","fail")
-            }
-        }
-        override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {
-
-            if(bytesCurrent == bytesTotal){
-//                    imageView!!.setImageResource(R.drawable.upload_image_with_round)
-            }
-        }
-        override fun onError(id: Int, ex: Exception) {
-            Log.d("error",ex.toString())
-        }
-    })
-}
-
-
-
-@ExperimentalComposeUiApi
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DefaultPreview() {
-    FatherOfAppsTheme {
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .clip(shape = RoundedCornerShape(15.dp))
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-                IconButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
-                ){
-                    Icon(
-                        modifier = Modifier.size(200.dp),
-                        imageVector = Icons.Default.AddCircle,
-                        contentDescription = "Image icon")
-                }
-
-            Row() {
-                Button(onClick = {}) {
-                    Text(
-                        text = "Cancel"
-                    )
-                }
-            }
-        }
-    }
-}
-

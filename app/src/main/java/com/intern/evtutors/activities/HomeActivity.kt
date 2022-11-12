@@ -7,10 +7,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cloudinary.android.MediaManager
 import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
@@ -21,6 +23,13 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val config = HashMap<Any?, Any?>()
+        config["cloud_name"] = "dufcxfczn";
+        config["api_key"] = "755196561895664";
+        config["api_secret"] = "umTWiuZvLaooFvzx-eR1W1wTvdA";
+//        config.put("secure", true);
+
+        MediaManager.init(this, config);
         setContent {
             val viewModel = viewModel<ProfileViewModel>()
             viewModel.getuser()
@@ -71,7 +80,10 @@ fun App(
         }
     ) {
         if(TypeOfUser!=0) {
-            Navigation(navController = navController, startScreen = items[0].route)
+            Navigation(
+                navController = navController,
+                startScreen = items[0].route
+            )
         }
     }
 }

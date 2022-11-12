@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.database.entities.CustomerEntity
+import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.data.repositories.AppInfoRepository
 import com.intern.evtutors.data.repositories.CustomerRepository
@@ -25,11 +26,46 @@ class ProfileViewModel @Inject constructor(
 ):BaseViewModel() {
     var stateUpdating by mutableStateOf(false)
     var stateAdding by mutableStateOf(false)
-    var certificates by mutableStateOf(mutableListOf<String?>())
     var stateChanging by mutableStateOf(false)
     var stateConfirmCancel by mutableStateOf(false)
     var stateConfirmSave by mutableStateOf(false)
 
+    var certificates by mutableStateOf(mutableListOf<String?>())
+//    New formatting about certificates
+    var userCertificates by mutableStateOf(mutableListOf<CertificateJson>())
+    var currentCertificate  by mutableStateOf<CertificateJson?>(null)
+
+    fun getUserCertificates() {
+//        val result =
+        val listResult = mutableListOf<CertificateJson>(
+            CertificateJson(
+                1,
+                "Toeic",
+                "IIG Danang",
+                "11/11/2022",
+                "https://res.cloudinary.com/dufcxfczn/image/upload/v1668002449/87f41f44849fb91c85d4be49f894990d_knp9j3.jpg",
+                "https://res.cloudinary.com/dufcxfczn/image/upload/v1668002449/87f41f44849fb91c85d4be49f894990d_knp9j3.jpg",
+                "",
+                ""
+            ),
+            CertificateJson(
+                2,
+                "Ielts",
+                "Hoi dong Anh",
+                "11/12/2021",
+                "https://res.cloudinary.com/dufcxfczn/image/upload/v1668164414/vsun2rzorzlnalsd0jzs.jpg",
+                "https://res.cloudinary.com/dufcxfczn/image/upload/v1668164414/vsun2rzorzlnalsd0jzs.jpg",
+                "",
+                ""
+            )
+        )
+
+        userCertificates = listResult
+    }
+    fun setCurrentCertificate(id:Int) {
+        var certificate = CertificateJson(id, "Toeic", "IIG VN", "22/11/2021",
+            "", "", "", "")
+    }
     fun toggleUpdating() {
         stateUpdating = !stateUpdating
     }
@@ -67,51 +103,61 @@ class ProfileViewModel @Inject constructor(
 
     fun clearCertificate(idTutor:Int) {
         toggleUpdating()
-        if(stateChanging) {
-            certificates = mutableListOf<String?>()
-            fetchCetificate( idTutor)
-            stateChanging = false
-        }
+//        if(stateChanging) {
+//            certificates = mutableListOf<String?>()
+//            fetchCetificate( idTutor)
+//            stateChanging = false
+//        }
     }
 
     fun addCertificate(certificate:String) {
-        certificates.forEachIndexed {
-            index: Int, s: String? ->
-            if (s=="") {
-                certificates[index] = certificate
-                Log.d("file path: ", certificates.toString())
-                stateChanging = true
-                return
-            }
-        }
-    }
-
-    fun deleteCertificate(index:Int) {
         val newCertificates = mutableListOf<String?>()
         newCertificates.add(certificates[0])
         newCertificates.add(certificates[1])
         newCertificates.add(certificates[2])
         newCertificates.add(certificates[3])
         newCertificates.add(certificates[4])
-        newCertificates[index] = ""
-        val size = newCertificates.size - 1
-        if(index != size) {
-            for(i in index..(size-1)) {
-                newCertificates[i] = newCertificates[i+1]
-            }
-            newCertificates[size] = ""
-        }
+//        newCertificates.forEachIndexed {
+//            index: Int, s: String? ->
+//            if (s=="") {
+//                newCertificates[index] = certificate
+//                stateChanging = true
+//                certificates = newCertificates
+//                Log.d("file path: ", certificates.toString())
+//                return
+//            }
+//        }
         stateChanging = true
-        certificates = newCertificates
-        Log.d("new certificate: ", certificates.toString())
+    }
+
+    fun deleteCertificate(index:Int) {
+//        val newCertificates = mutableListOf<String?>()
+//        newCertificates.add(certificates[0])
+//        newCertificates.add(certificates[1])
+//        newCertificates.add(certificates[2])
+//        newCertificates.add(certificates[3])
+//        newCertificates.add(certificates[4])
+//        newCertificates[index] = ""
+//        val size = newCertificates.size - 1
+//        if(index != size) {
+//            for(i in index..(size-1)) {
+//                newCertificates[i] = newCertificates[i+1]
+//            }
+//            newCertificates[size] = ""
+//        }
+//        stateChanging = true
+//        certificates = newCertificates
+//        Log.d("new certificate: ", certificates.toString())
     }
 
     fun putCertificate(idTutor: Int) {
-        val newCertificates = Certificates(idTutor, certificates[0], certificates[1], certificates[2], certificates[3], certificates[4])
-        viewModelScope.launch(handler) {
-            profileRepository.putCertificates(idTutor, newCertificates)
-            stateChanging = false
-            toggleUpdating()
-        }
+//        val newCertificates = Certificates(idTutor, certificates[0], certificates[1], certificates[2], certificates[3], certificates[4])
+//        viewModelScope.launch(handler) {
+//            profileRepository.putCertificates(idTutor, newCertificates)
+//            stateChanging = false
+//            toggleUpdating()
+//        }
+        stateChanging = false
+        toggleUpdating()
     }
 }
