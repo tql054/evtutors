@@ -82,6 +82,7 @@ fun RegisterActivity() {
 fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
     val selectedValue = remember { mutableStateOf("") }
     val nameValue = remember { mutableStateOf("") }
+    val usernameValue = remember { mutableStateOf("") }
     val emailValue = remember { mutableStateOf("") }
     val IDloading = remember { mutableStateOf(false) }
 
@@ -141,6 +142,15 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                     onValueChange = { emailValue.value = it },
                     label = { Text(text = "Email Address") },
                     placeholder = { Text(text = "Email Address") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(0.8f)
+                )
+                Spacer(modifier = Modifier.padding(10.dp))
+                OutlinedTextField(
+                    value = usernameValue.value,
+                    onValueChange = { usernameValue.value = it },
+                    label = { Text(text = "User name") },
+                    placeholder = { Text(text = "User name") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
@@ -240,7 +250,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
                                     scope.launch {
                                         val newUser =registerViewModel.registerTeacher(nameValue.value,
                                             passwordValue.value,
-                                            emailValue.value)
+                                            emailValue.value,usernameValue.value)
 
                                         if(newUser != null){
 

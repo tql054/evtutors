@@ -20,7 +20,7 @@ class ProfileRepository @Inject constructor(
             }
 
             is NetworkResult.Error -> {
-                throw result.exception
+                null
             }
         }
     }
@@ -32,7 +32,7 @@ class ProfileRepository @Inject constructor(
             }
 
             is NetworkResult.Error -> {
-                throw result.exception
+                null
             }
         }
     }

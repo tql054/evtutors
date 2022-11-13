@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         }
     }
 
-    private fun cover( user: getjwtToken): CustomerEntity{
+     fun cover( user: getjwtToken): CustomerEntity{
         var ID :Int =0
         for (i in user.user.role){
              ID = i.id!!

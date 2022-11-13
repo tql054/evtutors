@@ -10,20 +10,20 @@ open class BaseRemoteService : BaseService() {
         try {
             response = call.invoke()
         } catch (t: Throwable) {
-            return NetworkResult.Error(parseNetworkErrorException(t))
+            return NetworkResult.Error("data")
         }
         return if (response.isSuccessful) {
             if (response.body() == null) {
-                NetworkResult.Error(BaseNetworkException(responseMessage =  "Response without body", responseCode = 200))
+                NetworkResult.Error("")
             } else {
                 NetworkResult.Success(response.body()!!)
             }
         }
         else {
-//            NetworkResult.Success(response.body()!!)
-            val errorBody = response.errorBody()?.string() ?: ""
-                NetworkResult.Error(parseError(response.message(), response.code(), errorBody))
-            //NetworkResult.Error(parseError(response.message(), response.code(), errorBody))
+//
+//            val errorBody = response.errorBody()?.string() ?: ""
+            NetworkResult.Error("errorBody")
+
         }
     }
 

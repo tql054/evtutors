@@ -22,11 +22,11 @@ class RegisterViewModel @Inject constructor(private val registerRepositories: Re
     val listPots: LiveData<UserJson>
         get() = _listPosts
 
-    suspend fun registerTeacher(name:String, pass:String, email:String):UserJson? {
+    suspend fun registerTeacher(name:String, pass:String, email:String,username:String):UserJson? {
         var user: User= User(0,"",0,"","","","","","","",role)
         user.name=name
         user.email=email
-        user.userName=name
+        user.userName=username
         user.password=pass
 
          val post = registerRepositories.registerTeacher(user)

@@ -22,7 +22,7 @@ class LessonRepository @Inject constructor(
             }
 
             is NetworkResult.Error -> {
-                throw result.exception
+                null
             }
         }
     }
@@ -30,7 +30,7 @@ class LessonRepository @Inject constructor(
     suspend fun getLessonById(id:Int) = withContext(dispatcher) {
         when(val result = lessonServices.getLessonById(id)) {
             is NetworkResult.Success -> result.data.toLesson()
-            is NetworkResult.Error -> throw result.exception
+            is NetworkResult.Error ->null
         }
     }
 
@@ -38,7 +38,7 @@ class LessonRepository @Inject constructor(
         when(val result = lessonServices.updateLesson(id, lesson)) {
             is NetworkResult.Success -> result.data
             is NetworkResult.Error -> {
-                throw result.exception
+                null
             }
         }
     }

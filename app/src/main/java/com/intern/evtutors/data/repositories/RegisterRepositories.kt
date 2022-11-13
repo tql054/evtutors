@@ -22,7 +22,7 @@ class RegisterRepositories @Inject constructor(
                 result.data
             }
             is NetworkResult.Error ->{
-                throw result.exception
+                null
             }
         }
     }
@@ -34,7 +34,7 @@ class RegisterRepositories @Inject constructor(
                 result.data
             }
             is NetworkResult.Error ->{
-                throw result.exception
+               null
             }
         }
     }
@@ -47,7 +47,7 @@ class RegisterRepositories @Inject constructor(
             }
 
             is NetworkResult.Error ->{
-                throw result.exception
+              null
             }
         }
     }

@@ -50,7 +50,7 @@ class ProfileViewModel @Inject constructor(
     fun fetchCetificate(idTutor:Int) {
         viewModelScope.launch(handler) {
             val result = profileRepository.getCertificates(idTutor)
-            val listResult = mutableListOf<String?>(result.img1, result.img2, result.img3, result.img4, result.img5)
+            val listResult = mutableListOf<String?>(result?.img1, result?.img2, result?.img3, result?.img4, result?.img5)
             certificates = listResult
         }
     }
