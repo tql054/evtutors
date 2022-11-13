@@ -13,6 +13,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cloudinary.android.MediaManager
+import com.intern.evtutors.common.DataLocal
 import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
@@ -24,6 +25,9 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val config = HashMap<Any?, Any?>()
+        config["cloud_name"] = DataLocal.CLOUD_NAME;
+        config["api_key"] = DataLocal.API_KEY;
+        config["api_secret"] = DataLocal.API_SECRET;
 //        config.put("secure", true);
 
         MediaManager.init(this, config);
