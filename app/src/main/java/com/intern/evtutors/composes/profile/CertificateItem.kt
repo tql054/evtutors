@@ -10,103 +10,183 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.intern.evtutors.common.DataLocal
+import com.intern.evtutors.R
 import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.view_models.ProfileViewModel
-import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
-import com.miggue.mylogin01.ui.theme.PrimaryColor
-import com.miggue.mylogin01.ui.theme.RedColor
+import com.miggue.mylogin01.ui.theme.*
 
 @Composable
 fun CertificateItem(
     certificateJson: CertificateJson,
     profileViewModel: ProfileViewModel
 ) {
-    val shape = RoundedCornerShape(25.dp)
+    val shape = RoundedCornerShape(20.dp)
     FatherOfAppsTheme {
         Surface(
             modifier = Modifier
-                .height(220.dp)
+                .height(90.dp)
                 .fillMaxWidth()
+                .background(Color.White)
                 .clip(shape)
+                .clickable {
+                    profileViewModel.currentCertificate  = certificateJson
+                }
                 .border(
-                    BorderStroke(1.dp, color = PrimaryColor),
+                    BorderStroke(3.dp, color = PrimaryColor),
                     shape = shape
                 ),
 
         ) {
-            Column(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PrimaryColor)
-                    .clickable { profileViewModel.currentCertificate = certificateJson },
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween,
+                    .padding(4.dp)
             ) {
-                Row(
+                Image(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 30.dp, end = 30.dp, top = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .wrapContentHeight(Alignment.CenterVertically)
-                        ,
-                        text = "Certificate ${certificateJson.ten}",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        textAlign = TextAlign.Left
-                    )
+                        .weight(1.2f)
+                        .fillMaxHeight()
+                        .padding(start = 8.dp)
+                        .clip(shape = shape),
+                    painter = rememberAsyncImagePainter("https://res.cloudinary.com/dufcxfczn/image/upload/v1668002449/87f41f44849fb91c85d4be49f894990d_knp9j3.jpg"), //certificate anh1
+                    contentDescription = "Uploaded image"
+                )
 
-                    if(profileViewModel.stateUpdating) {
-                        Button(
-                            modifier = Modifier.height(20.dp),
-                            onClick = {},
-                            contentPadding = PaddingValues(
-                                start = 15.dp,
-                                end = 15.dp,
-                            ),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = RedColor)
-                        ) {
-                            Text(
-                                text = "Delete",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .weight(3f)
+                        .fillMaxHeight()
+                        .padding(10.dp, 5.dp)
+                ) {
+                    Content(icon = painterResource(id = R.drawable.icon_group), title = "Name", content = "Certificate of Archievement")
+                    Content(icon = painterResource(id = R.drawable.icon_schedules), title = "Date of Issue", content = "09-09-2022")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        StatusBox(status = 1)
+                        if(profileViewModel.stateUpdating) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_trash),
+                                contentDescription = "Content's icon",
+                                tint = Red500,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .padding(bottom = 2.dp)
+                                    .clickable {
+                                        profileViewModel.deleteCertificate(certificateJson.id)
+                                    }
                             )
                         }
                     }
                 }
-
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(190.dp)
-                        .clip(shape = shape),
-                    painter = rememberAsyncImagePainter(certificateJson.anh1),
-                    contentDescription = "Uploaded image"
-                )
             }
         }
-
     }
 }
 
+@Composable
+fun Content(
+    icon: Painter,
+    title:String,
+    content:String,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = "Content's icon",
+            tint = PrimaryColor,
+            modifier = Modifier
+                .size(13.dp)
+                .padding(bottom = 2.dp)
+        )
+        Text(
+            text = "$title:",
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Normal,
+            color = PrimaryColor,
+            modifier = Modifier.padding(3.dp, 0.dp)
+        )
+        Text(
+            text = "$content",
+            fontSize = 10.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = PrimaryColor,
+            modifier = Modifier.padding(10.dp, 0.dp)
+        )
+    }
+}
 
+@Composable
+fun StatusBox(
+    status:Int
+) {
+    var textColor = Brown700
+    var borderColor = Brown500
+    var backgroundColor = Brown300
+    var content = "Đang chờ duyệt"
+    when(status) {
+        -1 -> {
+            textColor = Red700
+            borderColor = Red500
+            backgroundColor = Red300
+            content = "Từ chối duyệt"
+        }
 
+        1 -> {
+            textColor = GreenColor700
+            borderColor = GreenColor500
+            backgroundColor = GreenColor300
+            content = "Đã duyệt"
+        }
+    }
+    Surface(
+        modifier = Modifier
+            .size(55.dp, 15.dp)
+            .border(1.dp, color = borderColor, RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(10.dp))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor),
+            contentAlignment = Alignment.Center,
 
-@ExperimentalComposeUiApi
+            ) {
+            Text(
+                modifier = Modifier
+                    .padding(10.dp, 4.dp)
+                    .fillMaxSize(),
+                text = content,
+                fontSize = 6.sp,
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center,
+                color = textColor,
+            )
+        }
+    }
+
+}
 @Preview
 @Composable
 fun CertificatePreview() {

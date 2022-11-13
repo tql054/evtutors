@@ -28,7 +28,7 @@ fun ProfileScreen(
     TypeOfUser:Int,
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    profileViewModel.getuser()
+    profileViewModel.getUser()
     FatherOfAppsTheme {
         when(TypeOfUser) {
             2 -> {
@@ -91,7 +91,7 @@ fun TutorInfoPage(
 //                            var newCertificates = profileViewModel.certificates
 //                            newCertificates.remove("")
 //                            Text(text = "Number of certificate: ${newCertificates.size}")
-                                Text(text = "Number of certificate: ${profileViewModel.certificates.size}")
+                                Text(text = "Number of certificate: ${profileViewModel.userCertificates.size}/5")
 
                             }
 
@@ -119,13 +119,19 @@ fun TutorInfoPage(
                             Spacer(modifier = Modifier.height(60.dp))
                         }
                     } else {
-                        item{
-                            Text(text = "Loading...")
-                            user?.let {
-//                                profileViewModel.fetchCetificate(user.id)
-                                profileViewModel.getUserCertificates()
+                        if (profileViewModel.stateInitialLoading) {
+                            item{
+                                Text(text = "Loading...")
+                                user?.let {
+                                    profileViewModel.getUserCertificates(user.id)
+                                }
+                            }
+                        } else {
+                            item {
+                                Text(text = "You've had nothing!")
                             }
                         }
+
                     }
                 }
 
@@ -199,8 +205,7 @@ fun ConfirmSaveBox(
                     if(profileViewModel.stateChanging) {
                         val user = profileViewModel.localUser
                         user?.let {
-                            Log.d("User Id: ", user.id.toString())
-                            profileViewModel.putCertificate(user.id)
+                            profileViewModel.putCertificate()
                         }
                         profileViewModel.toggleSaving()
                     }

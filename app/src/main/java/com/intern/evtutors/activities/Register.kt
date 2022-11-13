@@ -25,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -39,7 +40,6 @@ import com.intern.evtutors.ui.customer.register.RegisterViewModel
 
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.SecondaryColor
-import com.miggue.mylogin01.ui.theme.whiteBackground
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +109,7 @@ fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
             .verticalScroll(rememberScrollState())
             .fillMaxHeight(0.90f)
             .clip(shape = RoundedCornerShape(topStart=30.dp, topEnd=30.dp))
-            .background(whiteBackground)
+            .background(Color.White)
             .padding(8.dp),
 
         horizontalAlignment = Alignment.CenterHorizontally,

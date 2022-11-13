@@ -12,6 +12,7 @@ import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
@@ -56,11 +57,13 @@ import com.intern.evtutors.view_models.CertificatesViewModel
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.ModalColor
+import com.miggue.mylogin01.ui.theme.Red500
 import com.miggue.mylogin01.ui.theme.RedColor
 import java.text.SimpleDateFormat
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CertificatesAdding(
     profileViewModel: ProfileViewModel,
@@ -84,6 +87,8 @@ fun CertificatesAdding(
         mutableStateOf<String>("Date of expiration")
     }
 
+
+
     var certificates = certificatesViewModel.certificates
 
     Box(
@@ -101,16 +106,39 @@ fun CertificatesAdding(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            InfoInput(title = "What's certificate?", value = stateName) {
+            InfoInput(title = "What's certificate?", value = stateName, certificatesViewModel = certificatesViewModel) {
                 stateName = it
+                stateDOI = it
+                checkValidData(
+                    stateName,
+                    stateAddress,
+                    stateDOI,
+                    stateDOE,
+                    certificatesViewModel
+                )
             }
 
-            InfoInput(title = "Place granted?", value = stateAddress) {
+            InfoInput(title = "Place granted?", value = stateAddress, certificatesViewModel = certificatesViewModel) {
                 stateAddress = it
+                stateDOI = it
+                checkValidData(
+                    stateName,
+                    stateAddress,
+                    stateDOI,
+                    stateDOE,
+                    certificatesViewModel
+                )
             }
 
             DatePickerview(stateDOI) {
                 stateDOI = it
+                checkValidData(
+                    stateName,
+                    stateAddress,
+                    stateDOI,
+                    stateDOE,
+                    certificatesViewModel
+                )
             }
 
             DatePickerview(stateDOE) {
@@ -123,7 +151,7 @@ fun CertificatesAdding(
                     fontSize = 10.sp
                 )
             } else {
-                Column() {
+                Column {
                     Text(
                         text = "Number of image: ${certificates.size}/5",
                         fontSize =15.sp
@@ -164,14 +192,24 @@ fun CertificatesAdding(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Row() {
-                Button(onClick = {}) {
-                    Text(
-                        text = "Add",
-                        //      Validate truoc khi hien nut add
-                    )
+            Row {
+                if(certificatesViewModel.stateValidData) {
+                    Button(onClick = {
+                        if(certificatesViewModel.checkValidDate(stateDOI, stateDOE)) {
+                            Log.d("Add: ", "false")
+                        } else {
+                            Log.d("Add: ", "Success")
+                        }
+
+                    }) {
+                        Text(
+                            text = "Add",
+                            //      Validate truoc khi hien nut add
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(20.dp))
                 }
-                Spacer(modifier = Modifier.width(20.dp))
+
                 Button(onClick = {
                     certificatesViewModel.certificates = mutableListOf<String>()
                     profileViewModel.toggle()
@@ -224,13 +262,17 @@ fun CertificatesInfo(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            InfoItem(title = "Tên bằng", content = certificateJson!!.ten)
-            InfoItem(title = "Nơi cấp", content = certificateJson.noiCap)
-            InfoItem(title = "Ngày cấp", content = certificateJson.ngayCap)
+            InfoItem(title = "Tên bằng", content = certificateJson!!.name)
+            InfoItem(title = "Nơi cấp", content = certificateJson.placeOfIssue)
+            InfoItem(title = "Ngày cấp", content = certificateJson.dateOfIssue)
+            InfoItem(title = "Ngày cấp", content = certificateJson.dateOfExpiry)
             CertificatesSlicer(profileViewModel)
             Spacer(modifier = Modifier.height(20.dp))
-            Row() {
-                Button(onClick = {}) {
+            Row {
+                Button(onClick = {
+                    profileViewModel.deleteCertificate(certificateJson.id)
+                    profileViewModel.currentCertificate = null
+                }) {
                     Text(
                         text = "Delete",
                     )
@@ -318,7 +360,7 @@ fun DatePickerview(
 fun CertificateImageUpload(
     certificatesViewModel: CertificatesViewModel
 ) {
-    var filePath by rememberSaveable() {
+    var filePath by rememberSaveable {
         mutableStateOf<Uri?>(null)
     }
     val launcher = rememberLauncherForActivityResult(
@@ -360,7 +402,7 @@ fun CertificateImageUpload(
                 }
 
                 bitmap.value?.let {
-                    Column() {
+                    Column {
                         Image(bitmap = it.asImageBitmap(),
                             contentDescription = "Uploaded Image",
                             modifier = Modifier.size(400.dp)
@@ -380,7 +422,7 @@ fun CertificateImageUpload(
                 }
             }
 
-            Row() {
+            Row {
                 if(filePath!=null) {
                     Button(onClick = { onUpload(filePath!!, context, certificatesViewModel) }) {
                         Text(
@@ -404,10 +446,10 @@ fun CertificatesSlicer(
     profileViewModel: ProfileViewModel
 ) {
     val results = mutableListOf<String>(
-        profileViewModel.currentCertificate!!.anh1,
-        profileViewModel.currentCertificate!!.anh2,
-        profileViewModel.currentCertificate!!.anh3,
-        profileViewModel.currentCertificate!!.anh4
+        profileViewModel.currentCertificate!!.img1,
+        profileViewModel.currentCertificate!!.img2,
+        profileViewModel.currentCertificate!!.img3,
+        profileViewModel.currentCertificate!!.img4
     )
     if (results.isEmpty()) {
 
@@ -416,15 +458,17 @@ fun CertificatesSlicer(
             .horizontalScroll(rememberScrollState())
             .fillMaxWidth()) {
             for (certificate in results){
-                Image(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(150.dp)
-                        .clip(shape = RoundedCornerShape(15.dp)),
-                    painter = rememberAsyncImagePainter(certificate),
-                    contentDescription = "Uploaded image"
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
+                if (certificate != "") {
+                    Image(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(150.dp)
+                            .clip(shape = RoundedCornerShape(15.dp)),
+                        painter = rememberAsyncImagePainter(certificate),
+                        contentDescription = "Uploaded image"
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                }
             }
         }
     }
@@ -459,6 +503,7 @@ fun InfoItem(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InfoInput(
+    certificatesViewModel: CertificatesViewModel,
     title:String,
     value:String,
     onChange:(String) -> Unit
@@ -474,8 +519,12 @@ fun InfoInput(
                 .fillMaxWidth()
                 .onFocusEvent { focusState ->
                     when {
-                        focusState.hasFocus ->
+                        focusState.hasFocus -> {
                             stateValidate = value != ""
+//                            if(!stateValidate) {
+//                                certificatesViewModel.stateValidData = false
+//                            }
+                        }
                     }
                 }
             ,
@@ -500,7 +549,7 @@ fun InfoInput(
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Light,
                 fontStyle = FontStyle.Italic,
-                color = RedColor
+                color = Red500
             )
         }
 
@@ -535,3 +584,12 @@ fun onUpload(filePath:Uri, context:Context, certificatesViewModel: CertificatesV
     }).dispatch()
 }
 
+private fun checkValidData(
+    name:String,
+    address:String,
+    doi:String,
+    doe:String,
+    certificatesViewModel: CertificatesViewModel
+) {
+    certificatesViewModel.stateValidData = name!="" && address!="" && doi!="Date of issue" && doe!="Date of expiration"
+}

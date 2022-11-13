@@ -32,7 +32,7 @@ class HomeActivity : ComponentActivity() {
         MediaManager.init(this, config);
         setContent {
             val viewModel = viewModel<ProfileViewModel>()
-            viewModel.getuser()
+            viewModel.getUser()
             val user = viewModel.localUser
             user?.let {
                 FatherOfAppsTheme() {
