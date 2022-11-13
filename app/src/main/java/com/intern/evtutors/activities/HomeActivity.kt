@@ -24,9 +24,6 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val config = HashMap<Any?, Any?>()
-        config["cloud_name"] = "dufcxfczn";
-        config["api_key"] = "755196561895664";
-        config["api_secret"] = "umTWiuZvLaooFvzx-eR1W1wTvdA";
 //        config.put("secure", true);
 
         MediaManager.init(this, config);
