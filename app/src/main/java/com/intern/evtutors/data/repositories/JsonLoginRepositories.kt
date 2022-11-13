@@ -24,7 +24,7 @@ class JsonLoginRepositories @Inject constructor(
               result.data
             }
             is NetworkResult.Error ->{
-                throw result.exception
+                null
             }
         }
     }
@@ -36,7 +36,7 @@ class JsonLoginRepositories @Inject constructor(
                 result.data
             }
             is NetworkResult.Error ->{
-                throw result.exception
+                null
             }
         }
     }

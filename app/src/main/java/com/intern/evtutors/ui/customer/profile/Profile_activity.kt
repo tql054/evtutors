@@ -22,19 +22,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Yellow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.intern.evtutors.activities.Login
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
+import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.view_models.LoginViewModel
 import com.intern.evtutors.ui.customer.profile.ui.theme.*
 import com.miggue.mylogin01.ui.theme.SecondaryColor
@@ -54,7 +63,7 @@ class Profile_activity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Profile_Greeting()
+//                    Profile_Greeting()
                 }
             }
         }
@@ -62,9 +71,8 @@ class Profile_activity : ComponentActivity() {
 }
 
 @Composable
-fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),loginViewModel: LoginViewModel= hiltViewModel()) {
-    var user = CustomerEntity(0, 0, "", 0, "", "", "", "", "", "", "", 0)
-    var role: MutableSet<Role> = mutableSetOf()
+fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : ProfileViewModel = hiltViewModel(), loginViewModel: LoginViewModel= hiltViewModel()) {
+
 //    used to RadioButton{
     val items = listOf("Male", "Female")
     val selectedValue = remember { mutableStateOf("") }
@@ -75,20 +83,23 @@ fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),logi
     val context = LocalContext.current
     val age = remember { mutableStateOf("0") }
 
-   //Status Edittext{
-    val EdittextStatusName = remember { mutableStateOf(false) }
-    val EdittextStatusadress = remember { mutableStateOf(false) }
-    val EdittextStatusAge = remember { mutableStateOf(false) }
+   // Edittext{
+    val EdittextName = remember { mutableStateOf("") }
+    val EdittextGender = remember { mutableStateOf("") }
+    val EdittextStatus = remember { mutableStateOf(false) }
+    val Edittextadress = remember { mutableStateOf("") }
+    val EdittextAge = remember { mutableStateOf("0") }
     val EdittextStatusGender = remember { mutableStateOf(false) }
-    val StatusBottum = remember { mutableStateOf(true) }
-    val EdittextStatusGmail = remember { mutableStateOf(false) }
-    val EdittextStatusPhone = remember { mutableStateOf(false) }
-    val EdittextStatuspasswprd = remember { mutableStateOf(false) }
+    val EdittextGmail = remember { mutableStateOf("") }
+    val EdittextPhone = remember { mutableStateOf("") }
     //}
+    var user = CustomerEntity(0, 0, "", 0, "", "", "", "", "", "", "", 0)
+    var role: MutableSet<Role> = mutableSetOf()
     val update = remember { mutableStateOf(false) }
     var myuser = remember { mutableStateOf(user) }
     var userupdate: User = User(myuser.value.id,myuser.value.name,myuser.value.age,myuser.value.gender,myuser.value.address,myuser.value.phone,myuser.value.avatar,myuser.value.email,myuser.value.userName, password = null,role = role)
     var myuserUpdate = remember { mutableStateOf(userupdate) }
+
 
     myuserUpdate.value.password=""
     myuserUpdate.value.id=myuser.value.id
@@ -100,202 +111,112 @@ fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),logi
     myuserUpdate.value.avatar=myuser.value.avatar
     myuserUpdate.value.email=myuser.value.email
     myuserUpdate.value.userName=myuser.value.userName
-
-
-    var myuserCheck = remember { mutableStateOf(myuserUpdate.value) }
-
     ProfileViewModel.getuser()
     myuser.value= ProfileViewModel.myuser
+
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement =Arrangement.Top,
         horizontalAlignment =Alignment.CenterHorizontally,
     ){
-        StatusBottum.value= header(name=myuser.value.name, gmail = myuser.value.email)
-        if( StatusBottum.value){
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { EdittextStatusName.value=!EdittextStatusName.value }
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Person, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Name",fontSize = 18.sp)
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)
-                        ){
-                        if(EdittextStatusName.value){
-                            var nameinput= NameOutlinedTextField()
-                            if(nameinput.isNotEmpty()){
-                                myuserUpdate.value.name =nameinput
-                                update.value=true
-                            }
+        header(name=myuser.value.name, gmail = myuser.value.email)
+        Row(Modifier.fillMaxWidth(0.9f).padding(end = 10.dp),
+            Arrangement.End) {
+            if(update.value){
+                Text(text = "Edit",fontStyle= FontStyle.Italic, color = Color(0xFF1655F5), modifier = Modifier.clickable { EdittextStatus.value=!EdittextStatus.value } )
+            }else{
+                Text(text = "Edit",fontStyle= FontStyle.Italic, modifier = Modifier.clickable { EdittextStatus.value=!EdittextStatus.value } )
+            }
 
-                        }else{
-                            Text(myuser.value.name)
+        }
+        EdittextName.value=itemInfo(Icons.Sharp.Person,"Name",myuser.value.name,EdittextStatus.value)
+        Spacer(modifier = Modifier.height(10.dp))
+        EdittextGmail.value=itemInfo(Icons.Sharp.Email,"Gmail",myuser.value.email,EdittextStatus.value)
+        Spacer(modifier = Modifier.height(10.dp))
+        EdittextPhone.value =itemInfo(Icons.Sharp.Phone,"Phone",myuser.value.phone,EdittextStatus.value)
+        Spacer(modifier = Modifier.height(10.dp))
+        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age    ",myuser.value.age.toString(),EdittextStatus.value)
+        Spacer(modifier = Modifier.height(10.dp))
+        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Phone",myuser.value.address,EdittextStatus.value)
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .clickable { EdittextStatusGender.value=!EdittextStatusGender.value },
+            Arrangement.Start,
+            Alignment.CenterVertically,
+
+        ){
+            Icon(Icons.Sharp.Check, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
+            Text(text = "Gender",fontSize = 18.sp)
+            if(EdittextStatus.value){
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    items.forEach { item ->
+                        Row(
+                            modifier = Modifier.selectable(
+                                selected = isSelectedItem(item),
+                                onClick = { onChangeState(item) },
+                                role = androidx.compose.ui.semantics.Role.RadioButton
+                            )
+                        ) {
+                            RadioButton(
+                                selected = isSelectedItem(item),
+                                onClick = {
+                                    selectedValue.value = item
+                                }
+                            )
+                            Text(
+                                text = item,
+                                modifier = Modifier.padding(top = 10.dp)
+                            )
                         }
                     }
                 }
-
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { EdittextStatusGmail.value=!EdittextStatusGmail.value }
-
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Email, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Gmail",fontSize = 18.sp)
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)){
-                        if(EdittextStatusGmail.value){
-                            var gmailinput = OutlinedTextField("email","email")
-                            if(gmailinput.isNotEmpty()){
-                                myuserUpdate.value.email =gmailinput
-                                update.value=true
-                            }
-                        }else{
-                            Text(myuser.value.email)
-                        }
-                    }
+                if(selectedValue.value =="Male"){
+                    EdittextGender.value="M"
+                }else{
+                    EdittextGender.value="F"
                 }
 
+            }else{
+                Text(myuser.value.gender)
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable {EdittextStatuspasswprd.value=!EdittextStatuspasswprd.value  }
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Lock, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Password",fontSize = 18.sp)
-                    }
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)){
-                        if(!EdittextStatuspasswprd.value){
-                            Text(text = "Pass word",fontSize = 13.sp)
-                        }else{
-                            var a= OutlinedTextField("pass word","pass word")
-                            var b= OutlinedTextField("pass word","pass word")
-                        }
-                    }
-                }
+        }
 
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { EdittextStatusPhone.value=!EdittextStatusPhone.value }
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Phone, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Phone Number",fontSize = 18.sp)
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)){
-                        if(EdittextStatusPhone.value){
-                           var phoneinput = OutlinedTextField("Phone","Phone")
-                            if(phoneinput.isNotEmpty()){
-                                myuserUpdate.value.phone =phoneinput
-                                update.value=true
-                            }
-                        }else{
-                            Text(myuser.value.phone)
-                        }
-                    }
-                }
+        if(EdittextName.value!="" &&
+            EdittextGmail.value!="" &&
+            EdittextPhone.value !="" &&
+            EdittextAge.value!="" &&
+            Edittextadress.value!=""&&
+            EdittextGender.value!=""
+        )
+        {
+            update.value =true
+            myuserUpdate.value.name=EdittextName.value
+            myuserUpdate.value.email= EdittextGmail.value
+            myuserUpdate.value.phone= EdittextPhone.value
+            myuserUpdate.value.age=EdittextAge.value.toInt()
+            myuserUpdate.value.gender=EdittextGender.value
+            myuserUpdate.value.address=Edittextadress.value
 
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(modifier = Modifier.fillMaxWidth()
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Email, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Payment",fontSize = 18.sp)
-                    }
-//                    Row(modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(start = 40.dp)){
-//                        Text(text = "Payment",fontSize = 13.sp)
-//                    }
-                }
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    ,
-                    horizontalArrangement = Arrangement.End,
-                    //verticalAlignment = Alignment.CenterVertically
-                ){
-                    Column(modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                    ){
-                        TextButton(onClick = {}) {
-                            Text(text = "Edit",fontSize = 16.sp, color = GrayText)
-                        }
-                    }
-                }
-            }
-
-            if(myuser.value.roleID==3){
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        if(myuser.value.roleID==3){
                 Spacer(modifier = Modifier.height(10.dp))
-                Row(modifier = Modifier.fillMaxWidth()
+                Row(modifier = Modifier.fillMaxWidth(0.85f)
                 ){
                     Column(modifier = Modifier
-                        .fillMaxWidth(0.7f)
+                        .fillMaxWidth()
                     ){
                         Row(modifier = Modifier
-                            .fillMaxWidth(0.8f)
+                            .fillMaxWidth()
                             .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
                         ){
                             Icon(Icons.Sharp.Favorite, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
                             Text(text = "My certificates",fontSize = 18.sp)
                         }
-//                        Row(modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(start = 40.dp)){
-//                            Text(text = "Payment",fontSize = 13.sp)
-//                        }
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
@@ -306,146 +227,16 @@ fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),logi
                         Column(modifier = Modifier
                             .fillMaxWidth(0.7f)
                         ){
-                            TextButton(onClick = {}) {
+                            TextButton(onClick = {
+                                navHostController.navigate("home/profile/certificates")
+                            }) {
                                 Text(text = "Edit",fontSize = 16.sp, color = GrayText)
                             }
                         }
                     }
                 }
             }
-        }else{
-            Row(modifier = Modifier.fillMaxWidth()
-                .clickable { EdittextStatusAge.value=!EdittextStatusAge.value }
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Person, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Age",fontSize = 18.sp)
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)){
-                        if(EdittextStatusAge.value){
-
-                            age.value = OutlinedTextField("age","age")
-                            if( age.value !=""){
-                                update.value=true
-                                age.value.let { myuserUpdate.value.age=it.toInt() }
-                            }
-
-                        }else{
-                            Text(myuser.value.age.toString())
-                        }
-                    }
-                }
-
-            }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { EdittextStatusGender.value=!EdittextStatusGender.value }
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Check, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Gender",fontSize = 18.sp)
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)){
-                        if(EdittextStatusGender.value){
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                            ) {
-
-                                items.forEach { item ->
-                                    Row(
-                                        //      verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.selectable(
-                                            selected = isSelectedItem(item),
-                                            onClick = { onChangeState(item) },
-                                            role = androidx.compose.ui.semantics.Role.RadioButton
-                                        )
-
-                                    ) {
-                                        RadioButton(
-                                            selected = isSelectedItem(item),
-                                            onClick = {
-                                                selectedValue.value = item
-                                            }
-
-                                        )
-                                        Text(
-                                            text = item,
-                                            modifier = Modifier.padding(top = 10.dp)
-
-                                        )
-                                    }
-                                }
-
-
-                            }
-                            var gender =selectedValue.value
-                            if(gender != null){
-                                update.value=true
-                                myuserUpdate.value.gender =selectedValue.value
-                            }
-
-                        }else{
-                            Text(myuser.value.gender)
-                        }
-                    }
-                }
-
-            }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { EdittextStatusadress.value=!EdittextStatusadress.value }
-            ){
-                Column(modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ){
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 25.dp),
-//                    verticalArrangement = Arrangement.Center
-                    ){
-                        Icon(Icons.Sharp.Home, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-                        Text(text = "Adress",fontSize = 18.sp)
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp)){
-                        if(EdittextStatusadress.value){
-                            var addressinput= OutlinedTextField("address","address")
-                            if(addressinput!= null){
-                                update.value =true
-                                myuserUpdate.value.address=addressinput
-                            }
-                        }else{
-                            Text(myuser.value.address)
-                        }
-                    }
-                }
-
-            }
-            Spacer(modifier = Modifier.height(100.dp))
-        }
         Spacer(modifier = Modifier.height(45.dp))
-
-
         if(update.value){
             Button(modifier = Modifier.height(45.dp)
                 .fillMaxWidth(0.7f)
@@ -454,11 +245,14 @@ fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),logi
                     if(update.value){
                         scope.launch{
                             loginViewModel.UpdateAccount(myuser.value.id,myuserUpdate.value)
-                            myuserCheck.value=loginViewModel.myuserupdate
-                            if(myuserCheck.value.id != 0){
+
+                            if(loginViewModel.myuserupdate.id != 0){
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                                 }
+                                var usertoken =getjwtToken(myuserUpdate.value,"")
+                                var userUpdateLocal= loginViewModel.cover(usertoken)
+                                loginViewModel.create(userUpdateLocal!!)
                             }else{
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
@@ -482,8 +276,6 @@ fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),logi
                 .fillMaxWidth(0.7f)
                 .background(Color.White),
                 onClick = {
-
-
                 },
                 shape = RoundedCornerShape(15),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
@@ -502,11 +294,13 @@ fun Profile_Greeting(ProfileViewModel  : ProfileViewModel = hiltViewModel(),logi
             Text(text = "LOG OUT",fontSize = 30.sp, color = BlueText)
         }
         Spacer(modifier = Modifier.height(45.dp))
+        }
+
     }
-}
+
 
 @Composable
-fun header( name :String, gmail:String):Boolean{
+fun header( name :String, gmail:String){
 
     val scope = CoroutineScope(Dispatchers.IO + Job())
     var username = remember { mutableStateOf("") }
@@ -536,139 +330,64 @@ fun header( name :String, gmail:String):Boolean{
                 Text(text =gmail, fontSize = 15.sp, color = Color.Black)
 
                 Spacer(modifier = Modifier.height(30.dp))
-                Row(modifier = Modifier
-                    .height(45.dp)
-                    .fillMaxWidth().background(Color.White),
-                    horizontalArrangement =Arrangement.SpaceBetween
-                ){
-                    if( StatusBottumHD.value ){
-                        Button(onClick = {},
-                            modifier = Modifier
-                                .height(45.dp)
-
-                                .weight(0.50f)
-                            ,
-                            shape = RoundedCornerShape(10),
-//
-                        ){
-                            Text(text = "Advanced", color = Color.White)
-                        }
-                    }else{
-                        Button(onClick = {StatusBottumHD.value= !StatusBottumHD.value},
-                            modifier = Modifier
-                                .height(45.dp)
-                                .weight(0.50f)
-
-                            ,
-                            shape = RoundedCornerShape(10,),
-                            border =  BorderStroke(1.dp, color = BlueText),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-                        ){
-                            Text(text = "Advanced", color = Color.Black)
-                        }
-                    }
-
-                    Box(modifier = Modifier.weight(0.05f))
-                    if( !StatusBottumHD.value ){
-                        Button(onClick = {},
-                            modifier = Modifier
-                                .height(45.dp)
-                                .weight(0.50f)
-                            ,
-                            shape = RoundedCornerShape(15),
-//
-                        ){
-                            Text(text = "Basic", color = Color.White)
-                        }
-                    }else{
-                        Button(onClick = {StatusBottumHD.value= !StatusBottumHD.value},
-                            modifier = Modifier
-                                .height(45.dp)
-                                .weight(0.50f),
-                            shape = RoundedCornerShape(15),
-                            border =  BorderStroke(1.dp, color = BlueText),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-                        ){
-                            Text(text = "Basic", color = Color.Black)
-                        }
-                    }
-                }
             }
         }
     }
-    return StatusBottumHD.value
 
 }
 @Composable
 fun Text(name: String){
     Text(text = name,fontSize = 13.sp)
 }
-
 @Composable
-fun NameOutlinedTextField():String{
-    var username = remember { mutableStateOf("") }
-    OutlinedTextField(
-        value = username.value,
-        onValueChange = { username.value = it },
-        label = { Text(text = "username", fontSize = 11.sp) },
-        placeholder = { Text(text = "username",fontSize = 12.sp) },
-        textStyle = TextStyle(fontSize = 12.sp),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(0.8f)
-            .height(55.dp)
-            .padding(bottom = 0.dp)
+fun OutlinedTextFieldinput(a:String,b: String):String{
+    var input = remember { mutableStateOf("") }
+    TextField(
+        modifier = Modifier.fillMaxWidth()
+            .requiredHeight(50.dp)
+            .height(50.dp)
+            .border(width = 2.dp,
+                brush = Brush.horizontalGradient(listOf(Blue, Green)),
+                shape = RoundedCornerShape(25.dp))
             .defaultMinSize(minHeight = 0 .dp),
-    )
-    return username.value
-}
-
-
-
-@Composable
-fun PassOutlinedTextField(){
-    var username = remember { mutableStateOf("") }
-    OutlinedTextField(
-        value = username.value,
-        onValueChange = { username.value = it },
-        label = { Text(text = "username") },
-        placeholder = { Text(text = "username") },
+        value = input.value,
+        onValueChange = { input.value = it },
+        placeholder = { Text(text =b,fontSize = 15.sp, color =Color(0xFF20AFFF) ) },
+        textStyle = TextStyle(fontSize = 15.sp, color =Black),
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(0.8f).height(15.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = whitebacground,
+            unfocusedBorderColor = whitebacground,
+            focusedLabelColor = Black,
+            cursorColor = Color(0xFFCFDCFF)
+        ),
 
         )
+    return input.value
 
 }
-
-
 @Composable
-fun OutlinedTextField(a:String,b: String):String{
-    var phone = remember { mutableStateOf("") }
-    OutlinedTextField(
-        value = phone.value,
-        onValueChange = { phone.value = it },
-        label = { Text(text = a, fontSize = 11.sp) },
-        placeholder = { Text(text =b,fontSize = 12.sp) },
-        textStyle = TextStyle(fontSize = 12.sp),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(0.8f)
+fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus:Boolean):String{
+    var input = remember { mutableStateOf("") }
+    Row(modifier = Modifier
+        .fillMaxWidth(0.85f)
+        .width(75.dp),
+        Arrangement.Start,
+        Alignment.CenterVertically,
+    ){
+        Icon(imageVector, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
+        Text(text = "$title: ",fontSize = 18.sp)
+        Spacer(Modifier.width(10.dp))
 
-            .height(55.dp)
-            .padding(bottom = 0.dp)
-            .defaultMinSize(minHeight = 0 .dp),
+        if(EdittextStatus){
+             input.value= OutlinedTextFieldinput(name,name)
+        }else{
+            Text(name)
+        }
 
-        )
-    return phone.value
-
-}
-
-
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview2() {
-    FatherOfAppsTheme {
-        Profile_Greeting()
     }
+    return input.value
 }
+
+
+
