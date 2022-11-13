@@ -94,10 +94,11 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     val EdittextPhone = remember { mutableStateOf("") }
     //}
     var user = CustomerEntity(0, 0, "", 0, "", "", "", "", "", "", "", 0)
-    var role: MutableSet<Role> = mutableSetOf()
+
     val update = remember { mutableStateOf(false) }
     var myuser = remember { mutableStateOf(user) }
-    var userupdate: User = User(myuser.value.id,myuser.value.name,myuser.value.age,myuser.value.gender,myuser.value.address,myuser.value.phone,myuser.value.avatar,myuser.value.email,myuser.value.userName, password = null,role = role)
+    var role: MutableSet<Role> = mutableSetOf(Role(myuser.value.roleID,""))
+    var userupdate = User(myuser.value.id,myuser.value.name,myuser.value.age,myuser.value.gender,myuser.value.address,myuser.value.phone,myuser.value.avatar,myuser.value.email,myuser.value.userName, password = null,role = role)
     var myuserUpdate = remember { mutableStateOf(userupdate) }
 
 
@@ -111,6 +112,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     myuserUpdate.value.avatar=myuser.value.avatar
     myuserUpdate.value.email=myuser.value.email
     myuserUpdate.value.userName=myuser.value.userName
+
     ProfileViewModel.getuser()
     myuser.value= ProfileViewModel.myuser
 
@@ -137,7 +139,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
         Spacer(modifier = Modifier.height(10.dp))
         EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age    ",myuser.value.age.toString(),EdittextStatus.value)
         Spacer(modifier = Modifier.height(10.dp))
-        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Phone",myuser.value.address,EdittextStatus.value)
+        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Adress",myuser.value.address,EdittextStatus.value)
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier
             .fillMaxWidth(0.85f)
@@ -208,11 +210,11 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                 Row(modifier = Modifier.fillMaxWidth(0.85f)
                 ){
                     Column(modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(0.7f)
                     ){
                         Row(modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 25.dp),
+
                         ){
                             Icon(Icons.Sharp.Favorite, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
                             Text(text = "My certificates",fontSize = 18.sp)
@@ -225,7 +227,9 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                         //verticalAlignment = Alignment.CenterVertically
                     ){
                         Column(modifier = Modifier
-                            .fillMaxWidth(0.7f)
+                            .fillMaxWidth(),
+                            Arrangement.Top,
+                            Alignment.End
                         ){
                             TextButton(onClick = {
                                 navHostController.navigate("home/profile/certificates")
@@ -247,9 +251,13 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                             loginViewModel.UpdateAccount(myuser.value.id,myuserUpdate.value)
 
                             if(loginViewModel.myuserupdate.id != 0){
+                                EdittextStatus.value =false
+                                update.value = !update.value
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                                 }
+
+
                                 var usertoken =getjwtToken(myuserUpdate.value,"")
                                 var userUpdateLocal= loginViewModel.cover(usertoken)
                                 loginViewModel.create(userUpdateLocal!!)
