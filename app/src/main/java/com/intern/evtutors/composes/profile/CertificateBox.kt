@@ -53,6 +53,8 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.intern.evtutors.data.model_json.CertificateJson
+import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.view_models.CertificatesViewModel
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
@@ -87,8 +89,6 @@ fun CertificatesAdding(
         mutableStateOf<String>("Date of expiration")
     }
 
-
-
     var certificates = certificatesViewModel.certificates
 
     Box(
@@ -108,7 +108,6 @@ fun CertificatesAdding(
         ) {
             InfoInput(title = "What's certificate?", value = stateName, certificatesViewModel = certificatesViewModel) {
                 stateName = it
-                stateDOI = it
                 checkValidData(
                     stateName,
                     stateAddress,
@@ -120,7 +119,6 @@ fun CertificatesAdding(
 
             InfoInput(title = "Place granted?", value = stateAddress, certificatesViewModel = certificatesViewModel) {
                 stateAddress = it
-                stateDOI = it
                 checkValidData(
                     stateName,
                     stateAddress,
@@ -143,6 +141,13 @@ fun CertificatesAdding(
 
             DatePickerview(stateDOE) {
                 stateDOE = it
+                checkValidData(
+                    stateName,
+                    stateAddress,
+                    stateDOI,
+                    stateDOE,
+                    certificatesViewModel
+                )
             }
 
             if (certificates.isEmpty()) {
@@ -196,15 +201,17 @@ fun CertificatesAdding(
                 if(certificatesViewModel.stateValidData) {
                     Button(onClick = {
                         if(certificatesViewModel.checkValidDate(stateDOI, stateDOE)) {
-                            Log.d("Add: ", "false")
+                            certificatesViewModel.stateErrorBox = true
                         } else {
-                            Log.d("Add: ", "Success")
+                            val certificates = certificatesViewModel.certificates
+                            val newCertificates = generateCertificateJson(stateName, stateAddress, 0, stateDOI, stateDOE, certificates)
+                            profileViewModel.addCertificate(newCertificates)
+                            profileViewModel.toggle()
                         }
 
                     }) {
                         Text(
-                            text = "Add",
-                            //      Validate truoc khi hien nut add
+                            text = "Add"
                         )
                     }
                     Spacer(modifier = Modifier.width(20.dp))
@@ -213,7 +220,6 @@ fun CertificatesAdding(
                 Button(onClick = {
                     certificatesViewModel.certificates = mutableListOf<String>()
                     profileViewModel.toggle()
-
                 }) {
                     Text(
                         text = "Cancel"
@@ -232,6 +238,9 @@ fun CertificatesAdding(
         }
         if (certificatesViewModel.stateUpload) {
             CertificateImageUpload(certificatesViewModel = certificatesViewModel)
+        }
+        if(certificatesViewModel.stateErrorBox) {
+            ErrorBox(message = "Opps! The expiration date is too soon!", certificatesViewModel = certificatesViewModel)
         }
     }
 }
@@ -309,14 +318,17 @@ fun DatePickerview(
         mContext,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             focusManager.clearFocus()
-            updatedDate("$mDayOfMonth-${mMonth+1}-$mYear")
-
+            if(mDayOfMonth < 10 && mMonth+1 < 10) updatedDate("0$mDayOfMonth-0${mMonth+1}-$mYear")
+            if(mDayOfMonth < 10 && mMonth+1 >= 10) updatedDate("0$mDayOfMonth-${mMonth+1}-$mYear")
+            if (mDayOfMonth >= 10 && mMonth+1 < 10) updatedDate("$mDayOfMonth-0${mMonth+1}-$mYear")
+            if(mDayOfMonth > 10 && mMonth+1 > 10)  updatedDate("$mDayOfMonth-${mMonth+1}-$mYear")
+//            updatedDate("$mDayOfMonth-${mMonth+1}-$mYear")
         }, mYear, mMonth, mDay
     )
 
     Box(
         modifier = Modifier
-            .padding(top = 10.dp, bottom = 10.dp)
+            .padding(top = 5.dp, bottom = 5.dp)
             .border(
                 1.dp,
                 MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
@@ -557,6 +569,41 @@ fun InfoInput(
     }
 }
 
+@Composable
+fun ErrorBox(
+    message:String,
+    certificatesViewModel: CertificatesViewModel
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ModalColor)
+            .padding(
+                top = 5.dp,
+                start = 10.dp,
+                end = 10.dp
+            )
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .background(Color.White)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = message)
+            Button(onClick = {
+                certificatesViewModel.stateErrorBox = false
+            }) {
+                Text(
+                    text = "OK"
+                )
+            }
+        }
+    }
+}
+
 
 fun onUpload(filePath:Uri, context:Context, certificatesViewModel: CertificatesViewModel) {
     val TAG = "Cloudinary log: "
@@ -591,5 +638,33 @@ private fun checkValidData(
     doe:String,
     certificatesViewModel: CertificatesViewModel
 ) {
-    certificatesViewModel.stateValidData = name!="" && address!="" && doi!="Date of issue" && doe!="Date of expiration"
+    certificatesViewModel.stateValidData = name!="" && address!="" && doi!="Date of issue" && doe!="Date of expiration" && certificatesViewModel.certificates.isNotEmpty()
+}
+
+private fun generateCertificateJson(
+    name:String, address:String, status:Int, doi:String, doe:String, certificate:MutableList<String>
+):CertificateJson {
+    var newCertificateJson = CertificateJson(0, name, address, doi, doe, status, "", "", "", "", "")
+    when(certificate.size) {
+        1 -> {
+            newCertificateJson = CertificateJson(0, name, address, doi, doe, status, certificate[0], "", "", "", "")
+        }
+
+        2 -> {
+            newCertificateJson = CertificateJson(0, name, address, doi, doe, status, certificate[0], certificate[1], "", "", "")
+        }
+
+        3 -> {
+            newCertificateJson = CertificateJson(0, name, address, doi, doe, status, certificate[0], certificate[1], certificate[2], "", "")
+        }
+
+        4 -> {
+            newCertificateJson = CertificateJson(0, name, address, doi, doe, status, certificate[0], certificate[1], certificate[2], certificate[3], "")
+        }
+
+        5 -> {
+            newCertificateJson = CertificateJson(0, name, address, doi, doe, status, certificate[0], certificate[1], certificate[2], certificate[3], certificate[4])
+        }
+    }
+    return newCertificateJson
 }

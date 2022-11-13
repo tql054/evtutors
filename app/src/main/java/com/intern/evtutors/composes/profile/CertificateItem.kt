@@ -59,7 +59,7 @@ fun CertificateItem(
                         .fillMaxHeight()
                         .padding(start = 8.dp)
                         .clip(shape = shape),
-                    painter = rememberAsyncImagePainter("https://res.cloudinary.com/dufcxfczn/image/upload/v1668002449/87f41f44849fb91c85d4be49f894990d_knp9j3.jpg"), //certificate anh1
+                    painter = rememberAsyncImagePainter(certificateJson.img1), //certificate anh1
                     contentDescription = "Uploaded image"
                 )
 
@@ -71,15 +71,15 @@ fun CertificateItem(
                         .fillMaxHeight()
                         .padding(10.dp, 5.dp)
                 ) {
-                    Content(icon = painterResource(id = R.drawable.icon_group), title = "Name", content = "Certificate of Archievement")
-                    Content(icon = painterResource(id = R.drawable.icon_schedules), title = "Date of Issue", content = "09-09-2022")
+                    Content(icon = painterResource(id = R.drawable.icon_group), title = "Name", content = certificateJson.name)
+                    Content(icon = painterResource(id = R.drawable.icon_schedules), title = "Date of Issue", content = certificateJson.dateOfIssue)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
-                        StatusBox(status = 1)
+                        StatusBox(status = certificateJson.status)
                         if(profileViewModel.stateUpdating) {
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_trash),

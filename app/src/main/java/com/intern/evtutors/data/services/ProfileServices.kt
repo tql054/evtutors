@@ -5,7 +5,6 @@ import com.intern.evtutors.base.network.BaseRemoteService
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.data.apis.ProfileAPI
 import com.intern.evtutors.data.model_json.CertificateJson
-import com.intern.evtutors.data.model_json.CertificatesJson
 import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.Account
 import com.intern.evtutors.data.models.Certificates
@@ -41,8 +40,9 @@ class ProfileServices @Inject constructor(
         return callApi { profileAPI.getCertificates(idTutor) }
     }
 
-    suspend fun putCertificates(idTutor: Int, certificates: CertificateJson):NetworkResult<CertificatesJson> {
-        return callApi { profileAPI.putCertificates(idTutor, certificates) }
+    suspend fun putCertificates(userId: Int, certificates: CertificateJson):NetworkResult<CertificateJson> {
+        Log.d("User Id: ", userId.toString())
+        return callApi { profileAPI.putCertificates(userId = userId,certificate = certificates) }
     }
 
     suspend fun deleteCertificates(id: Int):NetworkResult<Any>{

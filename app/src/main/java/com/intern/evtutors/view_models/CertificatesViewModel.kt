@@ -19,14 +19,9 @@ class CertificatesViewModel @Inject constructor(
 
 ):BaseViewModel()  {
     var certificates by mutableStateOf(mutableListOf<String>())
-    var stateName by mutableStateOf<String>("")
-    var stateAddress by mutableStateOf<String>("")
-    var stateDOI by mutableStateOf<String>("") // DOI: Date of issue
-    var stateDOE by mutableStateOf<String>("") // DOI: Date of issue
     var stateUpload by mutableStateOf(false)
-    var stateValidateName by mutableStateOf(true)
-    var stateValidateAddress by mutableStateOf(true)
     var stateValidData by mutableStateOf<Boolean>(false)
+    var stateErrorBox by mutableStateOf<Boolean>(false)
 
     fun addImageCertificate(url:String) {
         if (certificates.size < 5) {
@@ -38,15 +33,18 @@ class CertificatesViewModel @Inject constructor(
         stateUpload = false
     }
 
-
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun checkValidDate (dateBegin:String, dateEnd:String):Boolean {
-        var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-        var localDateBegin = LocalDate.parse(dateBegin, formatter)
-        var localDateEnd = LocalDate.parse(dateEnd, formatter)
-
-//        val begin = Date(dateBegin.replace("-", "/"))
-        return localDateBegin.isBefore(localDateEnd)
+        if(dateBegin == "Date of issue" || dateEnd == "Date of expiration") {
+            stateValidData = false
+            return false
+        } else {
+            val now = LocalDate.now()
+            var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            var localDateBegin = LocalDate.parse(dateBegin, formatter)
+            var localDateEnd = LocalDate.parse(dateEnd, formatter)
+            return localDateEnd.isBefore(localDateBegin) && now.isBefore(localDateBegin)
+        }
     }
+
 }

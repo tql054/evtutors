@@ -86,6 +86,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun addCertificate(certificateJson: CertificateJson) {
+        Log.d("Added certificate",certificateJson.name)
         if(userCertificates.size < 5) {
             val newCertificates = mutableListOf<CertificateJson>()
             for (certificate in userCertificates) {
@@ -123,9 +124,9 @@ class ProfileViewModel @Inject constructor(
                 profileRepository.deleteCertificates(it.id)
                 Log.d("deleted Certificate: ", it.id.toString())
             }
-//            addedList.forEach {
-//                profileRepository.putCertificates(localUser!!.id, it)
-//            }
+            addedList.forEach {
+                profileRepository.putCertificates(localUser!!.id, it)
+            }
             Log.d("deleted Certificate: ", deletedList.size.toString())
             Log.d("added Certificate: ", addedList.size.toString())
             stateChanging = false

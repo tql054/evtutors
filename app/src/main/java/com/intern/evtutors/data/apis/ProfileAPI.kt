@@ -1,7 +1,6 @@
 package com.intern.evtutors.data.apis
 
 import com.intern.evtutors.data.model_json.CertificateJson
-import com.intern.evtutors.data.model_json.CertificatesJson
 import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.Account
 import com.intern.evtutors.data.models.Certificates
@@ -50,7 +49,7 @@ interface ProfileAPI {
     suspend fun putCertificates(
         @Path("userId") userId:Int,
         @Body certificate: CertificateJson
-    ):Response<CertificatesJson>
+    ):Response<CertificateJson>
 
     @DELETE("/api/degree/{id}")
     suspend fun deleteCertificates(

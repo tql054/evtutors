@@ -29,7 +29,7 @@ class ProfileRepository @Inject constructor(
     suspend fun putCertificates(idTutor: Int, certificates: CertificateJson) = withContext(dispatcher) {
         when(val result = profileServices.putCertificates(idTutor, certificates)) { //fake idTutor
             is NetworkResult.Success -> {
-                result.data.toCertificates()
+                result.data
             }
 
             is NetworkResult.Error -> {

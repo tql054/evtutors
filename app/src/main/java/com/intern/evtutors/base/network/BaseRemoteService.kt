@@ -15,7 +15,6 @@ open class BaseRemoteService : BaseService() {
         }
         return if (response.isSuccessful) {
             if (response.body() == null) {
-
                 Log.d("abc", "b")
                 NetworkResult.Error(BaseNetworkException(responseMessage =  "Response without body", responseCode = 200))
             } else {
