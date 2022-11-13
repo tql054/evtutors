@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.intern.evtutors.data.models.Course
 import com.intern.evtutors.data.models.Teacher
 import com.intern.evtutors.view_models.HomeViewModel
@@ -26,8 +27,10 @@ import com.intern.evtutors.view_models.HomeViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeBaseScreen(
+    navHostController: NavHostController,
     TypeOfUser:Int,
     viewModel: HomeViewModel = hiltViewModel()
+
 ) {
     LazyColumn() {
         stickyHeader {
@@ -39,7 +42,7 @@ fun HomeBaseScreen(
                     viewModel.fetchData()
                     val users by viewModel.course.observeAsState(arrayListOf())
                     val tutors by viewModel.tutors.observeAsState(arrayListOf())
-                    StudentHomePage(users, tutors)
+                    StudentHomePage(navHostController,users, tutors)
                 }
 
                 3 -> {
@@ -47,7 +50,7 @@ fun HomeBaseScreen(
                     viewModel.fetchData()
                     val users by viewModel.course.observeAsState(arrayListOf())
                     val tutors by viewModel.tutors.observeAsState(arrayListOf())
-                    TutorHomePage(users, tutors)
+                    TutorHomePage(navHostController,users, tutors)
 
                 }
             }
@@ -58,6 +61,7 @@ fun HomeBaseScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StudentHomePage(
+    navHostController: NavHostController,
     courses:List<Course>,
     tutors:List<Teacher>
 ) {
@@ -81,7 +85,7 @@ fun StudentHomePage(
             Spacer(modifier = Modifier.padding(top = 10.dp))
             HomeTopic(title = "Today's tutors")
             Spacer(modifier = Modifier.padding(top = 5.dp))
-            HomeTutors(tutors = tutors)
+            HomeTutors(tutors = tutors,navHostController)
         }
     }
 }
@@ -89,6 +93,7 @@ fun StudentHomePage(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorHomePage(
+    navHostController: NavHostController,
     courses:List<Course>,
     tutors:List<Teacher>
 ) {
@@ -112,7 +117,7 @@ fun TutorHomePage(
             Spacer(modifier = Modifier.padding(top = 10.dp))
             HomeTopic(title = "Available offers")
             Spacer(modifier = Modifier.padding(top = 5.dp))
-            HomeTutors(tutors = tutors)
+            HomeTutors(tutors = tutors,navHostController)
         }
     }
 }
@@ -150,17 +155,17 @@ fun HomeCourse(
         cells = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
+    ) {
         var itemCourse = courses.size
-            items(count = itemCourse) {
+        items(count = itemCourse) {
                 index ->
             val course = courses[index]
 //            Text(text = course.name)
-                if(index%3==0) {
-                    CourseItem(course = course, color = 1)
-                } else {
-                    CourseItem(course = course, color = 0)
-                }
+            if(index%3==0) {
+                CourseItem(course = course, color = 1)
+            } else {
+                CourseItem(course = course, color = 0)
+            }
 
         }
     }
@@ -169,13 +174,14 @@ fun HomeCourse(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeTutors (
-    tutors:List<Teacher>
+    tutors:List<Teacher>,
+    navHostController: NavHostController
 ) {
     Row(modifier = Modifier
         .horizontalScroll(rememberScrollState())
         .fillMaxWidth()) {
         for (tutor in tutors){
-            TeacherItem(tutor)
+            TeacherItem(tutor,navHostController)
             Spacer(modifier = Modifier.padding(8.dp))
         }
     }

@@ -9,13 +9,14 @@ import com.intern.evtutors.composes.home.HomeBaseScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
 import com.intern.evtutors.ui.customer.profile.Profile_Greeting
+import com.intern.evtutors.ui.customer.profile.profileTeacher
 
 @Composable
 fun Navigation(navController:NavHostController, startScreen:String) {
     NavHost(navController = navController, startDestination = startScreen){
 //        Student's Site
         composable(Screens.StudentHome.route) {
-            HomeBaseScreen(2)
+            HomeBaseScreen(navController,2)
         }
 
         composable((Screens.Profile.route)) {
@@ -33,7 +34,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
 
 //        Tutor's Site
         composable((Screens.TutorsHome.route)) {
-            HomeBaseScreen(3)
+            HomeBaseScreen(navController,3)
         }
 
         composable((Screens.TutorProfile.route)) {
@@ -43,6 +44,9 @@ fun Navigation(navController:NavHostController, startScreen:String) {
 
         composable("home/profile/certificates") {
             ProfileScreen(navController,3)
+        }
+        composable("home/teacher") {
+            profileTeacher(navController)
         }
     }
 }

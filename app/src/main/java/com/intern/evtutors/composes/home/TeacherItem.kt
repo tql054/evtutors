@@ -1,9 +1,6 @@
 package com.intern.evtutors.composes.home
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -25,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
 import com.intern.evtutors.data.models.Teacher
 import com.intern.evtutors.di.FatherOfApps
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
@@ -34,16 +33,18 @@ import com.miggue.mylogin01.ui.theme.RedColor
 
 @Composable
 fun TeacherItem(
-    tutor: Teacher
-
+    tutor: Teacher,
+    navHostController: NavHostController
 ) {
     val roundedShape = RoundedCornerShape(20.dp)
+
     FatherOfAppsTheme {
         Surface(
             modifier = Modifier
                 .width(130.dp)
                 .height(140.dp)
                 .clip(shape = roundedShape)
+                .clickable { navHostController.navigate("home/teacher") }
 
         ) {
             Box(
@@ -116,7 +117,7 @@ fun TestList(
             .fillMaxWidth()
     ) {
         items(count = list.size) {
-            index ->
+                index ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Canvas(modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp)

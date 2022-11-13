@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,10 +23,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -72,16 +76,18 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
     var checkStatus by remember{ mutableStateOf(false) }
     var colorSpaceErro by remember{ mutableStateOf(Color.White) }
 
+
     var password by remember{ mutableStateOf("") }
     var offset by remember { mutableStateOf(0) }
     val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
     val keyboardController =  LocalSoftwareKeyboardController.current
     var isPasswordVisible by remember{ mutableStateOf(false) }
-    if(!checkStatus){
-        colorSpaceErro =Color.White
+    colorSpaceErro = if(!checkStatus){
+        Color.White
     }else{
-        colorSpaceErro=Color.Red
+        Color.Red
     }
+
 
     Scaffold() {
         Column(
@@ -95,9 +101,21 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 .clickable { offset = 0 }
                 .offset { IntOffset(offset, offset) }
                 .padding(horizontal = 40.dp)) {
-                Text(text = "Login", style = MaterialTheme.typography.h1)
+                if(username.isEmpty()){
+                    Row(Modifier.fillMaxWidth()
+                        .height(150.dp),Arrangement.Center
+                    ){
+                        Image(painter = painterResource(id = R.drawable.ic_hello_logo), contentDescription = "",
+                            modifier = Modifier.height(150.dp).width(150.dp).clip(RectangleShape),contentScale = ContentScale.FillBounds
+                        )
+                    }
+                }
 
-                OutlinedTextField(value = username, onValueChange = {username = it},
+
+                Text(text = "Login", style = MaterialTheme.typography.h5)
+
+                OutlinedTextField(value = username, onValueChange = {username = it
+                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusUsername),

@@ -72,7 +72,7 @@ class Profile_activity : ComponentActivity() {
 
 @Composable
 fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : ProfileViewModel = hiltViewModel(), loginViewModel: LoginViewModel= hiltViewModel()) {
-
+    ProfileViewModel.getuser()
 //    used to RadioButton{
     val items = listOf("Male", "Female")
     val selectedValue = remember { mutableStateOf("") }
@@ -81,7 +81,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 //}
     val scope = CoroutineScope( Job()+ Dispatchers.Main)
     val context = LocalContext.current
-    val age = remember { mutableStateOf("0") }
+
 
    // Edittext{
     val EdittextName = remember { mutableStateOf("") }
@@ -97,6 +97,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 
     val update = remember { mutableStateOf(false) }
     var myuser = remember { mutableStateOf(user) }
+    myuser.value= ProfileViewModel.myuser
     var role: MutableSet<Role> = mutableSetOf(Role(myuser.value.roleID,""))
     var userupdate = User(myuser.value.id,myuser.value.name,myuser.value.age,myuser.value.gender,myuser.value.address,myuser.value.phone,myuser.value.avatar,myuser.value.email,myuser.value.userName, password = null,role = role)
     var myuserUpdate = remember { mutableStateOf(userupdate) }
@@ -112,9 +113,10 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     myuserUpdate.value.avatar=myuser.value.avatar
     myuserUpdate.value.email=myuser.value.email
     myuserUpdate.value.userName=myuser.value.userName
+    myuserUpdate.value.role= mutableSetOf(Role(myuser.value.roleID,""))
 
-    ProfileViewModel.getuser()
-    myuser.value= ProfileViewModel.myuser
+
+
 
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
@@ -149,7 +151,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 
         ){
             Icon(Icons.Sharp.Check, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-            Text(text = "Gender",fontSize = 18.sp)
+            Text(text = "Gender:      ",fontSize = 18.sp)
             if(EdittextStatus.value){
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -181,16 +183,22 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                 }else{
                     EdittextGender.value="F"
                 }
-
             }else{
-                Text(myuser.value.gender)
+                if(myuser.value.gender =="M"){
+                    Text("Male")
+                }else{
+                    Text("Female")
+                }
+
             }
         }
 
         if(EdittextName.value!="" &&
             EdittextGmail.value!="" &&
+//            EdittextGmail.value.endsWith("@gmail.com")&&
             EdittextPhone.value !="" &&
-            EdittextAge.value!="" &&
+            EdittextAge.value!="0" &&
+//            EdittextAge.value.matches("[1234567890]".toRegex()) &&
             Edittextadress.value!=""&&
             EdittextGender.value!=""
         )
@@ -203,6 +211,8 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
             myuserUpdate.value.gender=EdittextGender.value
             myuserUpdate.value.address=Edittextadress.value
 
+        }else{
+            update.value =false
         }
         Spacer(modifier = Modifier.height(10.dp))
         if(myuser.value.roleID==3){
@@ -240,34 +250,36 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                     }
                 }
             }
-        Spacer(modifier = Modifier.height(45.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         if(update.value){
-            Button(modifier = Modifier.height(45.dp)
+            Button(modifier = Modifier.height(40.dp)
                 .fillMaxWidth(0.7f)
                 .background(Color.White),
                 onClick = {
+
                     if(update.value){
                         scope.launch{
                             loginViewModel.UpdateAccount(myuser.value.id,myuserUpdate.value)
 
                             if(loginViewModel.myuserupdate.id != 0){
+
                                 EdittextStatus.value =false
-                                update.value = !update.value
+
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                                 }
-
-
                                 var usertoken =getjwtToken(myuserUpdate.value,"")
                                 var userUpdateLocal= loginViewModel.cover(usertoken)
                                 loginViewModel.create(userUpdateLocal!!)
+
                             }else{
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
-
+                        EdittextName.value=""
+                        update.value=false
                     }
                     update.value =false
 
@@ -310,9 +322,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 @Composable
 fun header( name :String, gmail:String){
 
-    val scope = CoroutineScope(Dispatchers.IO + Job())
-    var username = remember { mutableStateOf("") }
-    val StatusBottumHD = remember { mutableStateOf(true) }
+
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -323,7 +333,7 @@ fun header( name :String, gmail:String){
             .fillMaxWidth()
             .fillMaxHeight()
             .background(Color.White)
-            .padding(25.dp)
+            .padding(15.dp)
             ,
             Alignment.Center,
         ){
@@ -331,13 +341,11 @@ fun header( name :String, gmail:String){
                 horizontalAlignment =Alignment.CenterHorizontally,
             ) {
 
-                Image(painter = painterResource(id = com.intern.evtutors.R.drawable.onboar1), contentDescription = "",
-                    modifier = Modifier.size(120.dp).clip(CircleShape).clickable {  },contentScale = ContentScale.FillBounds
-                )
+
                 Text(text = name, fontSize = 25.sp, color = Color.Black)
                 Text(text =gmail, fontSize = 15.sp, color = Color.Black)
 
-                Spacer(modifier = Modifier.height(30.dp))
+
             }
         }
     }
@@ -345,7 +353,7 @@ fun header( name :String, gmail:String){
 }
 @Composable
 fun Text(name: String){
-    Text(text = name,fontSize = 13.sp)
+    Text(text = name,fontSize = 15.sp)
 }
 @Composable
 fun OutlinedTextFieldinput(a:String,b: String):String{
