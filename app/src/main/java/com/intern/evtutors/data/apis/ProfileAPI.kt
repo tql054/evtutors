@@ -1,6 +1,8 @@
 package com.intern.evtutors.data.apis
 
-import com.intern.evtutors.data.model_json.CertificateJson
+
+import com.intern.evtutors.data.model_json.CertificatesJson
+import com.intern.evtutors.data.model_json.TeacherDegree
 import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.Account
 import com.intern.evtutors.data.models.Certificates
@@ -14,6 +16,12 @@ interface ProfileAPI {
     suspend fun getAccount(
         @Body  account: Account
     ): Response<getjwtToken>
+
+    @GET("/api/user/{userId}/degrees/status/{status}")
+    suspend fun getDegreeTutor(
+        @Path("userId") userId:Int,
+        @Path("status") status:Int
+    ):Response<MutableList<TeacherDegree>>
 
     @PUT("/api/updateUserInfo/idUser={idUser}")
     suspend fun updateInfo(
