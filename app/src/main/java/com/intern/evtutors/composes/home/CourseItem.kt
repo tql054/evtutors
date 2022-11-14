@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intern.evtutors.R
 import com.intern.evtutors.data.models.Course
+import com.miggue.mylogin01.ui.theme.ItemColor_1
+import com.miggue.mylogin01.ui.theme.ItemColor_2
 
 
 @Composable
@@ -38,10 +40,10 @@ fun CourseItem (
     course: Course,
     color:Int
 ) {
-    var bg = Color.Blue
+    var bg = ItemColor_1
     val shape = RoundedCornerShape(15.dp)
     if(color==1) {
-        bg = Color.Magenta
+        bg = ItemColor_2
     }
     Surface(
         modifier = Modifier

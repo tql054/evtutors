@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.database.entities.CustomerEntity
+import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.data.repositories.AppInfoRepository
 import com.intern.evtutors.data.repositories.CustomerRepository
@@ -23,12 +24,19 @@ class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val customerRepository: CustomerRepository
 ):BaseViewModel() {
+    var stateInitialLoading by mutableStateOf(true)
     var stateUpdating by mutableStateOf(false)
     var stateAdding by mutableStateOf(false)
-    var certificates by mutableStateOf(mutableListOf<String?>())
     var stateChanging by mutableStateOf(false)
     var stateConfirmCancel by mutableStateOf(false)
     var stateConfirmSave by mutableStateOf(false)
+    var stateLoadingSaving by mutableStateOf(false)
+    var localUser by mutableStateOf<CustomerEntity?>(null)
+    var oldCertificates by mutableStateOf(mutableListOf<CertificateJson>())
+//    New formatting about certificates
+    var userCertificates by mutableStateOf(mutableListOf<CertificateJson>())
+    var currentCertificate  by mutableStateOf<CertificateJson?>(null)
+
 
     fun toggleUpdating() {
         stateUpdating = !stateUpdating
@@ -47,16 +55,21 @@ class ProfileViewModel @Inject constructor(
         stateConfirmCancel = !stateConfirmCancel
     }
 
-    fun fetchCetificate(idTutor:Int) {
+    fun getUserCertificates(idTutor:Int) {
         viewModelScope.launch(handler) {
-            val result = profileRepository.getCertificates(idTutor)
-            val listResult = mutableListOf<String?>(result?.img1, result?.img2, result?.img3, result?.img4, result?.img5)
-            certificates = listResult
+            val results = profileRepository.getCertificates(idTutor)
+            oldCertificates = results!!
+            userCertificates = results!!
+            stateInitialLoading = false
+        }
+    }
+    fun setCurrentCertificate(id:Int) {
+        for (certificate in userCertificates) {
+            if(certificate.id == id) currentCertificate = certificate
         }
     }
 
-    var localUser by mutableStateOf<CustomerEntity?>(null)
-    fun getuser(){
+    fun getUser(){
         parentJob = viewModelScope.launch(handler){
             val result = customerRepository.getcustomer()
             if(result.name?.length !=0){
@@ -66,52 +79,84 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun clearCertificate(idTutor:Int) {
+        stateInitialLoading = true
         toggleUpdating()
         if(stateChanging) {
-            certificates = mutableListOf<String?>()
-            fetchCetificate( idTutor)
+            userCertificates = mutableListOf<CertificateJson>()
+            getUserCertificates( idTutor)
             stateChanging = false
         }
     }
 
-    fun addCertificate(certificate:String) {
-        certificates.forEachIndexed {
-            index: Int, s: String? ->
-            if (s=="") {
-                certificates[index] = certificate
-                Log.d("file path: ", certificates.toString())
-                stateChanging = true
-                return
+    fun addCertificate(certificateJson: CertificateJson) {
+        Log.d("Added certificate",certificateJson.name)
+        if(userCertificates.size < 5) {
+            val newCertificates = mutableListOf<CertificateJson>()
+            for (certificate in userCertificates) {
+                newCertificates.add(certificate)
             }
-        }
-    }
-
-    fun deleteCertificate(index:Int) {
-        val newCertificates = mutableListOf<String?>()
-        newCertificates.add(certificates[0])
-        newCertificates.add(certificates[1])
-        newCertificates.add(certificates[2])
-        newCertificates.add(certificates[3])
-        newCertificates.add(certificates[4])
-        newCertificates[index] = ""
-        val size = newCertificates.size - 1
-        if(index != size) {
-            for(i in index..(size-1)) {
-                newCertificates[i] = newCertificates[i+1]
-            }
-            newCertificates[size] = ""
+            newCertificates.add(certificateJson)
+            userCertificates = newCertificates
         }
         stateChanging = true
-        certificates = newCertificates
-        Log.d("new certificate: ", certificates.toString())
     }
 
-    fun putCertificate(idTutor: Int) {
-        val newCertificates = Certificates(idTutor, certificates[0], certificates[1], certificates[2], certificates[3], certificates[4])
-        viewModelScope.launch(handler) {
-            profileRepository.putCertificates(idTutor, newCertificates)
-            stateChanging = false
-            toggleUpdating()
+    fun deleteCertificate(id:Int) {
+        val newCertificates = mutableListOf<CertificateJson>()
+        var indexDeleted = 10
+        userCertificates.forEachIndexed { index, certificate ->
+            newCertificates.add(certificate)
+            if (certificate.id ==  id) {
+                indexDeleted = index
+            }
         }
+        if(indexDeleted<4) {
+            newCertificates.removeAt(indexDeleted)
+            userCertificates = newCertificates
+            stateChanging = true
+            stateUpdating = true
+        }
+
+        Log.d("new certificate: ", userCertificates.size.toString())
+    }
+
+    fun putCertificate() {
+        val deletedList = findDeletedCertificate(userCertificates)
+        val addedList = findAddedCertificate(userCertificates)
+        viewModelScope.launch(handler) {
+            deletedList.forEach {
+                profileRepository.deleteCertificates(it.id)
+                Log.d("deleted Certificate: ", it.id.toString())
+            }
+            addedList.forEach {
+                profileRepository.putCertificates(localUser!!.id, it)
+            }
+            Log.d("deleted Certificate: ", deletedList.size.toString())
+            Log.d("added Certificate: ", addedList.size.toString())
+            stateChanging = false
+            stateLoadingSaving = false
+            toggleUpdating()
+            getUserCertificates(localUser!!.id)
+        }
+    }
+
+    private fun findDeletedCertificate(newList:MutableList<CertificateJson>):MutableList<CertificateJson> {
+        val result = mutableListOf<CertificateJson>()
+        for(certificate in oldCertificates) {
+            if(!newList.contains(certificate)) {
+                result.add(certificate)
+            }
+        }
+        return result
+    }
+
+    private fun findAddedCertificate(newList:MutableList<CertificateJson>):MutableList<CertificateJson> {
+        val result = mutableListOf<CertificateJson>()
+        for(certificate in newList) {
+            if(!oldCertificates.contains(certificate)) {
+                result.add(certificate)
+            }
+        }
+        return result
     }
 }

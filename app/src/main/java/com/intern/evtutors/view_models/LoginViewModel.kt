@@ -63,16 +63,11 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
         var account = Account()
         account.userName=email
         account.userPassword=passWord
-
             dataUserLogin  = jsonLoginRepositories.getAllAccount(account) as getjwtToken?
             if(dataUserLogin !=null){
                 var a= cover(dataUserLogin!!)
                 create(a)
             }
-
-
-
-        registerJobFinish()
     }
 
     suspend fun UpdateAccount(idUser: Int, user: User) {

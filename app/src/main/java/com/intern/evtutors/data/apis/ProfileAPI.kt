@@ -1,6 +1,6 @@
 package com.intern.evtutors.data.apis
 
-import com.intern.evtutors.data.model_json.CertificatesJson
+import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.Account
 import com.intern.evtutors.data.models.Certificates
@@ -40,14 +40,19 @@ interface ProfileAPI {
     ): Response<UserJson>
 
 
-    @GET("/api/CertificatesOfTeacher/idTeacher={id}")
+    @GET("/api/user/{userId}/degrees")
     suspend fun getCertificates(
-        @Path("id") id:Int
-    ):Response<CertificatesJson>
+        @Path("userId") userId:Int
+    ):Response<MutableList<CertificateJson>>
 
-    @PUT("/api/updateDegree/idTeacher={id}")
+    @POST("/api/user/{userId}/degrees")
     suspend fun putCertificates(
-        @Path("id") id:Int,
-        @Body certificates: Certificates
-    ):Response<CertificatesJson>
+        @Path("userId") userId:Int,
+        @Body certificate: CertificateJson
+    ):Response<CertificateJson>
+
+    @DELETE("/api/degree/{id}")
+    suspend fun deleteCertificates(
+        @Path("id") id:Int
+    ):Response<Any>
 }

@@ -1,4 +1,5 @@
 .idea
 build
 .gradle
-.local.properties
+local.properties
+app/src/main/java/com/intern/evtutors/common/DataLocal.kt
