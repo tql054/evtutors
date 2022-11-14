@@ -4,7 +4,8 @@ import android.util.Log
 import com.intern.evtutors.base.network.BaseRemoteService
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.data.apis.ProfileAPI
-import com.intern.evtutors.data.model_json.CertificatesJson
+import com.intern.evtutors.data.model_json.CertificateJson
+
 import com.intern.evtutors.data.model_json.TeacherDegree
 import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.Account

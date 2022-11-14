@@ -1,7 +1,8 @@
 package com.intern.evtutors.data.apis
 
 
-import com.intern.evtutors.data.model_json.CertificatesJson
+
+import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.data.model_json.TeacherDegree
 import com.intern.evtutors.data.modeljson.UserJson
 import com.intern.evtutors.data.models.Account

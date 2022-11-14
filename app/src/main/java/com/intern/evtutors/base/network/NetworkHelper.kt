@@ -1,7 +1,7 @@
 package com.intern.evtutors.base.network
 
 import com.intern.evtutors.BuildConfig
-import com.intern.evtutors.common.DataLocal
+
 
 object NetworkHelper {
 
