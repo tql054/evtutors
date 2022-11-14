@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -86,6 +87,9 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     val scope = CoroutineScope( Job()+ Dispatchers.Main)
     val context = LocalContext.current
    // Edittext{
+    val ErrorGmailColor = remember { mutableStateOf(Black) }
+    val ErrorPhoneColor = remember { mutableStateOf(Black) }
+    val ErrorAgeColor = remember { mutableStateOf(Black) }
     val EdittextName = remember { mutableStateOf("") }
     val EdittextGender = remember { mutableStateOf("") }
     val EdittextStatus = remember { mutableStateOf(false) }
@@ -140,7 +144,10 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
         Row(Modifier.fillMaxWidth(0.9f).padding(end = 10.dp),
             Arrangement.End) {
             if(update.value){
-                Text(text = "Edit",fontStyle= FontStyle.Italic, color = Color(0xFF1655F5), modifier = Modifier.clickable { EdittextStatus.value=!EdittextStatus.value } )
+                Text(text = "Edit",fontStyle= FontStyle.Italic, color = Color(0xFF1655F5), modifier = Modifier.clickable {
+                    EdittextStatus.value=!EdittextStatus.value
+                    update.value =!update.value
+                } )
             }else{
                 Text(text = "Edit",fontStyle= FontStyle.Italic, modifier = Modifier.clickable {
                     update.value =!update.value
@@ -148,15 +155,20 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
             }
 
         }
-        EdittextName.value=itemInfo(Icons.Sharp.Person,"Name",myuser.value.name,EdittextStatus.value,myuser.value.name)
+        EdittextName.value=itemInfo(Icons.Sharp.Person,"Name",myuser.value.name,EdittextStatus.value,myuser.value.name,
+            Black)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextGmail.value=itemInfo(Icons.Sharp.Email,"Gmail",myuser.value.email,EdittextStatus.value,myuser.value.email)
+        EdittextGmail.value=itemInfo(Icons.Sharp.Email,"Gmail",myuser.value.email,EdittextStatus.value,myuser.value.email,
+            ErrorGmailColor.value)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextPhone.value =itemInfo(Icons.Sharp.Phone,"Phone",myuser.value.phone,EdittextStatus.value,myuser.value.phone)
+        EdittextPhone.value =itemInfo(Icons.Sharp.Phone,"Phone",myuser.value.phone,EdittextStatus.value,myuser.value.phone,
+            ErrorPhoneColor.value)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age     ",myuser.value.age.toString(),EdittextStatus.value,myuser.value.age.toString())
+        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age     ",myuser.value.age.toString(),EdittextStatus.value,myuser.value.age.toString(),
+            ErrorAgeColor.value)
         Spacer(modifier = Modifier.height(10.dp))
-        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Adress",myuser.value.address,EdittextStatus.value,myuser.value.address)
+        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Adress",myuser.value.address,EdittextStatus.value,myuser.value.address,
+            Black)
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier
             .fillMaxWidth(0.85f)
@@ -251,22 +263,22 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                 .background(Color.White),
                 onClick = {
                     var checkValidate= validate(myuserUpdate.value.phone,myuserUpdate.value.email,EdittextAge.value)
-                    if(checkValidate==2){
-                        Handler(Looper.getMainLooper()).post {
+                    when(checkValidate){
+                        1-> {Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "gmail format error", Toast.LENGTH_SHORT).show() }
+                            ErrorGmailColor.value= Red
+                        }
+                        2->  {Handler(Looper.getMainLooper()).post {
                             Toast.makeText(context, "phone number format error", Toast.LENGTH_SHORT).show()
                         }
-                    }else{
-                        if(checkValidate==1){
-                            Handler(Looper.getMainLooper()).post {
-                                Toast.makeText(context, "gmail format error", Toast.LENGTH_SHORT).show() }
-                        }
-                        else{
-                            if(checkValidate==3){
-                                Handler(Looper.getMainLooper()).post {
-                                    Toast.makeText(context, "Age format error", Toast.LENGTH_SHORT).show() }
+                            ErrorPhoneColor.value= Red
                             }
+                        3-> {Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "Age format error", Toast.LENGTH_SHORT).show() }
+                            ErrorAgeColor.value=Red
                         }
                     }
+
                     if(update.value && checkValidate==0){
                         scope.launch{
 
@@ -387,7 +399,7 @@ fun Text(name: String){
     Text(text = name,fontSize = 15.sp)
 }
 @Composable
-fun OutlinedTextFieldinput(a:String,b: String):String{
+fun OutlinedTextFieldinput(a:String,b: String,color: Color):String{
     var input = remember { mutableStateOf(a) }
     TextField(
         modifier = Modifier.fillMaxWidth()
@@ -400,7 +412,7 @@ fun OutlinedTextFieldinput(a:String,b: String):String{
         value = input.value,
         onValueChange = { input.value = it },
         placeholder = { Text(text =b,fontSize = 15.sp, color =Color(0xFF20AFFF) ) },
-        textStyle = TextStyle(fontSize = 15.sp, color =Black),
+        textStyle = TextStyle(fontSize = 15.sp, color =color),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = whitebacground,
@@ -413,8 +425,9 @@ fun OutlinedTextFieldinput(a:String,b: String):String{
     return input.value
 
 }
+
 @Composable
-fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus:Boolean,inputDefault:String):String{
+fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus:Boolean,inputDefault:String,color: Color):String{
     var input = remember { mutableStateOf(name) }
     Row(modifier = Modifier
         .fillMaxWidth(0.85f)
@@ -427,7 +440,7 @@ fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus
         Spacer(Modifier.width(10.dp))
 
         if(EdittextStatus){
-             input.value= OutlinedTextFieldinput(inputDefault,name)
+             input.value= OutlinedTextFieldinput(inputDefault,name,color)
         }else{
 
             Text(name)
