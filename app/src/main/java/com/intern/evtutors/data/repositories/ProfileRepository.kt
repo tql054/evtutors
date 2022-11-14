@@ -1,6 +1,7 @@
 package com.intern.evtutors.data.repositories
 
 import com.intern.evtutors.base.network.NetworkResult
+import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.data.models.Certificates
 import com.intern.evtutors.data.services.ProfileServices
 import com.intern.evtutors.di.IoDispatcher
@@ -16,7 +17,7 @@ class ProfileRepository @Inject constructor(
     suspend fun getCertificates(idTutor:Int) = withContext(dispatcher) {
         when(val result = profileServices.getAllCertificate(idTutor)) { //fake idTutor
             is NetworkResult.Success -> {
-                result.data.toCertificates()
+                result.data
             }
 
             is NetworkResult.Error -> {
@@ -25,10 +26,10 @@ class ProfileRepository @Inject constructor(
         }
     }
 
-    suspend fun putCertificates(idTutor: Int, certificates: Certificates) = withContext(dispatcher) {
-        when(val result = profileServices.putCertificates(1234, certificates)) { //fake idTutor
+    suspend fun putCertificates(idTutor: Int, certificates: CertificateJson) = withContext(dispatcher) {
+        when(val result = profileServices.putCertificates(idTutor, certificates)) { //fake idTutor
             is NetworkResult.Success -> {
-                result.data.toCertificates()
+                result.data
             }
 
             is NetworkResult.Error -> {
@@ -36,4 +37,17 @@ class ProfileRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun deleteCertificates(id: Int) = withContext(dispatcher) {
+        when(val result = profileServices.deleteCertificates(id)) { //fake idTutor
+            is NetworkResult.Success -> {
+                result.data
+            }
+
+            is NetworkResult.Error -> {
+                throw result.exception
+            }
+        }
+    }
+
 }

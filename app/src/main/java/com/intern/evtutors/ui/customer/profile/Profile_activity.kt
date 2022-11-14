@@ -445,7 +445,6 @@ fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus
 
             Text(name)
         }
-
     }
     return input.value
 }

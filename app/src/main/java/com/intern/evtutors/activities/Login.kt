@@ -258,8 +258,6 @@ fun login(loginViewModel: LoginViewModel,
         checkloading= true
 
         scope.launch {
-
-
              loginViewModel.DataLogin(username, password)
 
             if (loginViewModel.dataUserLogin?.user != null) {
