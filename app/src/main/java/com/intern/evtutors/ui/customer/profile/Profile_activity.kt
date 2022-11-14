@@ -119,27 +119,14 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     myuserUpdate.value.role= mutableSetOf(Role(myuser.value.roleID,""))
 
 
-    if(EdittextName.value!="" &&
-        EdittextGmail.value!="" &&
-//            EdittextGmail.value.endsWith("@gmail.com")&&
-        EdittextPhone.value !="" &&
-        EdittextAge.value!="0" &&
-//            EdittextAge.value.matches("[1234567890]".toRegex()) &&
-        Edittextadress.value!=""&&
-        EdittextGender.value!=""
-    )
-    {
-        update.value =true
-        myuserUpdate.value.name=EdittextName.value
-        myuserUpdate.value.email= EdittextGmail.value
-        myuserUpdate.value.phone= EdittextPhone.value
-        myuserUpdate.value.age=EdittextAge.value.toInt()
-        myuserUpdate.value.gender=if(EdittextGender.value=="Female"){"F"}else{"M"}
-        myuserUpdate.value.address=Edittextadress.value
 
-    }else{
-        update.value =false
-    }
+
+    myuserUpdate.value.name=EdittextName.value
+    myuserUpdate.value.email= EdittextGmail.value
+    myuserUpdate.value.phone= EdittextPhone.value
+    myuserUpdate.value.age=EdittextAge.value.toInt()
+    myuserUpdate.value.gender=if(EdittextGender.value=="Female"){"F"}else{"M"}
+    myuserUpdate.value.address=Edittextadress.value
 
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
@@ -152,19 +139,21 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
             if(update.value){
                 Text(text = "Edit",fontStyle= FontStyle.Italic, color = Color(0xFF1655F5), modifier = Modifier.clickable { EdittextStatus.value=!EdittextStatus.value } )
             }else{
-                Text(text = "Edit",fontStyle= FontStyle.Italic, modifier = Modifier.clickable { EdittextStatus.value=!EdittextStatus.value } )
+                Text(text = "Edit",fontStyle= FontStyle.Italic, modifier = Modifier.clickable {
+                    update.value =!update.value
+                    EdittextStatus.value=!EdittextStatus.value } )
             }
 
         }
-        EdittextName.value=itemInfo(Icons.Sharp.Person,"Name",myuser.value.name,EdittextStatus.value)
+        EdittextName.value=itemInfo(Icons.Sharp.Person,"Name",myuser.value.name,EdittextStatus.value,myuser.value.name)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextGmail.value=itemInfo(Icons.Sharp.Email,"Gmail",myuser.value.email,EdittextStatus.value)
+        EdittextGmail.value=itemInfo(Icons.Sharp.Email,"Gmail",myuser.value.email,EdittextStatus.value,myuser.value.email)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextPhone.value =itemInfo(Icons.Sharp.Phone,"Phone",myuser.value.phone,EdittextStatus.value)
+        EdittextPhone.value =itemInfo(Icons.Sharp.Phone,"Phone",myuser.value.phone,EdittextStatus.value,myuser.value.phone)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age    ",myuser.value.age.toString(),EdittextStatus.value)
+        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age    ",myuser.value.age.toString(),EdittextStatus.value,myuser.value.age.toString())
         Spacer(modifier = Modifier.height(10.dp))
-        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Adress",myuser.value.address,EdittextStatus.value)
+        Edittextadress.value= itemInfo(Icons.Sharp.Home,"Adress",myuser.value.address,EdittextStatus.value,myuser.value.address)
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier
             .fillMaxWidth(0.85f)
@@ -367,7 +356,7 @@ fun Text(name: String){
 }
 @Composable
 fun OutlinedTextFieldinput(a:String,b: String):String{
-    var input = remember { mutableStateOf("") }
+    var input = remember { mutableStateOf(a) }
     TextField(
         modifier = Modifier.fillMaxWidth()
             .requiredHeight(50.dp)
@@ -393,8 +382,8 @@ fun OutlinedTextFieldinput(a:String,b: String):String{
 
 }
 @Composable
-fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus:Boolean):String{
-    var input = remember { mutableStateOf("") }
+fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus:Boolean,inputDefault:String):String{
+    var input = remember { mutableStateOf(name) }
     Row(modifier = Modifier
         .fillMaxWidth(0.85f)
         .width(75.dp),
@@ -406,8 +395,9 @@ fun itemInfo(imageVector: ImageVector,title:String, name: String, EdittextStatus
         Spacer(Modifier.width(10.dp))
 
         if(EdittextStatus){
-             input.value= OutlinedTextFieldinput(name,name)
+             input.value= OutlinedTextFieldinput(inputDefault,name)
         }else{
+
             Text(name)
         }
 

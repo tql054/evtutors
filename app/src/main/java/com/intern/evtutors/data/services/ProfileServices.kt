@@ -26,7 +26,7 @@ class ProfileServices @Inject constructor(
         return callApi {profileAPI.updateInfo(idUser,user) }
     }
     suspend fun getDegreeTutor(id: Int): NetworkResult<MutableList<TeacherDegree>> {
-        return callApi {profileAPI.getDegreeTutor(id,0) }
+        return callApi {profileAPI.getDegreeTutor(id,2) }
     }
 
 
