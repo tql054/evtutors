@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Yellow
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.intern.evtutors.R
 import com.intern.evtutors.activities.Login
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Role
@@ -116,7 +119,27 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     myuserUpdate.value.role= mutableSetOf(Role(myuser.value.roleID,""))
 
 
+    if(EdittextName.value!="" &&
+        EdittextGmail.value!="" &&
+//            EdittextGmail.value.endsWith("@gmail.com")&&
+        EdittextPhone.value !="" &&
+        EdittextAge.value!="0" &&
+//            EdittextAge.value.matches("[1234567890]".toRegex()) &&
+        Edittextadress.value!=""&&
+        EdittextGender.value!=""
+    )
+    {
+        update.value =true
+        myuserUpdate.value.name=EdittextName.value
+        myuserUpdate.value.email= EdittextGmail.value
+        myuserUpdate.value.phone= EdittextPhone.value
+        myuserUpdate.value.age=EdittextAge.value.toInt()
+        myuserUpdate.value.gender=if(EdittextGender.value=="Female"){"F"}else{"M"}
+        myuserUpdate.value.address=Edittextadress.value
 
+    }else{
+        update.value =false
+    }
 
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
@@ -151,7 +174,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 
         ){
             Icon(Icons.Sharp.Check, contentDescription = null, Modifier.size(35.dp).padding(end =10.dp),Purple700)
-            Text(text = "Gender:      ",fontSize = 18.sp)
+            Text(text = "Gender:  ",fontSize = 18.sp)
             if(EdittextStatus.value){
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -180,8 +203,9 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                 }
                 if(selectedValue.value =="Male"){
                     EdittextGender.value="M"
-                }else{
-                    EdittextGender.value="F"
+                }
+                if(selectedValue.value==""){
+                    EdittextGender.value="Female"
                 }
             }else{
                 if(myuser.value.gender =="M"){
@@ -193,27 +217,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
             }
         }
 
-        if(EdittextName.value!="" &&
-            EdittextGmail.value!="" &&
-//            EdittextGmail.value.endsWith("@gmail.com")&&
-            EdittextPhone.value !="" &&
-            EdittextAge.value!="0" &&
-//            EdittextAge.value.matches("[1234567890]".toRegex()) &&
-            Edittextadress.value!=""&&
-            EdittextGender.value!=""
-        )
-        {
-            update.value =true
-            myuserUpdate.value.name=EdittextName.value
-            myuserUpdate.value.email= EdittextGmail.value
-            myuserUpdate.value.phone= EdittextPhone.value
-            myuserUpdate.value.age=EdittextAge.value.toInt()
-            myuserUpdate.value.gender=EdittextGender.value
-            myuserUpdate.value.address=Edittextadress.value
 
-        }else{
-            update.value =false
-        }
         Spacer(modifier = Modifier.height(10.dp))
         if(myuser.value.roleID==3){
                 Spacer(modifier = Modifier.height(10.dp))
@@ -259,29 +263,32 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 
                     if(update.value){
                         scope.launch{
+
                             loginViewModel.UpdateAccount(myuser.value.id,myuserUpdate.value)
 
-                            if(loginViewModel.myuserupdate.id != 0){
+                            if(loginViewModel.myuserupdate != null){
 
                                 EdittextStatus.value =false
-
+                                update.value=false
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                                 }
+
                                 var usertoken =getjwtToken(myuserUpdate.value,"")
                                 var userUpdateLocal= loginViewModel.cover(usertoken)
                                 loginViewModel.create(userUpdateLocal!!)
 
-                            }else{
+                            }
+                            else{
                                 Handler(Looper.getMainLooper()).post {
                                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
-                        EdittextName.value=""
-                        update.value=false
+
+
                     }
-                    update.value =false
+
 
                 },
                 shape = RoundedCornerShape(15),
@@ -341,7 +348,10 @@ fun header( name :String, gmail:String){
                 horizontalAlignment =Alignment.CenterHorizontally,
             ) {
 
-
+                Image(painter = rememberAsyncImagePainter("https://tse2.mm.bing.net/th?id=OIP.XgK18C8qMMhf9KZwMWX-twHaE7&pid=Api&P=0")
+                    , contentDescription = "",
+                    modifier = Modifier.size(120.dp).clip(CircleShape),contentScale = ContentScale.FillBounds
+                )
                 Text(text = name, fontSize = 25.sp, color = Color.Black)
                 Text(text =gmail, fontSize = 15.sp, color = Color.Black)
 

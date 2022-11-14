@@ -79,12 +79,15 @@ class profile_teacher : ComponentActivity() {
         Box(modifier = Modifier.fillMaxWidth()
             .height(40.dp)
             .clickable {
-                navHostController.navigate((Screens.StudentHome.route))
+
             }
             .padding(top= 15.dp)){
             Column(Modifier.padding(start = 20.dp)) {
                 Image(painter = painterResource(id = R.drawable.ic_back_outline), contentDescription = "",
-                    modifier = Modifier.padding(end = 10.dp, top = 3.dp).height(20.dp).width(25.dp).clip(RectangleShape).clickable {  },contentScale = ContentScale.FillBounds
+                    modifier = Modifier.padding(end = 10.dp, top = 3.dp).height(20.dp).width(25.dp).
+                    clip(RectangleShape).clickable {
+                        navHostController.navigate((Screens.StudentHome.route))
+                    },contentScale = ContentScale.FillBounds
                 )
             }
         }
@@ -129,7 +132,11 @@ class profile_teacher : ComponentActivity() {
                         ) {
 
                             Image(painter = painterResource(id = R.drawable.ic_vector__down), contentDescription = "",
-                                modifier = Modifier.padding(end = 10.dp, top = 3.dp).height(20.dp).width(20.dp).clip(RectangleShape).clickable {  },contentScale = ContentScale.FillBounds
+                                modifier = Modifier.padding(end = 10.dp, top = 3.dp)
+                                    .height(20.dp).width(20.dp).
+                                    clip(RectangleShape)
+                                    .clickable {checkCertifi = !checkCertifi  }
+                                ,contentScale = ContentScale.FillBounds
                             )
                         }
                     }
@@ -169,7 +176,9 @@ class profile_teacher : ComponentActivity() {
                             ) {
 
                                 Image(painter = painterResource(id = R.drawable.ic_vector__up), contentDescription = "",
-                                    modifier = Modifier.padding(end = 10.dp, top = 3.dp).height(20.dp).width(20.dp).clip(RectangleShape).clickable {  },contentScale = ContentScale.FillBounds
+                                    modifier = Modifier.padding(end = 10.dp, top = 3.dp)
+                                        .height(20.dp).width(20.dp).clip(RectangleShape)
+                                        .clickable { checkCertifi = !checkCertifi },contentScale = ContentScale.FillBounds
                                 )
                             }
                         }

@@ -59,7 +59,6 @@ fun CertificateItemTeacher(
                     painter = rememberAsyncImagePainter(urlImage), //certificate anh1
                     contentDescription = "Uploaded image"
                 )
-//"https://res.cloudinary.com/dufcxfczn/image/upload/v1668002449/87f41f44849fb91c85d4be49f894990d_knp9j3.jpg"
                 Column(
                     verticalArrangement = Arrangement.SpaceAround,
                     horizontalAlignment = Alignment.Start,

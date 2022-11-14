@@ -82,14 +82,16 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
     val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
     val keyboardController =  LocalSoftwareKeyboardController.current
     var isPasswordVisible by remember{ mutableStateOf(false) }
-    colorSpaceErro = if(!checkStatus){
-        Color.White
-    }else{
-        Color.Red
-    }
 
 
     Scaffold() {
+        colorSpaceErro = if(!checkStatus){
+            Color.White
+        }else{
+            Color.Red
+        }
+
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,7 +129,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 )
 
                 Spacer(modifier = Modifier
-                    .height(5.dp)
+                    .height(5.dp).fillMaxWidth()
                     .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -151,7 +153,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     }
                 )
                 Spacer(modifier = Modifier
-                    .height(5.dp)
+                    .height(5.dp).fillMaxWidth()
                     .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -167,7 +169,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                login(loginViewModel,username,password, onchanecheckStatus = {checkStatus=!checkStatus})
+                login(loginViewModel,username,password, onchanecheckStatus = {checkStatus=true})
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
