@@ -28,7 +28,18 @@ class JsonLoginRepositories @Inject constructor(
             }
         }
     }
-
+    suspend fun getDegreeTutor(id: Int) = withContext(dispatcher) {
+        when(val result = profileServices.getDegreeTutor(id)) {
+            is NetworkResult.Success -> {
+                result.data.map {
+                    it
+                }
+            }
+            is NetworkResult.Error -> {
+                throw result.exception
+            }
+        }
+    }
     suspend fun UpdateAccount(idUser: Int,user: User) = withContext(dispatcher){
         val data:User?=null
         when (val result =profileServices.UpdateAccount(idUser,user)){
