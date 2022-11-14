@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -84,8 +85,6 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 //}
     val scope = CoroutineScope( Job()+ Dispatchers.Main)
     val context = LocalContext.current
-
-
    // Edittext{
     val EdittextName = remember { mutableStateOf("") }
     val EdittextGender = remember { mutableStateOf("") }
@@ -124,7 +123,11 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     myuserUpdate.value.name=EdittextName.value
     myuserUpdate.value.email= EdittextGmail.value
     myuserUpdate.value.phone= EdittextPhone.value
-    myuserUpdate.value.age=EdittextAge.value.toInt()
+    if( EdittextAge.value.matches("[0-9]{1,3}$".toRegex()))
+        {
+        myuserUpdate.value.age=EdittextAge.value.toInt()
+    }
+
     myuserUpdate.value.gender=if(EdittextGender.value=="Female"){"F"}else{"M"}
     myuserUpdate.value.address=Edittextadress.value
 
@@ -151,7 +154,7 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
         Spacer(modifier = Modifier.height(10.dp))
         EdittextPhone.value =itemInfo(Icons.Sharp.Phone,"Phone",myuser.value.phone,EdittextStatus.value,myuser.value.phone)
         Spacer(modifier = Modifier.height(10.dp))
-        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age    ",myuser.value.age.toString(),EdittextStatus.value,myuser.value.age.toString())
+        EdittextAge.value = itemInfo(Icons.Sharp.Person,"Age     ",myuser.value.age.toString(),EdittextStatus.value,myuser.value.age.toString())
         Spacer(modifier = Modifier.height(10.dp))
         Edittextadress.value= itemInfo(Icons.Sharp.Home,"Adress",myuser.value.address,EdittextStatus.value,myuser.value.address)
         Spacer(modifier = Modifier.height(10.dp))
@@ -205,8 +208,6 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
 
             }
         }
-
-
         Spacer(modifier = Modifier.height(10.dp))
         if(myuser.value.roleID==3){
                 Spacer(modifier = Modifier.height(10.dp))
@@ -249,8 +250,24 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
                 .fillMaxWidth(0.7f)
                 .background(Color.White),
                 onClick = {
-
-                    if(update.value){
+                    var checkValidate= validate(myuserUpdate.value.phone,myuserUpdate.value.email,EdittextAge.value)
+                    if(checkValidate==2){
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "phone number format error", Toast.LENGTH_SHORT).show()
+                        }
+                    }else{
+                        if(checkValidate==1){
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(context, "gmail format error", Toast.LENGTH_SHORT).show() }
+                        }
+                        else{
+                            if(checkValidate==3){
+                                Handler(Looper.getMainLooper()).post {
+                                    Toast.makeText(context, "Age format error", Toast.LENGTH_SHORT).show() }
+                            }
+                        }
+                    }
+                    if(update.value && checkValidate==0){
                         scope.launch{
 
                             loginViewModel.UpdateAccount(myuser.value.id,myuserUpdate.value)
@@ -313,7 +330,22 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
         }
 
     }
+fun validate(numberPhone:String,gmail: String, age:String):Int{
+        if(!Patterns.EMAIL_ADDRESS.matcher(gmail).matches() ||
+            !gmail.endsWith("@gmail.com")
+                ){
+           return 1
+        }
+        if(numberPhone.length!=10 || !numberPhone.matches("[0-9]{10}$".toRegex())){
+            return 2
+        }
+        if( !age.matches("[0-9]{1,3}$".toRegex()))
+        {
+            return 3
+        }
 
+    return 0
+}
 
 @Composable
 fun header( name :String, gmail:String){
