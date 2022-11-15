@@ -41,7 +41,7 @@ fun CertificateItem(
                     profileViewModel.currentCertificate  = certificateJson
                 }
                 .border(
-                    BorderStroke(3.dp, color = PrimaryColor),
+                    BorderStroke(2.dp, color = PrimaryColor),
                     shape = shape
                 ),
 

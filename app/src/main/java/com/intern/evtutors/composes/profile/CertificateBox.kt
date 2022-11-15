@@ -55,12 +55,17 @@ import com.cloudinary.android.callback.UploadCallback
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.intern.evtutors.data.model_json.CertificateJson
 import com.intern.evtutors.data.models.Certificates
+import com.intern.evtutors.di.IoDispatcher
 import com.intern.evtutors.view_models.CertificatesViewModel
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.ModalColor
 import com.miggue.mylogin01.ui.theme.Red500
 import com.miggue.mylogin01.ui.theme.RedColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -228,7 +233,7 @@ fun CertificatesAdding(
             }
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "Note: Thông tin bằng cấp và hình ảnh cần phải được cung cấp chính xác 100%",
+                text = "Note: All provided information is required 100% precision",
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Light,
                 fontStyle = FontStyle.Italic,
@@ -237,7 +242,15 @@ fun CertificatesAdding(
 
         }
         if (certificatesViewModel.stateUpload) {
-            CertificateImageUpload(certificatesViewModel = certificatesViewModel)
+            CertificateImageUpload(certificatesViewModel = certificatesViewModel) {
+                checkValidData(
+                    stateName,
+                    stateAddress,
+                    stateDOI,
+                    stateDOE,
+                    certificatesViewModel
+                )
+            }
         }
         if(certificatesViewModel.stateErrorBox) {
             ErrorBox(message = "Opps! The expiration date is too soon!", certificatesViewModel = certificatesViewModel)
@@ -370,7 +383,8 @@ fun DatePickerview(
 
 @Composable
 fun CertificateImageUpload(
-    certificatesViewModel: CertificatesViewModel
+    certificatesViewModel: CertificatesViewModel,
+    onCheck: ()->Unit
 ) {
     var filePath by rememberSaveable {
         mutableStateOf<Uri?>(null)
@@ -447,7 +461,10 @@ fun CertificateImageUpload(
                     } else {
                         Button(onClick = {
                             certificatesViewModel.stateLoadingImage = true
-                            onUpload(filePath!!, context, certificatesViewModel)
+//                            CoroutineScope(Dispatchers.Main + Job()).launch {
+                                onUpload(filePath!!, context, certificatesViewModel, onCheck)
+//                                Log.d("abc", "abc")
+//                            }
                         }) {
                             Text(
                                 text = "Add",
@@ -624,7 +641,7 @@ fun ErrorBox(
 }
 
 
-fun onUpload(filePath:Uri, context:Context, certificatesViewModel: CertificatesViewModel) {
+fun onUpload(filePath:Uri, context:Context, certificatesViewModel: CertificatesViewModel, onCheck:()->Unit) {
     val TAG = "Cloudinary log: "
     MediaManager.get().upload(filePath).callback(object : UploadCallback {
         override fun onStart(requestId: String) {
@@ -638,6 +655,7 @@ fun onUpload(filePath:Uri, context:Context, certificatesViewModel: CertificatesV
         override fun onSuccess(requestId: String, resultData: Map<*, *>?) {
             Log.d(TAG, "onStart: " + "usuccess")
             certificatesViewModel.addImageCertificate(resultData!!.get("secure_url").toString())
+            onCheck()
             certificatesViewModel.stateLoadingImage = false
         }
 
