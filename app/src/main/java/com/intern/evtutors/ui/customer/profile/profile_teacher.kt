@@ -7,7 +7,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -30,10 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.intern.evtutors.R
-import com.intern.evtutors.composes.profile.CertificateItem
 import com.intern.evtutors.composes.profile.CertificateItemTeacher
 import com.intern.evtutors.data.model_json.TeacherDegree
-import com.intern.evtutors.data.repositories.JsonLoginRepositories
 import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.ui.customer.profile.ui.theme.redbacground
 import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
@@ -403,7 +400,7 @@ fun Item_comment1(count:Int,name:String,textComment:String,time:String){
 
     ){
         Box(modifier = Modifier.padding(top = 10.dp, start = 10.dp)){
-            Image(painter = painterResource(id = R.drawable.onboar1), contentDescription = "",
+            Image(painter = painterResource(id = R.drawable.onboard), contentDescription = "",
                 modifier = Modifier.size(45.dp).clip(CircleShape)
                     .clickable {  }
                 ,contentScale = ContentScale.FillBounds)

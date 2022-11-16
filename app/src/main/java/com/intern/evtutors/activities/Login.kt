@@ -58,6 +58,7 @@ import kotlinx.coroutines.*
 class Login : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
 //            FatherOfAppsTheme {
                 // A surface container using the 'background' color from the theme
@@ -129,7 +130,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                 )
 
                 Spacer(modifier = Modifier
-                    .height(5.dp).fillMaxWidth()
+                    .height(1.dp).fillMaxWidth()
                     .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -153,7 +154,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     }
                 )
                 Spacer(modifier = Modifier
-                    .height(5.dp).fillMaxWidth()
+                    .height(1.dp).fillMaxWidth()
                     .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -245,7 +246,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 fun login(loginViewModel: LoginViewModel,
           username:String,
           password:String,
-          onchanecheckStatus:(Boolean)-> Unit){
+          onchanecheckStatus:()-> Unit){
     var checkloading by rememberSaveable() {
         mutableStateOf<Boolean>(false)
     }
@@ -271,7 +272,7 @@ fun login(loginViewModel: LoginViewModel,
                 checkloading= false
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-                    onchanecheckStatus
+                    onchanecheckStatus()
                 }
             }
         }

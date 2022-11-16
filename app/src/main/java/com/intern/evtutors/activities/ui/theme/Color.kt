@@ -21,3 +21,7 @@ val Red500 = Color(0xFFD74C4C)
 val Red300 = Color(0xFFFFCBCB)
 
 val BlackText = Color(0xFF3025e8)
+val blueText=Color(0xFF4C6ED7)
+val BluButtom=Color(0xFFFDFDFD)
+val Grey900 = Color(0xFF212121)
+val Grey300 = Color(0xFFe0e0e0)
