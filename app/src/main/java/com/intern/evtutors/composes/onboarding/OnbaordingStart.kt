@@ -1,6 +1,8 @@
 package com.intern.evtutors.composes.onboarding
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,52 +45,70 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+         var isRemembered= false
+         lateinit var share: SharedPreferences
+        share =getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+        isRemembered=share.getBoolean("CHECKBOX",false)
+
         setContent {
             FatherOfAppsTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
+                if(!isRemembered){
+                    with (share.edit()) {
+                        putBoolean("CHECKBOX",true)
+                        apply()
+                    }
+                    Surface(modifier = Modifier.fillMaxSize()) {
 
-                    val items = ArrayList<OnBoardingData>()
+                        val items = ArrayList<OnBoardingData>()
 
-                    items.add(
-                        OnBoardingData(
-                            R.drawable.ic_onboarding_start,
-                            "Shop Awesome Products",
-                            "We have products in different categories including Apparels, Electronics, Accessories, Footwear etc."
+                        items.add(
+                            OnBoardingData(
+                                R.drawable.ic_onboarding_start,
+                                "Shop Awesome Products",
+                                "We have products in different categories including Apparels, Electronics, Accessories, Footwear etc."
+                            )
                         )
-                    )
-                    items.add(
-                        OnBoardingData(
-                            R.drawable.ic_ondoarding_sencond,
-                            "Shop Awesome Products",
-                            "We have products in different categories including Apparels, Electronics, Accessories, Footwear etc."
+                        items.add(
+                            OnBoardingData(
+                                R.drawable.ic_ondoarding_sencond,
+                                "Shop Awesome Products",
+                                "We have products in different categories including Apparels, Electronics, Accessories, Footwear etc."
+                            )
                         )
-                    )
-                    items.add(
-                        OnBoardingData(
-                            R.drawable.img_onboarding,
-                            "Shop Awesome Products",
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras netus mauris pulvinar suspendisse. Et sit ac lacus in rhoncus."
+                        items.add(
+                            OnBoardingData(
+                                R.drawable.img_onboarding,
+                                "Shop Awesome Products",
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras netus mauris pulvinar suspendisse. Et sit ac lacus in rhoncus."
+                            )
                         )
-                    )
 
 
 
-                    var pagerState = rememberPagerState(
-                        pageCount = items.size,
-                        initialOffscreenLimit = 2,
-                        infiniteLoop = false,
-                        initialPage = 0,
-                    )
+                        var pagerState = rememberPagerState(
+                            pageCount = items.size,
+                            initialOffscreenLimit = 2,
+                            infiniteLoop = false,
+                            initialPage = 0,
+                        )
 
-                    OnBoardingPager(
-                        item = items, pagerState = pagerState, modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = whitebacground)
-                    )
+                        OnBoardingPager(
+                            item = items, pagerState = pagerState, modifier = Modifier
+                                .fillMaxWidth()
+                                .background(color = whitebacground)
+                        )
 
+                    }
+                }
+                else{
+                    val context = LocalContext.current
+                    var intent: Intent = Intent(context, Login::class.java)
+                    context.startActivity(intent)
                 }
             }
         }
+
 }
 
     @ExperimentalPagerApi

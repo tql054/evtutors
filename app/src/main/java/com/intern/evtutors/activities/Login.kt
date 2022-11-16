@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -75,9 +76,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
     val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
     var checkStatus by remember{ mutableStateOf(false) }
-    var colorSpaceErro by remember{ mutableStateOf(Color.White) }
-
-
+    var colorTextInput by remember{ mutableStateOf(Color.White) }
     var password by remember{ mutableStateOf("") }
     var offset by remember { mutableStateOf(0) }
     val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
@@ -86,8 +85,8 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
 
 
     Scaffold() {
-        colorSpaceErro = if(!checkStatus){
-            Color.White
+        colorTextInput = if(!checkStatus){
+            Color.Black
         }else{
             Color.Red
         }
@@ -113,10 +112,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                         )
                     }
                 }
-
-
                 Text(text = "Login", style = MaterialTheme.typography.h5)
-
                 OutlinedTextField(value = username, onValueChange = {username = it
                      },
                     modifier = Modifier
@@ -124,14 +120,11 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                         .focusRequester(focusUsername),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = {focusPassword.requestFocus()}),
+                    textStyle = TextStyle(fontSize = 15.sp, color =colorTextInput) ,
                     singleLine = true,
                     label = {Text(text = "Username")},
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 )
-
-                Spacer(modifier = Modifier
-                    .height(1.dp).fillMaxWidth()
-                    .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier
@@ -142,6 +135,7 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                     label = { Text(text = "Password")},
                     colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                     singleLine = true,
+                    textStyle = TextStyle(fontSize = 15.sp, color =colorTextInput) ,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions (onDone = {keyboardController?.hide()}),
                     visualTransformation = if(isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -153,9 +147,6 @@ fun SigInScreen(loginViewModel  : LoginViewModel = hiltViewModel()) {
                         }
                     }
                 )
-                Spacer(modifier = Modifier
-                    .height(1.dp).fillMaxWidth()
-                    .background(colorSpaceErro))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
