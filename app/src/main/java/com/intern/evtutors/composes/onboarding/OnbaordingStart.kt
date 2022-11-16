@@ -37,6 +37,7 @@ import com.intern.evtutors.data.models.OnBoardingData
 import com.intern.evtutors.ui.customer.profile.ui.theme.BlueText
 import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
 import com.miggue.mylogin01.ui.theme.*
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalPagerApi::class)
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                    val pagerState = rememberPagerState(
+                    var pagerState = rememberPagerState(
                         pageCount = items.size,
                         initialOffscreenLimit = 2,
                         infiniteLoop = false,
@@ -111,7 +112,7 @@ class MainActivity : ComponentActivity() {
     fun PagerIndicator(size: Int, currentPage: Int) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(top = 60.dp)
+            modifier = Modifier.padding(top = 10.dp)
         ) {
             repeat(size) {
                 Indicator(isSelected = it == currentPage)
@@ -139,13 +140,18 @@ class MainActivity : ComponentActivity() {
         pagerState: PagerState,
         modifier: Modifier = Modifier,
     ) {
+
         Box(modifier = modifier) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.fillMaxHeight(0.85f),
+                verticalArrangement=Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+                ) {
                 HorizontalPager(state = pagerState) { page ->
                     Column(
                         modifier = Modifier
                             .padding(top = 60.dp)
-                            .fillMaxHeight(0.7f)
+
                             .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
@@ -155,12 +161,6 @@ class MainActivity : ComponentActivity() {
                                 .height(350.dp)
                                 .fillMaxWidth()
                         )
-//                        Text(
-//                            text = item[page].title,
-//                            modifier = Modifier.padding(top = 30.dp),
-//                            color = Color.Gray,
-//                            style = Typographyonboar.body1
-//                        )
                         Text(
                             text = item[page].desc,
                             modifier = Modifier.padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 30.dp),
@@ -183,62 +183,52 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun BottomSection(currentPager: Int) {
+        val context = LocalContext.current
         Row(
             modifier = Modifier
-                .padding(bottom = 20.dp, top = 30.dp)
+                .padding(bottom = 20.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = if (currentPager != 2) Arrangement.SpaceBetween else Arrangement.Center
+            horizontalArrangement =  Arrangement.Center
         ) {
 
-            Column(Modifier.fillMaxWidth(), horizontalAlignment=Alignment.CenterHorizontally
+            if (currentPager == 2){
+                OutlinedButton(
+                    onClick = {
+                        var intent: Intent = Intent(context, Login::class.java)
+                        context.startActivity(intent)
+                    },
+                    shape = RoundedCornerShape(50), // = 40% percent
                 ) {
-                    Button(
-                            modifier=Modifier
-                        .fillMaxWidth(0.8f)
-                                .height(50.dp)
-                                .background(BluButtom,shape = RoundedCornerShape(10)),
-                        onClick = { },
-                    ) {
-                        if(currentPager == 2){
-                            Text(
-                                text = "Let’s Make a Journey",
-                                fontWeight= FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 8.dp, horizontal = 40.dp),
-                                color = whitebacground
-                                )
-                        }
-                        else{
-                            Text(
-                                text = "Next",
-                                fontStyle =null,
-                                fontWeight= FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 8.dp, horizontal = 40.dp),
-                                color = whitebacground,
-
-                            )
-                        }
-                    }
-                Spacer(Modifier.height(20.dp))
-                SkipNextButton("Skip",Modifier.padding(start = 0.dp))
+                    Text(
+                        text = "Get Started",
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 40.dp),
+                        color = blueText,
+                        fontWeight= FontWeight.Bold
+                    )
+                }
+            }else{
+                SkipNextButton("Skip",Modifier.padding(start = 20.dp))
+//                SkipNextButton("Next",Modifier.padding(end = 20.dp))
             }
+
         }
     }
-@Composable
-fun SkipNextButton(text: String, modifier: Modifier) {
-    val context = LocalContext.current
-    TextButton(onClick = {
-        var intent: Intent = Intent(context, Login::class.java)
-        context.startActivity(intent)
-    }){
-        Text(
-            text = text, color = blueText, modifier = modifier, fontSize = 18.sp,
-            style = Typographyonboar.body1,
-            fontWeight = FontWeight.Medium
-        )
+    @Composable
+    fun SkipNextButton(text: String, modifier: Modifier) {
+        val context = LocalContext.current
+        TextButton(onClick = {
+            var intent: Intent = Intent(context, Login::class.java)
+            context.startActivity(intent)
+        }){
+            Text(
+                text = text, color = blueText, modifier = modifier, fontSize = 18.sp,
+                style = Typographyonboar.body1,
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+
     }
-
-
-}
 
 }
 @Preview(showBackground = true)
