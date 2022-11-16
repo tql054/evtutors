@@ -24,11 +24,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FatherOfApps">
-<!--        <activity-->
-<!--            android:name=".MainActivity"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/title_activity_main"-->
-<!--            android:theme="@style/Theme.FatherOfApps" />-->
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.FatherOfApps" />
         <!-- <activity -->
         <!-- android:name=".ui.customer.profile.Profile_activity" -->
         <!-- android:exported="false" -->

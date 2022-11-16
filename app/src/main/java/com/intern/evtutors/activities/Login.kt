@@ -49,25 +49,42 @@ import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
+import com.intern.evtutors.ui.customer.profile.ProfileViewModel
 import com.intern.evtutors.view_models.LoginViewModel
+
 import com.miggue.mylogin01.ui.theme.BlackText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
 
 @AndroidEntryPoint
-class Login : ComponentActivity() {
+class Login() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-//            FatherOfAppsTheme {
-                // A surface container using the 'background' color from the theme
-                SigInScreen()
+
+            CheckLogni()
             }
         }
     }
+@ExperimentalCoroutinesApi
+@Composable
+fun CheckLogni(profileViewModel  : ProfileViewModel = hiltViewModel()){
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    coroutineScope.launch{
+        profileViewModel.getuser()
 
+    }
+    if(profileViewModel.myuser ==null || profileViewModel.myuser.id==0 ){
+        SigInScreen()
+    }else{
+        var intent: Intent = Intent(context, HomeActivity::class.java)
+        context.startActivity(intent)
+    }
+
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
