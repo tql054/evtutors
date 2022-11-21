@@ -131,7 +131,6 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
         {
         myuserUpdate.value.age=EdittextAge.value.toInt()
     }
-
     myuserUpdate.value.gender=if(EdittextGender.value=="Female"){"F"}else{"M"}
     myuserUpdate.value.address=Edittextadress.value
 
