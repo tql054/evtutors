@@ -6,4 +6,5 @@
     <string name="title_activity_main">main</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_profile">Profile_activity</string>
+    <string name="title_activity_teacher_post">teacherPost</string>
 </resources>
