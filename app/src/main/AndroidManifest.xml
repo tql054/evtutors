@@ -44,7 +44,7 @@
             android:exported="false"
             android:theme="@style/Theme.FatherOfApps" />
         <activity
-            android:name=".composes.teacherPostInfo.ui.teacherPost"
+            android:name=".activities.HomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
