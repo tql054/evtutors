@@ -580,13 +580,6 @@ fun InfoInput(
     }
 }
 
-@Composable
-fun CircularLoadingIcon(isDisplayed: Boolean, verticalBias: Float) {
-
-        CircularProgressIndicator(
-            color = MaterialTheme.colors.primary
-        )
-}
 
 @Composable
 fun ErrorBox(

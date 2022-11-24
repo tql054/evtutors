@@ -1,50 +1,64 @@
 package com.intern.evtutors.activities
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cloudinary.android.MediaManager
+import com.intern.evtutors.R
+import com.intern.evtutors.common.DataLocal
+import com.intern.evtutors.navigations.Navigation
 //import com.intern.evtutors.common.DataLocal
 import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
+import com.miggue.mylogin01.ui.theme.ModalColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val config = HashMap<Any?, Any?>()
-        config["cloud_name"] = "dufcxfczn";
-        config["api_key"] = "755196561895664";
-        config["api_secret"] = "umTWiuZvLaooFvzx-eR1W1wTvdA";
+        config["cloud_name"] = DataLocal.CLOUD_NAME
+        config["api_key"] = DataLocal.API_KEY
+        config["api_secret"] = DataLocal.API_SECRET
 //        config.put("secure", true);
 
-        MediaManager.init(this, config);
+        MediaManager.init(this, config)
         setContent {
             val viewModel = viewModel<ProfileViewModel>()
             viewModel.getUser()
             val user = viewModel.localUser
             user?.let {
-                FatherOfAppsTheme() {
+                FatherOfAppsTheme {
                     App(user.roleID)
                 }
             }
+        }
+        statusBarColor()
+    }
 
+    private fun statusBarColor() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.statusBarColor = resources.getColor(R.color.white, theme)
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App(
@@ -57,11 +71,11 @@ fun App(
     }
     Scaffold(
         bottomBar = {
-            BottomNavigation() {
+            BottomNavigation {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                items.forEach() {
+                items.forEach {
                     BottomNavigationItem(
                         selected = currentRoute == it.route,
                         onClick = {

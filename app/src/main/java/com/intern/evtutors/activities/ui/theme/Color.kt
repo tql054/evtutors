@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 
 val PrimaryColor = Color(0xFF4061B5)
 val SecondaryColor = Color(0xFF4C6ED7)
+val ThirdColor = Color(0xFFC0D0FF)
+val FourthColor = Color(0xFFF2F5FF)
 val ItemColor_1 = Color(0XFF335EF6)
 val ItemColor_2 = Color(0XFFFF9DB5)
 val ItemColor_3 = Color(0XFFCBA110)
@@ -21,3 +23,4 @@ val Red500 = Color(0xFFD74C4C)
 val Red300 = Color(0xFFFFCBCB)
 
 val BlackText = Color(0xFF3025e8)
+val DarkText = Color(0xFF6D6A6A)

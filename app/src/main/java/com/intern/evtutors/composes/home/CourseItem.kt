@@ -173,8 +173,6 @@ fun CircleAvatar() {
             contentScale = ContentScale.Inside
             )
     }
-
-
 }
 
 @Composable

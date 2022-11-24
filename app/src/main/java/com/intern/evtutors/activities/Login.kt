@@ -260,20 +260,20 @@ fun login(loginViewModel: LoginViewModel,
         scope.launch {
              loginViewModel.DataLogin(username, password)
 
-            if (loginViewModel.dataUserLogin?.user != null) {
+//            if (loginViewModel.dataUserLogin?.user != null) {
                 checkloading= false
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show()
                 }
                 var intent: Intent = Intent(context, HomeActivity::class.java)
                 context.startActivity(intent)
-            } else {
-                checkloading= false
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-                    onchanecheckStatus
-                }
-            }
+//            } else {
+//                checkloading= false
+//                Handler(Looper.getMainLooper()).post {
+//                    Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+//                    onchanecheckStatus
+//                }
+//            }
         }
     },
         modifier = Modifier.fillMaxWidth(),

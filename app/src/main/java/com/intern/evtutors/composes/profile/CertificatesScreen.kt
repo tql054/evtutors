@@ -90,13 +90,8 @@ fun TutorInfoPage(
                                     fontWeight = FontWeight.Normal,
                                     textAlign = TextAlign.Center
                                 )
-//                            var newCertificates = profileViewModel.certificates
-//                            newCertificates.remove("")
-//                            Text(text = "Number of certificate: ${newCertificates.size}")
                                 Text(text = "Number of certificate: ${profileViewModel.userCertificates.size}/5")
-
                             }
-
                             Box(
                                 Modifier
                                     .fillMaxWidth()
@@ -179,106 +174,6 @@ fun TutorInfoPage(
         )
     }
 }
-
-@Composable
-fun ConfirmSaveBox(
-    profileViewModel: ProfileViewModel
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(ModalColor)
-            .padding(
-                top = 5.dp,
-                start = 10.dp,
-                end = 10.dp
-            )
-    ) {
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-                .background(Color.White)
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Confirm all change?")
-            Row {
-                Button(onClick = {
-                    profileViewModel.stateLoadingSaving = true
-                    if(profileViewModel.stateChanging) {
-                        val user = profileViewModel.localUser
-                        user?.let {
-                            profileViewModel.putCertificate()
-                        }
-                        profileViewModel.toggleSaving()
-                    }
-                }) {
-                    Text(
-                        text = "Yes"
-                    )
-                }
-                Spacer(modifier = Modifier.width(20.dp))
-                Button(onClick = {
-                    profileViewModel.toggleSaving()
-                }) {
-                    Text(
-                        text = "No"
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ConfirmCancelBox(
-    profileViewModel: ProfileViewModel
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(ModalColor)
-            .padding(
-                top = 5.dp,
-                start = 10.dp,
-                end = 10.dp
-            )
-    ) {
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-                .background(Color.White)
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Are you sure removing all change?")
-            Row {
-                Button(onClick = {
-                    val user = profileViewModel.localUser
-                    user?.let {
-                        profileViewModel.clearCertificate(user.id)
-                    }
-                    profileViewModel.toggleCancellation()
-                }) {
-                    Text(
-                        text = "Yes"
-                    )
-                }
-                Spacer(modifier = Modifier.width(20.dp))
-                Button(onClick = {
-                    profileViewModel.toggleCancellation()
-                }) {
-                    Text(
-                        text = "No"
-                    )
-                }
-            }
-        }
-    }
-}
-
 
 @Composable
 fun TutorInfoHeader(
@@ -391,4 +286,105 @@ fun TutorInfoHeader(
         }
     }
 }
+
+@Composable
+fun ConfirmSaveBox(
+    profileViewModel: ProfileViewModel
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ModalColor)
+            .padding(
+                top = 5.dp,
+                start = 10.dp,
+                end = 10.dp
+            )
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .background(Color.White)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Confirm all change?")
+            Row {
+                Button(onClick = {
+                    profileViewModel.stateLoadingSaving = true
+                    if(profileViewModel.stateChanging) {
+                        val user = profileViewModel.localUser
+                        user?.let {
+                            profileViewModel.putCertificate()
+                        }
+                        profileViewModel.toggleSaving()
+                    }
+                }) {
+                    Text(
+                        text = "Yes"
+                    )
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Button(onClick = {
+                    profileViewModel.toggleSaving()
+                }) {
+                    Text(
+                        text = "No"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ConfirmCancelBox(
+    profileViewModel: ProfileViewModel
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ModalColor)
+            .padding(
+                top = 5.dp,
+                start = 10.dp,
+                end = 10.dp
+            )
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .background(Color.White)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Are you sure removing all change?")
+            Row {
+                Button(onClick = {
+                    val user = profileViewModel.localUser
+                    user?.let {
+                        profileViewModel.clearCertificate(user.id)
+                    }
+                    profileViewModel.toggleCancellation()
+                }) {
+                    Text(
+                        text = "Yes"
+                    )
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Button(onClick = {
+                    profileViewModel.toggleCancellation()
+                }) {
+                    Text(
+                        text = "No"
+                    )
+                }
+            }
+        }
+    }
+}
+
+
 

@@ -1,16 +1,21 @@
-package com.intern.evtutors.activities
+package com.intern.evtutors.navigations
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.composes.home.HomeBaseScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
+import com.intern.evtutors.composes.schedule.ScheduleScreen
 import com.intern.evtutors.ui.customer.profile.Profile_Greeting
 import com.intern.evtutors.ui.customer.profile.profileTeacher
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(navController:NavHostController, startScreen:String) {
     NavHost(navController = navController, startDestination = startScreen){
@@ -25,7 +30,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         composable((Screens.Favourite.route)) {
-            ProfileScreen(navController,2)
+            ScheduleScreen()
         }
 
         composable((Screens.Notification.route)) {
@@ -47,6 +52,12 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
         composable("home/teacher") {
             profileTeacher(navController)
+        }
+
+        navigation(route = "lesson", startDestination = "lesson/details") {
+            composable(route="lesson/details"){
+
+            }
         }
     }
 }
