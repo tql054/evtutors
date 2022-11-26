@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import com.intern.evtutors.R
 import com.intern.evtutors.composes.home.CircleAvatar
 import com.intern.evtutors.composes.schedule.HeaderLine
-import com.intern.evtutors.composes.schedule.TimeSchedule
 import com.miggue.mylogin01.ui.theme.*
 
 @Composable
@@ -38,35 +36,7 @@ fun LessonDetailScreen() {
             LessonDetailHeader()
             HeaderLine()
             LessonTitle("Toeic 100")
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .padding(10.dp, 0.dp)
-                    .clip(CircleShape)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = "Join a call now!",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(start = 10.dp),
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play icon",
-                        tint = Color.White
-                    )
-                }
-            }
+            JoinCallButton()
             TeachersLessonContent()
         }
     }
@@ -77,19 +47,10 @@ fun LessonDetailHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(55.dp),
+            .height(55.dp)
+            .background(color = ThirdColor),
     ) {
-        IconButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .width(32.dp)
-                .fillMaxHeight()
-        ) {
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Back Button"
-            )
-        }
+        BackButton {}
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,6 +79,37 @@ fun LessonDetailHeader() {
 }
 
 @Composable
+fun BackButton(
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier.padding(start = 10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(30.dp)
+                .clip(CircleShape)
+                .background(SecondaryColor)
+                .align(Alignment.Center)
+        )
+        IconButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .width(32.dp)
+                .fillMaxHeight()
+                .align(Alignment.Center)
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Back Button",
+                tint = Color.White
+            )
+        }
+    }
+
+}
+
+@Composable
 fun LessonTitle(title:String) {
     Text(
         modifier = Modifier
@@ -128,6 +120,39 @@ fun LessonTitle(title:String) {
         fontWeight = FontWeight.ExtraBold,
         textAlign = TextAlign.Center
     )
+}
+
+@Composable
+fun JoinCallButton() {
+    Button(
+        onClick = { /*TODO*/ },
+        modifier = Modifier
+            .padding(10.dp, 0.dp)
+            .clip(CircleShape)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier,
+                text = "Join a call now!",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            Icon(
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(start = 10.dp),
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = "Play icon",
+                tint = Color.White
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

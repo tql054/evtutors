@@ -33,24 +33,10 @@ fun ProfileScreen(
 ) {
     profileViewModel.getUser()
     FatherOfAppsTheme {
-        when(TypeOfUser) {
-            2 -> {
-                Surface() {
-                    Column() {
-                        var user = profileViewModel.localUser
-                        Text(text = "Count: ${user?.roleID}")
-                    }
-                }
-            }
-
-            3 -> {
-                TutorInfoPage(
-                    profileViewModel
-                )
-            }
-        }
+        TutorInfoPage(
+            profileViewModel
+        )
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

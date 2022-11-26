@@ -21,6 +21,6 @@ val Brown300 = Color(0xFFEDDDA3)
 val Red700 = Color(0xFF670606)
 val Red500 = Color(0xFFD74C4C)
 val Red300 = Color(0xFFFFCBCB)
-
+val Gray300 = Color(0xFFDCDCDC)
 val BlackText = Color(0xFF3025e8)
 val DarkText = Color(0xFF6D6A6A)
