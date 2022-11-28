@@ -30,13 +30,19 @@ import com.intern.evtutors.composes.schedule.HeaderLine
 import com.miggue.mylogin01.ui.theme.*
 
 @Composable
-fun LessonDetailScreen() {
+fun LessonDetailScreen(
+    lessonId:Int
+) {
     Surface() {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             LessonDetailHeader()
             HeaderLine()
             LessonTitle("Toeic 100")
             JoinCallButton()
+            Spacer(Modifier.height(10.dp))
             TeachersLessonContent()
         }
     }
@@ -113,10 +119,9 @@ fun BackButton(
 fun LessonTitle(title:String) {
     Text(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 15.dp),
+            .fillMaxWidth(),
         text = title,
-        fontSize = 50.sp,
+        fontSize = 40.sp,
         fontWeight = FontWeight.ExtraBold,
         textAlign = TextAlign.Center
     )
@@ -161,7 +166,7 @@ fun TeachersLessonContent() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(20.dp, 0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -191,7 +196,7 @@ fun TeachersLessonContent() {
                 }
                 item() {
                     LessonFeatureItem(
-                        title = "Documents",
+                        title = "Docs",
                         color1 = Brown300,
                         color2 = Brown500,
                         color3 = Brown700,
@@ -332,5 +337,5 @@ fun LessonFeatureItem(
 @Preview(showBackground = true)
 @Composable
 fun LessonDetailPreview() {
-    LessonDetailScreen()
+    LessonDetailScreen(2)
 }

@@ -8,7 +8,7 @@ data class LessonJson(
 //    val channelName:String,
 //    val idTeacher:Int,
 //    val idStudent:Int,
-    val status:String,
+    val status:Int,
     val timeStart:String,
     val timeEnd:String,
 //    val realTimeStart:String,
@@ -18,8 +18,8 @@ data class LessonJson(
         return Lesson(
 //            id,channelName, idTeacher, idStudent, timeStart,
 //            timeEnd, status, realTimeStart, realTimeEnd
-            id,courseId,timeStart,
-            timeEnd, status
+            id,courseId, status,timeStart,
+            timeEnd
         )
     }
 }

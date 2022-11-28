@@ -4,6 +4,10 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,7 +41,7 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeeklySchedule(
-    scheduleViewModel: ScheduleViewModel = hiltViewModel()
+    scheduleViewModel: ScheduleViewModel
 ) {
     Surface(
         modifier = Modifier
@@ -57,52 +61,82 @@ fun WeeklySchedule(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                WeeklyScheduleTab(title = "This week") {}
-                WeeklyScheduleTab(title = "Next week") {}
+                WeeklyScheduleTab(title = "This week", scheduleViewModel.stateCurrentWeek) {
+                    scheduleViewModel.changeWeek("this week")
+                }
+                WeeklyScheduleTab(title = "Next week", !scheduleViewModel.stateCurrentWeek) {
+                    scheduleViewModel.changeWeek("next week")
+                }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
+            AnimatedVisibility(
+                visible = scheduleViewModel.stateCurrentWeek,
+                enter = slideInHorizontally() + fadeIn(),
+                modifier = Modifier.fillMaxWidth().height(200.dp)
             ) {
-                if(scheduleViewModel.stateDateOfWeek.isEmpty())
-                    scheduleViewModel.getListDayOfWeek()
-                scheduleViewModel.stateDateOfWeek.forEachIndexed() {
-                        index, _ ->
-                            WeeklyScheduleItem(
-                                index,
-                                scheduleViewModel
-                            )
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    if(scheduleViewModel.stateDateOfWeek.isEmpty())
+                        scheduleViewModel.getListDayOfWeek()
+                    scheduleViewModel.stateDateOfWeek.forEachIndexed() {
+                            index, _ ->
+                        WeeklyScheduleItem(
+                            index,
+                            scheduleViewModel,
+                            false
+                        )
+                    }
                 }
-//                for(localDate in listDate) {
-//                    WeeklyScheduleItem(
-//                        date = localDate.date.toString().substringAfterLast("-"),
-//                        dateOfWeek = localDate.date.dayOfWeek.toString().substring(0,3),
-//                        current = localDate.current,
-//                        active = localDate.active,
-//                    )
-//                }
+            }
+
+            AnimatedVisibility(
+                visible = !scheduleViewModel.stateCurrentWeek,
+                enter = slideInHorizontally() + fadeIn(),
+                modifier = Modifier.fillMaxWidth().height(200.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    if(scheduleViewModel.stateDateOfNextWeek.isEmpty())
+                        scheduleViewModel.getListDayOfWeek()
+                    scheduleViewModel.stateDateOfNextWeek.forEachIndexed() {
+                            index, _ ->
+                        WeeklyScheduleItem(
+                            index,
+                            scheduleViewModel,
+                            true
+                        )
+                    }
+                }
             }
         }
     }
 }
 
+
 @Composable
 fun WeeklyScheduleTab(
     title:String,
-    onClick: ()->Unit
+    toggleActive:Boolean,
+    onChangeTab: ()->Unit
 ) {
     val fontFamily = FontFamily(Font(R.font.pacifico_regular))
     Column(
         modifier = Modifier
             .width(100.dp)
-            .height(45.dp)
+            .height(40.dp)
     ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .padding(top = 5.dp)
+                .clickable { onChangeTab() },
             text = title,
             fontFamily = fontFamily,
             fontSize = 14.sp,
@@ -110,6 +144,7 @@ fun WeeklyScheduleTab(
             textAlign = TextAlign.Center,
             lineHeight = 14.sp
         )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,13 +152,20 @@ fun WeeklyScheduleTab(
                 .background(Color.White)
             ,
         )
-        Box(
+
+        AnimatedVisibility(
+            visible = toggleActive,
+            enter = slideInHorizontally() + fadeIn(),
             modifier = Modifier
                 .width(60.dp)
                 .height(3.dp)
-                .background(Purple500)
-            ,
-        )
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(Purple500)
+                ,
+            )
+        }
     }
 }
 
@@ -131,9 +173,13 @@ fun WeeklyScheduleTab(
 @Composable
 fun WeeklyScheduleItem(
     index:Int,
-    scheduleViewModel: ScheduleViewModel
+    scheduleViewModel: ScheduleViewModel,
+    nextWeek:Boolean
 ) {
-    val localDate = scheduleViewModel.stateDateOfWeek[index]
+    var localDate = scheduleViewModel.stateDateOfWeek[index]
+    if(nextWeek) {
+        localDate = scheduleViewModel.stateDateOfNextWeek[index]
+    }
     var borderColor = PrimaryColor
     var backgroundColor = ThirdColor
     if(localDate.current) borderColor = Color.White
@@ -146,7 +192,13 @@ fun WeeklyScheduleItem(
                 1.dp, borderColor, RoundedCornerShape(30.dp)
             )
             .background(backgroundColor)
-            .clickable { scheduleViewModel.activeDateOfWeek(localDate.date.toString()) }
+            .clickable {
+                if(nextWeek) {
+                    scheduleViewModel.activeDateOfNextWeek(localDate.date.toString())
+                } else {
+                    scheduleViewModel.activeDateOfWeek(localDate.date.toString())
+                }
+            }
     ) {
         Column(
             modifier = Modifier.padding(10.dp)
@@ -163,15 +215,5 @@ fun WeeklyScheduleItem(
                 textAlign = TextAlign.Center
             )
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun WeeklySchedulePreview() {
-    FatherOfAppsTheme {
-        WeeklySchedule()
     }
 }

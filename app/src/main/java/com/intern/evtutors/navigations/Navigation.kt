@@ -4,11 +4,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.intern.evtutors.screens.Screens
 import com.intern.evtutors.composes.home.HomeBaseScreen
+import com.intern.evtutors.composes.lesson.LessonDetailHeader
+import com.intern.evtutors.composes.lesson.LessonDetailScreen
+import com.intern.evtutors.composes.lesson.lesson_test.CreateTestScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
 import com.intern.evtutors.composes.schedule.ScheduleScreen
@@ -30,7 +35,12 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         composable((Screens.Favourite.route)) {
-            ScheduleScreen()
+            ScheduleScreen(
+                openCreateTestScreen = {
+                    lessonId ->
+                        navController.navigate("lesson/details/$lessonId")
+                }
+            )
         }
 
         composable((Screens.Notification.route)) {
@@ -55,8 +65,20 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         navigation(route = "lesson", startDestination = "lesson/details") {
-            composable(route="lesson/details"){
-
+            composable(
+                route="lesson/details/{lessonId}",
+                arguments = listOf(
+                    navArgument(name = "lessonId") {
+                        type = NavType.StringType
+                    }
+                )
+            ){
+                backStrateEntry ->
+                val lessonId = backStrateEntry.arguments?.getString("lessonId")?.toInt()
+                requireNotNull(lessonId) //handle not null exception
+                LessonDetailScreen(
+                    lessonId = lessonId
+                )
             }
         }
     }

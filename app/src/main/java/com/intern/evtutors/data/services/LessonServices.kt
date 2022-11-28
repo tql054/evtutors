@@ -16,6 +16,14 @@ class LessonServices @Inject constructor(private val lessonAPI: LessonAPI):BaseR
         return callApi { lessonAPI.getAllLesson() }
     }
 
+    suspend fun getAllTeachersLessonByDate(idTeacher:Int, date:String):NetworkResult<MutableList<LessonJson>> {
+        return callApi { lessonAPI.getAllTeachersLessonByDate(idTeacher, date) }
+    }
+
+    suspend fun getAllStudentsLessonByDate(idStudent:Int, date:String):NetworkResult<MutableList<LessonJson>> {
+        return callApi { lessonAPI.getAllStudentsLessonByDate(idStudent, date) }
+    }
+
     suspend fun getLessonById(id:Int):NetworkResult<LessonJson> {
         return callApi { lessonAPI.getLessonById(id) }
     }

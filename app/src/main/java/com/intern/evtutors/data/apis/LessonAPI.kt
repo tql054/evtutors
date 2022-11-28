@@ -18,6 +18,19 @@ interface LessonAPI {
         @Path("id") id:Int,
     ):Response<LessonJson>
 
+    @GET("/api/lessonByDate/id_teacher={id_teacher}&date={date}")
+    suspend fun getAllTeachersLessonByDate(
+        @Path("id_teacher") id_teacher:Int,
+        @Path("date") date:String
+    ):Response<MutableList<LessonJson>>
+
+    @GET("/api/lessonByDate/id_student={id_student}&date={date}")
+    suspend fun getAllStudentsLessonByDate(
+        @Path("id_student") id_student:Int,
+        @Path("date") date:String
+    ):Response<MutableList<LessonJson>>
+
+
     @PUT("/api/lessons/status/{id}")
     suspend fun updateLesson(
         @Path("id") id:Int,

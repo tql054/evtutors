@@ -1,6 +1,10 @@
 package com.intern.evtutors.composes.schedule
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,13 +20,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intern.evtutors.composes.home.CircleAvatar
+import com.intern.evtutors.data.models.Lesson
+import com.intern.evtutors.view_models.ScheduleViewModel
 import com.miggue.mylogin01.ui.theme.FourthColor
 import com.miggue.mylogin01.ui.theme.PrimaryColor
 import com.miggue.mylogin01.ui.theme.SecondaryColor
 import com.miggue.mylogin01.ui.theme.ThirdColor
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TimeSchedule() {
+fun TimeSchedule(
+    scheduleViewModel: ScheduleViewModel,
+    openCreateTestScreen: (lessonId:Int) -> Unit
+) {
+    scheduleViewModel.getTeacherLessonByDate()
     Scaffold(
         content = {
             LazyColumn(
@@ -34,22 +45,47 @@ fun TimeSchedule() {
                     .padding(10.dp),
             ) {
                 item {
-                    TimeScheduleItem()
+                    if(scheduleViewModel.stateListLesson == mutableListOf<Lesson>()) {
+                        for (i in 1..6) {
+                            Column() {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(.5.dp)
+                                        .padding(start = 5.dp)
+                                        .background(SecondaryColor)
+                                )
+                                Spacer(modifier = Modifier.height(70.dp))
+                            }
+                        }
+                    } else {
+                        TimeScheduleItem(
+                            scheduleViewModel,
+                            openCreateTestScreen
+                        )
+                    }
                 }
             }
         }
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TimeScheduleItem(
-    //Lesson Object
+    scheduleViewModel: ScheduleViewModel,
+    openCreateTestScreen: (lessonId:Int) -> Unit
 ) {
+    val listLesson = scheduleViewModel.stateListLesson
     Column {
-        LineOfTime(time = "9:00")
-        LessonInfo()
-        LineOfTime(time = "11:00")
-        Spacer(Modifier.height(10.dp))
+        for(lesson in listLesson) {
+            LineOfTime(time = lesson.timeStart.substringAfter(" ").substringBeforeLast(":00", ""))
+            LessonInfo(lesson.courseId) {
+                openCreateTestScreen(lesson.id)
+            }
+            LineOfTime(time = lesson.timeEnd.substringAfter(" ").substringBeforeLast(":00", ""))
+            Spacer(Modifier.height(10.dp))
+        }
     }
 }
 
@@ -60,7 +96,8 @@ fun LineOfTime(time:String) {
     ) {
        Text(
            text =time,
-           fontSize = 12.sp
+           fontSize = 12.sp,
+           fontWeight = FontWeight.Bold
        )
         Box(
            modifier = Modifier
@@ -74,9 +111,10 @@ fun LineOfTime(time:String) {
 
 @Composable
 fun LessonInfo(
-    //Lesson Object
-    //idUser -> role
+    courseId:Int,
+    onNavigate: ()->Unit
 ) {
+    val cornerShape = RoundedCornerShape(15.dp)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,37 +122,30 @@ fun LessonInfo(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .height(70.dp)
-                .clip(RoundedCornerShape(15.dp))
+                .clip(cornerShape)
+                .border(1.dp, PrimaryColor, cornerShape)
                 .background(ThirdColor)
-                .padding(20.dp, 0.dp),
+                .clickable { onNavigate() },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "TOEIC T107",
+                modifier = Modifier
+                    .padding(20.dp, 0.dp),
+                text = "Lesson of course $courseId",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = PrimaryColor
             )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceAround
-            ) {
-                CircleAvatar()
-                Text(
-                    text = "Dinh Khoa",
-                    fontSize = 8.sp,
-                )
-            }
+            Box(
+                modifier = Modifier
+                    .width(20.dp)
+                    .height(70.dp)
+                    .background(PrimaryColor)
+                    .clip(RoundedCornerShape(topEnd = 15.dp, bottomEnd = 15.dp))
+            )
         }
     }
-}
-
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun TimeSchedulePreview() {
-    TimeSchedule()
 }

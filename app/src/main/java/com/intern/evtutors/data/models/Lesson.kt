@@ -8,7 +8,7 @@ class Lesson(
 //    val channelName:String,
 //    val idTeacher:Int,
 //    val idStudent:Int,
-    val status:String,
+    val status:Int,
     val timeStart:String,
     val timeEnd:String,
 //    val realTimeStart:String,
