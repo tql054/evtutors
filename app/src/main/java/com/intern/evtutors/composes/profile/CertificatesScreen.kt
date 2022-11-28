@@ -1,5 +1,6 @@
 package com.intern.evtutors.composes.profile
 
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -15,12 +16,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.intern.evtutors.activities.HomeActivity
+import com.intern.evtutors.composes.teacherPostInfo.ui.UITeacherPost
+
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.*
 
@@ -35,10 +40,16 @@ fun ProfileScreen(
     FatherOfAppsTheme {
         when(TypeOfUser) {
             2 -> {
+                val context = LocalContext.current
                 Surface() {
                     Column() {
                         var user = profileViewModel.localUser
-                        Text(text = "Count: ${user?.roleID}")
+                       // Text(text = "Count: ${user?.roleID}")
+                        Text(text = "ADD",Modifier.clickable {
+                            var intent: Intent = Intent(context, UITeacherPost::class.java)
+                            context.startActivity(intent)
+                        })
+
                     }
                 }
             }

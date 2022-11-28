@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FatherOfApps">
         <activity
-            android:name=".teacherPost"
+            android:name=".composes.teacherPostInfo.ui.UITeacherPost"
             android:exported="false"
             android:label="@string/title_activity_teacher_post"
             android:theme="@style/Theme.FatherOfApps" />

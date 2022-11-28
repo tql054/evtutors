@@ -1,7 +1,10 @@
 package com.intern.evtutors.composes.teacherPostInfo.ui
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -42,16 +45,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.cloudinary.transformation.Expression.width
 import com.intern.evtutors.R
 import com.intern.evtutors.common.Screen.width
+import com.intern.evtutors.data.models.TeacherPost
+import com.intern.evtutors.data.models.TimePost
 import com.intern.evtutors.ui.customer.profile.ui.theme.Purple700
 import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
+import com.intern.evtutors.view_models.TeacherPostViewModel
 import com.miggue.mylogin01.ui.theme.*
 
 import okhttp3.internal.cookieToString
 
-class teacherPost : ComponentActivity() {
+class UITeacherPost : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -61,7 +68,7 @@ class teacherPost : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeTeacherPostInfo("Android",this)
+                    HomeTeacherPostInfo()
                 }
             }
         }
@@ -69,11 +76,52 @@ class teacherPost : ComponentActivity() {
 }
 
 @Composable
-fun HomeTeacherPostInfo(name: String,context:Context) {
-    var itemPage by remember{ mutableStateOf(1) }
+fun HomeTeacherPostInfo(teacherPostViewModel: TeacherPostViewModel= hiltViewModel()) {
+
+    var itemPage by remember{ mutableStateOf(0) }
+    var doing by remember{ mutableStateOf(10) }
+    var StatusChane by remember{ mutableStateOf(false) }
     var colorIconPage1 by remember{ mutableStateOf(Color.Gray) }
     var colorIconPage2 by remember{ mutableStateOf(Color.Gray) }
     var colorIconPage3 by remember{ mutableStateOf(Color.Gray) }
+    var FullAdress by mutableStateOf(teacherPostViewModel.NameAdress+", "+teacherPostViewModel.NameDistrict+"," +teacherPostViewModel.NameCity)
+
+    var timePost= TimePost(1,"","","")
+    var time: MutableSet<TimePost> = mutableSetOf(timePost)
+
+    var PostInput by remember{ mutableStateOf(TeacherPost("","",0,
+        time,"","","",""
+    )) }
+    val calendarStart = Calendar.getInstance()
+
+    PostInput.Phone=teacherPostViewModel.Numberphone
+    PostInput.Adress=FullAdress
+    PostInput.Startday = calendarStart[Calendar.DATE].toString()+"-"+(calendarStart[Calendar.MONTH]+1).toString()+"-"+calendarStart[Calendar.YEAR].toString()
+    var Subject by remember{ mutableStateOf("") }
+    var Class by remember{ mutableStateOf("") }
+    PostInput.Subjects=Subject
+
+    when(doing){
+        0->{
+            StatusChane=true
+            if(PostInput.Subjects!=""){
+                Log.d(TAG, "ktra post $PostInput")
+                itemPage += 1
+                StatusChane=false
+                doing=10
+            }
+
+        }
+        1->{
+            StatusChane=true
+            if(PostInput.ShiftsCount!=0){
+                itemPage += 1
+                StatusChane=false
+                doing=10
+            }
+
+        }
+    }
 
 
     Column(Modifier.fillMaxSize()) {
@@ -122,8 +170,6 @@ fun HomeTeacherPostInfo(name: String,context:Context) {
                             colorIconPage3
                         )
                     }
-
-
                 }
             }
         }
@@ -139,24 +185,39 @@ fun HomeTeacherPostInfo(name: String,context:Context) {
                     colorIconPage1= Grayy100
                     colorIconPage2= Grayy100
                     colorIconPage3= Grayy100
-                    UIInputInfoRoomTeacher()
+
+                    UIInputInfoRoomTeacher(StatusChane,PostInput,Subject,Class,outputSubject={Subject=it}
+                        ,outputClass={Class=it}
+                        , outputForm={PostInput.Form=it})
+
                 }
                 1->{
                     colorIconPage1= Blue300
                     colorIconPage2= Grayy100
                     colorIconPage3= Grayy100
-                    UIInputTimePostTeacher(context)
+
+                    UIInputTimePostTeacher(onchaneCount = {
+                        PostInput.ShiftsCount=it
+                    })
                 }
                 2->{
                     colorIconPage1= Blue300
                     colorIconPage2= Blue300
                     colorIconPage3= Grayy100
+                    StatusChane=false
                     UIInputInfoTeacher()
                 }
                 3->{
                     colorIconPage1= Blue300
                     colorIconPage2= Blue300
                     colorIconPage3= Blue300
+                    StatusChane=false
+                    UIConfirmInfo(
+                        PostInput
+//                        TeacherPost("English communication","Online",2,
+//                            time,"11/28/2022","0912345612","tieen ha","Vo Quang Tan"
+//                        )
+                    )
                 }
             }
         }
@@ -169,12 +230,13 @@ fun HomeTeacherPostInfo(name: String,context:Context) {
             Alignment.CenterVertically
 
         ){
-            Row(Modifier.width(120.dp)
+            Row(Modifier.width(150.dp)
                 .fillMaxHeight()
-                .background(whitebacground,shape = RoundedCornerShape(5.dp))
+                .background(Grayy100,shape = RoundedCornerShape(5.dp))
                 .clickable {
                            if(itemPage>0){
                                itemPage -= 1
+                               StatusChane=true
                            }
                 },
                 Arrangement.SpaceAround,
@@ -183,17 +245,25 @@ fun HomeTeacherPostInfo(name: String,context:Context) {
             ){
                 Text(text = "Quit", fontWeight = FontWeight.Bold, color = Color.Gray)
             }
-            Row(Modifier.width(120.dp)
+            Row(Modifier.width(150.dp)
                 .fillMaxHeight()
                 .background(Blue300,shape = RoundedCornerShape(5.dp))
                 .clickable {
-                           if(itemPage<3){
-                               itemPage += 1
-                           }
+                    when(itemPage){
+                        0->{
+                            doing=0
+                        }
+                        1->{
+                            doing=1
+
+                        }
+                        2->{
+                            itemPage += 1
+                        }
+                    }
                 },
                 Arrangement.SpaceAround,
                 Alignment.CenterVertically
-
             ){
                 Text(text = "Next", fontWeight = FontWeight.Bold, color = whitebacground)
             }
@@ -210,18 +280,20 @@ fun UIReviewInfoInput(){
 
 }
 @Composable
-fun DropTextFile(lable:String,listinfo:List<String>){
-    var dropdownStatus by remember{ mutableStateOf(false) }
+fun DropTextFile(text:String,lable:String,listinfo:List<String>):String{
 
+    var dropdownStatus by remember{ mutableStateOf(false) }
+    var checkClick by remember{ mutableStateOf(true) }
     var list=listinfo
-        //listOf("Class 1","Class 2","Class 3","Class 4","Class 5")
     var selectedItem by remember{ mutableStateOf("") }
     var textFileSize by remember{ mutableStateOf(Size.Zero) }
 
+    if(text.isNotEmpty() && checkClick ){
+        selectedItem=text
+    }
     var icon =if(dropdownStatus){
         Icons.Filled.KeyboardArrowUp
     }else{
-
         Icons.Filled.KeyboardArrowDown
     }
     Box(Modifier.fillMaxWidth()){
@@ -233,7 +305,9 @@ fun DropTextFile(lable:String,listinfo:List<String>){
                         textFileSize=layoutCoordinates.size.toSize()
                     },
                 value = selectedItem,
-                onValueChange ={selectedItem = it},
+                onValueChange ={
+                    checkClick=false
+                    selectedItem = it},
                 label = { Text(text = lable)},
                 colors= TextFieldDefaults.outlinedTextFieldColors(textColor = BlackText),
                 singleLine = true,
@@ -253,6 +327,7 @@ fun DropTextFile(lable:String,listinfo:List<String>){
                 list.forEach{
                         lable ->
                     DropdownMenuItem(onClick = {
+                        checkClick=false
                         selectedItem=lable
                         dropdownStatus=false
                     }){
@@ -262,9 +337,7 @@ fun DropTextFile(lable:String,listinfo:List<String>){
             }
         }
     }
-
-
-
+return selectedItem
 }
 @Preview(showBackground = true)
 @Composable
