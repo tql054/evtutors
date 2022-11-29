@@ -60,7 +60,6 @@ fun App(
             BottomNavigation() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
-
                 items.forEach() {
                     BottomNavigationItem(
                         selected = currentRoute == it.route,

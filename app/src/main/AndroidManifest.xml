@@ -24,12 +24,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FatherOfApps">
-
-<!--        <activity-->
-<!--            android:name=".ui.customer.profile.Profile_activity"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/title_activity_profile"-->
-<!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
+        <activity
+            android:name=".composes.teacherPostInfo.ui.UITeacherPost"
+            android:exported="false"
+            android:label="@string/title_activity_teacher_post"
+            android:theme="@style/Theme.FatherOfApps" />
+        <!-- <activity -->
+        <!-- android:name=".ui.customer.profile.Profile_activity" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_profile" -->
+        <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> -->
         <activity
             android:name=".activities.Register"
             android:exported="false"
@@ -38,9 +42,7 @@
         <activity
             android:name=".activities.Login"
             android:exported="false"
-
             android:theme="@style/Theme.FatherOfApps" />
-
         <activity
             android:name=".activities.HomeActivity"
             android:exported="true"
