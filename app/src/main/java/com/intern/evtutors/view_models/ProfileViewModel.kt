@@ -3,20 +3,15 @@ package com.intern.evtutors.view_models
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
 import com.intern.evtutors.data.database.entities.CustomerEntity
 import com.intern.evtutors.data.model_json.CertificateJson
-import com.intern.evtutors.data.models.Certificates
-import com.intern.evtutors.data.repositories.AppInfoRepository
 import com.intern.evtutors.data.repositories.CustomerRepository
-import com.intern.evtutors.data.repositories.LessonRepository
 import com.intern.evtutors.data.repositories.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import java.security.cert.Certificate
 import javax.inject.Inject
 
 @HiltViewModel

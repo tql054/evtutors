@@ -26,7 +26,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         composable((Screens.Favourite.route)) {
-            ProfileScreen(navController,2)
+//            ProfileScreen(navController,2)
 
         }
 
@@ -45,7 +45,7 @@ fun Navigation(navController:NavHostController, startScreen:String) {
         }
 
         composable("home/profile/certificates") {
-            ProfileScreen(navController,3)
+//            ProfileScreen(navController,3)
         }
         composable("home/teacher") {
             profileTeacher(navController)

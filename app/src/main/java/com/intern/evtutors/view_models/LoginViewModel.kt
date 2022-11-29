@@ -61,7 +61,6 @@ class LoginViewModel @Inject constructor(private val jsonLoginRepositories: Json
     }
 
     suspend fun DataLogin(email:String,passWord: String) {
-
         var account = Account()
         account.userName=email
         account.userPassword=passWord

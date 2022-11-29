@@ -18,7 +18,12 @@ private val Poppins = FontFamily(
     Font(R.font.poppins_bold, weight = FontWeight.Bold),
     Font(R.font.poppins_black, weight = FontWeight.Black),
 )
+
+private val Pacifico = FontFamily(
+    Font(R.font.pacifico_regular)
+)
+
 val Typography = Typography(
     defaultFontFamily = Poppins,
-    h1 = TextStyle(fontWeight = FontWeight.Bold, fontSize = 40.sp,color = Color.DarkGray)
+    h1 = TextStyle(fontWeight = FontWeight.Bold, fontSize = 40.sp,color = Color.DarkGray),
 )

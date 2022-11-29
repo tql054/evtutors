@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FatherOfApps</string>
+    <string name="app_name">EvTutors</string>
     <string name="default_notify_title">Message</string>
     <string name="title_activity_test1">test1</string>
     <string name="title_activity_login">Login</string>
