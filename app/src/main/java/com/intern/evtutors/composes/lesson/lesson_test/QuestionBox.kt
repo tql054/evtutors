@@ -64,7 +64,7 @@ fun QuestionBox(
             maxLines = 4,
             placeholder = {
                 Text(
-                    text = "placeHolder",
+                    text = "Text question here",
                     fontSize = 17.sp,
                     color = Gray300
                 )
@@ -74,7 +74,7 @@ fun QuestionBox(
         LazyVerticalGrid(
             modifier = Modifier
                 .padding(10.dp)
-                .height(400.dp),
+                .height(300.dp),
             cells = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -85,6 +85,15 @@ fun QuestionBox(
                             "were asked two follow-up questions to their ...\n" +
                         "\n"
                 )
+            }
+            item() {
+                AnswerItem(answer = "")
+            }
+            item() {
+                AnswerItem(answer = "")
+            }
+            item() {
+                AnswerItem(answer = "")
             }
         }
 
@@ -191,7 +200,7 @@ fun AddQuestionPopup() {
                 singleLine = false,
                 maxLines = 4,
                 placeholder = {
-                    Text(text = "placeHolder")
+                    Text(text = "Text answer here")
                 }
             )
 
@@ -239,14 +248,24 @@ fun AnswerItem(
             .background(Color.White)
             .border(3.dp, borderColor, RoundedCornerShape(10.dp))
     ) {
-        Text(
-            modifier= Modifier
-                .fillMaxSize()
-                .padding(10.dp),
-            text = answer,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-        )
+        if(answer=="") {
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "Tap to add answer",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        } else {
+            Text(
+                modifier= Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                text = answer,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+            )
+        }
     }
 }
 

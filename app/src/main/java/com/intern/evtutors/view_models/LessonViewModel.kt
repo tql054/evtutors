@@ -3,23 +3,30 @@ package com.intern.evtutors.view_models
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import com.intern.evtutors.base.viewmodel.BaseViewModel
+import com.intern.evtutors.data.model_json.LessonDetailJson
 import com.intern.evtutors.data.models.Lesson
+import com.intern.evtutors.data.repositories.LessonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class LessonViewModel @Inject constructor():BaseViewModel() {
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getLessonByDate(date:String) {
-        var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-        var localDateBegin = LocalDate.parse(date, formatter)
-        Log.d("Date formatted:", localDateBegin.toString())
-        val listLesson = mutableListOf<Lesson>(
-            Lesson(1, 2, 0, "11/19/2022 15:30:00", "11/19/2022 15:30:00"),
-            Lesson(2, 2, 0, "11/19/2022 18:30:00", "11/19/2022 15:30:00")
-        )
+class LessonViewModel @Inject constructor(
+    private val lessonRepository: LessonRepository
+):BaseViewModel() {
+    var stateLesson by mutableStateOf<LessonDetailJson?>(null)
+
+    fun getLessonById(idLesson:Int) {
+        viewModelScope.launch(handler) {
+            stateLesson = lessonRepository.getLessonById(idLesson)
+        }
     }
+
 }

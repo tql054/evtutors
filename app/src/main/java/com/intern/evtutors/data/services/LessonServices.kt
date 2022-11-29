@@ -4,6 +4,7 @@ import android.util.Log
 import com.intern.evtutors.base.network.BaseRemoteService
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.data.apis.LessonAPI
+import com.intern.evtutors.data.model_json.LessonDetailJson
 import com.intern.evtutors.data.model_json.LessonJson
 import com.intern.evtutors.data.models.Lesson
 import org.json.JSONObject
@@ -24,7 +25,7 @@ class LessonServices @Inject constructor(private val lessonAPI: LessonAPI):BaseR
         return callApi { lessonAPI.getAllStudentsLessonByDate(idStudent, date) }
     }
 
-    suspend fun getLessonById(id:Int):NetworkResult<LessonJson> {
+    suspend fun getLessonById(id:Int):NetworkResult<LessonDetailJson> {
         return callApi { lessonAPI.getLessonById(id) }
     }
 

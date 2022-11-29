@@ -48,7 +48,7 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
-        statusBarColor()
+//        statusBarColor()
     }
 
     private fun statusBarColor() {

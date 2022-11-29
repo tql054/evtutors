@@ -28,13 +28,16 @@ import com.miggue.mylogin01.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TestBaseScreen() {
+fun TestBaseScreen(
+    openAddTest: () -> Unit,
+    backAction: () -> Unit
+) {
     FatherOfAppsTheme {
         Scaffold(
             content = {
                 LazyColumn() {
                     stickyHeader {
-                        TestHeader()
+                        TestHeader(openAddTest, backAction)
                         HeaderLine()
                     }
                     item {
@@ -47,7 +50,7 @@ fun TestBaseScreen() {
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
                             item {
-                                TestItem(testName = "abc")
+                                TestItem(testName = "Test of middle semester")
                             }
                         }
                     }
@@ -58,14 +61,17 @@ fun TestBaseScreen() {
 }
 
 @Composable
-fun TestHeader() {
+fun TestHeader(
+    openAddTest: () -> Unit,
+    backAction: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
             .background(ThirdColor),
     ) {
-        BackButton {}
+        BackButton {backAction()}
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,7 +85,7 @@ fun TestHeader() {
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 10.dp),
-            onClick = { },
+            onClick = { openAddTest() },
             contentPadding = PaddingValues(8.dp, 0.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
         ) {
@@ -146,5 +152,5 @@ fun TestItem(
 @Preview(showBackground = true)
 @Composable
 fun LessonTestPreview() {
-    TestBaseScreen()
+//    TestBaseScreen()
 }

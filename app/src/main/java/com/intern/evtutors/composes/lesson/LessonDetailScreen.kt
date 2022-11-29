@@ -24,61 +24,80 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.R
 import com.intern.evtutors.composes.home.CircleAvatar
 import com.intern.evtutors.composes.schedule.HeaderLine
+import com.intern.evtutors.view_models.LessonViewModel
 import com.miggue.mylogin01.ui.theme.*
 
 @Composable
 fun LessonDetailScreen(
-    lessonId:Int
+    lessonId:Int,
+    openCreateTest:()->Unit,
+    backAction:()->Unit,
+    lessonViewModel: LessonViewModel = hiltViewModel()
 ) {
-    Surface() {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+    val lessonInfo = lessonViewModel.stateLesson
+    if(lessonInfo==null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            LessonDetailHeader()
-            HeaderLine()
-            LessonTitle("Toeic 100")
-            JoinCallButton()
-            Spacer(Modifier.height(10.dp))
-            TeachersLessonContent()
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(top=100.dp)
+                    .align(Alignment.TopCenter),
+                color = PrimaryColor
+            )
+        }
+        lessonViewModel.getLessonById(lessonId)
+    } else {
+        Surface() {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                LessonDetailHeader(backAction)
+                HeaderLine()
+                LessonTitle(lessonInfo.nameCourse)
+                Spacer(Modifier.height(10.dp))
+                JoinCallButton()
+                Spacer(Modifier.height(10.dp))
+                TeachersLessonContent(
+                    lessonInfo.idStudent, //need to handler student and teacher role
+                    openCreateTest
+                )
+            }
         }
     }
 }
 
 @Composable
-fun LessonDetailHeader() {
+fun LessonDetailHeader(
+    backAction: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
             .background(color = ThirdColor),
     ) {
-        BackButton {}
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp),
-            text = "Welcome to",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-        )
+        BackButton {backAction()}
         Button(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 10.dp),
             onClick = { },
-            contentPadding = PaddingValues(5.dp, 0.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = ItemColor_2),
+            contentPadding = PaddingValues(8.dp, 0.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
         ) {
             Text(
                 text = "View course",
-                fontSize = 9.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.White
             )
         }
     }
@@ -99,7 +118,7 @@ fun BackButton(
                 .align(Alignment.Center)
         )
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { onClick()},
             modifier = Modifier
                 .width(32.dp)
                 .fillMaxHeight()
@@ -119,10 +138,11 @@ fun BackButton(
 fun LessonTitle(title:String) {
     Text(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(top=10.dp, start = 20.dp),
         text = title,
-        fontSize = 40.sp,
-        fontWeight = FontWeight.ExtraBold,
+        fontSize = 25.sp,
+        fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center
     )
 }
@@ -132,7 +152,7 @@ fun JoinCallButton() {
     Button(
         onClick = { /*TODO*/ },
         modifier = Modifier
-            .padding(10.dp, 0.dp)
+            .padding(30.dp, 0.dp)
             .clip(CircleShape)
     ) {
         Row(
@@ -143,14 +163,14 @@ fun JoinCallButton() {
             Text(
                 modifier = Modifier,
                 text = "Join a call now!",
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
             Icon(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(30.dp)
                     .padding(start = 10.dp),
                 imageVector = Icons.Default.PlayArrow,
                 contentDescription = "Play icon",
@@ -162,7 +182,10 @@ fun JoinCallButton() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TeachersLessonContent() {
+fun TeachersLessonContent(
+    idUser:Int,
+    openCreateTest: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -177,7 +200,7 @@ fun TeachersLessonContent() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            LessonContentInfo()
+            LessonContentInfo(idUser)
             LazyVerticalGrid(
                 modifier = Modifier.padding(10.dp),
                 cells = GridCells.Fixed(2),
@@ -185,43 +208,60 @@ fun TeachersLessonContent() {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 item() {
-                    LessonFeatureItem(
-                        title = "Quiz          and test",
-                        color1 = ItemColor_2,
-                        color2 = Red500,
-                        color3 = Red700,
-                        R.drawable.icon_quiz
+                    Box(
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clickable { openCreateTest() }
                     ) {
+                        LessonFeatureItem(
+                            title = "Quiz          and test",
+                            color1 = ItemColor_2,
+                            color2 = Red500,
+                            color3 = Red700,
+                            R.drawable.icon_quiz
+                        )
                     }
                 }
                 item() {
-                    LessonFeatureItem(
-                        title = "Docs",
-                        color1 = Brown300,
-                        color2 = Brown500,
-                        color3 = Brown700,
-                        R.drawable.icon_document
+                    Box(
+                        modifier = Modifier
+                            .size(150.dp)
                     ) {
+                        LessonFeatureItem(
+                            title = "Docs",
+                            color1 = Brown300,
+                            color2 = Brown500,
+                            color3 = Brown700,
+                            R.drawable.icon_document
+                        )
                     }
                 }
                 item() {
-                    LessonFeatureItem(
-                        title = "Slides",
-                        color1 = ThirdColor,
-                        color2 = SecondaryColor,
-                        color3 = PrimaryColor,
-                        R.drawable.icon_slide
+                    Box(
+                        modifier = Modifier
+                            .size(150.dp)
                     ) {
+                        LessonFeatureItem(
+                            title = "Slides",
+                            color1 = ThirdColor,
+                            color2 = SecondaryColor,
+                            color3 = PrimaryColor,
+                            R.drawable.icon_slide
+                        )
                     }
                 }
                 item() {
-                    LessonFeatureItem(
-                        title = "Rate now",
-                        color1 = GreenColor300,
-                        color2 = GreenColor500,
-                        color3 = GreenColor700,
-                        R.drawable.icon_star
+                    Box(
+                        modifier = Modifier
+                            .size(150.dp)
                     ) {
+                        LessonFeatureItem(
+                            title = "Rate now",
+                            color1 = GreenColor300,
+                            color2 = GreenColor500,
+                            color3 = GreenColor700,
+                            R.drawable.icon_star
+                        )
                     }
                 }
             }
@@ -231,7 +271,7 @@ fun TeachersLessonContent() {
 
 @Composable
 fun LessonContentInfo(
-    //idUser,
+    idUser:Int,
 ) {
     //check user's role
     Box(
@@ -266,7 +306,7 @@ fun LessonContentInfo(
                         color = Color.Gray
                     )
                     Text(
-                        text = "Le Van A",
+                        text = "$idUser",
                         fontSize = 21.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -294,42 +334,35 @@ fun LessonFeatureItem(
     color1:Color,
     color2:Color,
     color3:Color,
-    icon:Int,
-    onClick: ()->Unit
+    icon:Int
 ) {
-    Box(
+    Column(
         modifier = Modifier
-            .size(150.dp)
-
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(5.dp))
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            color1,
-                            color2,
-                            color3,
-                        )
+            .fillMaxSize()
+            .clip(RoundedCornerShape(5.dp))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        color1,
+                        color2,
+                        color3,
                     )
                 )
-                .padding(10.dp, 20.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Image(
-                painter = painterResource(id = icon),
-                contentDescription = "Feature icon",
-                contentScale = ContentScale.Inside
             )
-            Text(
-                text = title,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.White
-            )
-        }
+            .padding(10.dp, 20.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = "Feature icon",
+            contentScale = ContentScale.Inside
+        )
+        Text(
+            text = title,
+            fontSize = 25.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = Color.White
+        )
     }
 }
 
@@ -337,5 +370,5 @@ fun LessonFeatureItem(
 @Preview(showBackground = true)
 @Composable
 fun LessonDetailPreview() {
-    LessonDetailScreen(2)
+//    LessonDetailScreen(2)
 }

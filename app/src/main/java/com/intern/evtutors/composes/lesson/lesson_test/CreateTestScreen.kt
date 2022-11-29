@@ -1,7 +1,14 @@
 package com.intern.evtutors.composes.lesson.lesson_test
 
+import android.opengl.Visibility
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -20,13 +27,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.composes.schedule.HeaderLine
 import com.intern.evtutors.ui.customer.profile.ui.theme.FatherOfAppsTheme
+import com.intern.evtutors.view_models.LessonTestViewModel
 import com.miggue.mylogin01.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CreateTestScreen() {
+fun CreateTestScreen(
+    lessonTestViewModel: LessonTestViewModel = hiltViewModel()
+) {
     FatherOfAppsTheme {
         LazyColumn(
             modifier = Modifier
@@ -37,7 +48,47 @@ fun CreateTestScreen() {
                 CreateTestHeader()
             }
             item {
-                CreateTestBody()
+                CreateTestBody(lessonTestViewModel)
+            }
+        }
+
+        if(lessonTestViewModel.stateAddQuestion) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(ModalColor)
+                    .clickable { lessonTestViewModel.stateAddQuestion = false }
+            )
+        }
+        AnimatedVisibility(
+            visible = lessonTestViewModel.stateAddQuestion,
+            enter = slideInVertically(
+                initialOffsetY = { 1000 },
+                animationSpec = tween(
+                    easing = LinearEasing // interpolator
+                )
+            )+ fadeIn(),
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 57.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(.08f)
+                        .background(NoColor)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(.92f)
+                ) {
+                    QuestionBox(index = 1)
+                }
             }
         }
     }
@@ -83,7 +134,9 @@ fun CreateTestHeader() {
 }
 
 @Composable
-fun CreateTestBody() {
+fun CreateTestBody(
+    lessonTestViewModel: LessonTestViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,7 +146,8 @@ fun CreateTestBody() {
             title = "Title",
             placeHolder = "Enter title",
         )
-        ListOfQuestions()
+        Spacer(Modifier.height(5.dp))
+        ListOfQuestions(lessonTestViewModel)
     }
 }
 
@@ -156,16 +210,41 @@ fun TitleInput(
 @Composable
 fun ListOfQuestions(
 //    view model to get number of question
+    lessonTestViewModel: LessonTestViewModel
 ) {
     Column() {
-        Text(
-            modifier = Modifier.padding(bottom = 5.dp),
-            text = "Questions (2)",
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Questions (2)",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Button(
+                modifier = Modifier
+                    .padding(end = 10.dp),
+                onClick = {lessonTestViewModel.stateAddQuestion = true},
+                contentPadding = PaddingValues(15.dp, 0.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
+            ) {
+                Text(
+                    modifier = Modifier.padding(5.dp, 0.dp),
+                    text = "Add",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
 
         QuestionItem(index = 1, question = "There is question")
+        QuestionItem(index = 2, question = "There is question")
     }
 }
 
@@ -176,6 +255,7 @@ fun QuestionItem(
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
+        .padding(bottom = 10.dp)
         .clip(RoundedCornerShape(15.dp))
         .height(70.dp))
     {
@@ -240,5 +320,5 @@ fun QuestionItem(
 @Preview(showBackground = true)
 @Composable
 fun CreateTestPreview() {
-    CreateTestScreen()
+//    CreateTestScreen()
 }

@@ -1,5 +1,6 @@
 package com.intern.evtutors.data.apis
 
+import com.intern.evtutors.data.model_json.LessonDetailJson
 import com.intern.evtutors.data.model_json.LessonJson
 import com.intern.evtutors.data.models.Lesson
 import org.json.JSONObject
@@ -13,10 +14,10 @@ interface LessonAPI {
     @GET("/api/lessons")
     suspend fun getAllLesson():Response<MutableList<LessonJson>>
 
-    @GET("/api/lessons/{id}")
+    @GET("/api/courseInfo/id_lesson={id_lesson}")
     suspend fun getLessonById(
-        @Path("id") id:Int,
-    ):Response<LessonJson>
+        @Path("id_lesson") id_lesson:Int,
+    ):Response<LessonDetailJson>
 
     @GET("/api/lessonByDate/id_teacher={id_teacher}&date={date}")
     suspend fun getAllTeachersLessonByDate(

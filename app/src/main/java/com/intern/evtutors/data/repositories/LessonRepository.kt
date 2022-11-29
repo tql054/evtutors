@@ -51,8 +51,8 @@ class LessonRepository @Inject constructor(
 
     suspend fun getLessonById(id:Int) = withContext(dispatcher) {
         when(val result = lessonServices.getLessonById(id)) {
-            is NetworkResult.Success -> result.data.toLesson()
-            is NetworkResult.Error ->null
+            is NetworkResult.Success -> result.data
+            is NetworkResult.Error -> throw result.exception
         }
     }
 

@@ -14,6 +14,7 @@ import com.intern.evtutors.composes.home.HomeBaseScreen
 import com.intern.evtutors.composes.lesson.LessonDetailHeader
 import com.intern.evtutors.composes.lesson.LessonDetailScreen
 import com.intern.evtutors.composes.lesson.lesson_test.CreateTestScreen
+import com.intern.evtutors.composes.lesson.lesson_test.TestBaseScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
 import com.intern.evtutors.composes.schedule.ScheduleScreen
@@ -73,12 +74,33 @@ fun Navigation(navController:NavHostController, startScreen:String) {
                     }
                 )
             ){
-                backStrateEntry ->
-                val lessonId = backStrateEntry.arguments?.getString("lessonId")?.toInt()
+                backStrategyEntry ->
+                val lessonId = backStrategyEntry.arguments?.getString("lessonId")?.toInt()
                 requireNotNull(lessonId) //handle not null exception
                 LessonDetailScreen(
-                    lessonId = lessonId
+                    lessonId = lessonId,
+                    openCreateTest = {
+                        navController.navigate("lesson/createTest")
+                    },
+                    backAction = {
+                        navController.popBackStack()
+                    }
                 )
+            }
+
+            composable(route="lesson/createTest") {
+                TestBaseScreen(
+                    openAddTest = {
+                        navController.navigate("lesson/createQuiz")
+                    },
+                    backAction = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(route="lesson/createQuiz") {
+                CreateTestScreen()
             }
         }
     }
