@@ -216,7 +216,7 @@ fun itemTimeInDay(nameDay:String,teacherPostViewModel: TeacherPostViewModel = hi
                         }
                     }
                 "Wednesday"->{
-                    items(items = teacherPostViewModel.timeTuesday){ day ->
+                    items(items = teacherPostViewModel.timeWednesday){ day ->
                         ItemHoursShifts(day,"Wednesday"
                             , onClick = {teacherPostViewModel.updateTime("Wednesday",it)})
                         Spacer(Modifier.height(1.dp))
@@ -496,7 +496,16 @@ fun ItemHoursShifts(timePost:TimePost,nameDay: String,
             Arrangement.SpaceAround,
             Alignment.CenterVertically
         ){
-            Text(text = timeText.TimeStrart.toString())
+            if(timeText.TimeStrart.toString().isNotEmpty()){
+                Text(text = timeText.TimeStrart.toString())
+
+            }else{
+                if(timePost.TimeStrart!=null)
+                    Text(text = timePost.TimeStrart.toString())
+                else
+                    Text(text = "")
+            }
+
             //Text(text =id.toString() )
         }
         Row(Modifier.height(30.dp).width(25.dp),
@@ -515,7 +524,15 @@ fun ItemHoursShifts(timePost:TimePost,nameDay: String,
             Arrangement.SpaceAround,
             Alignment.CenterVertically
         ){
-            Text(text = timeText.TimeEnd.toString())
+            if(timeText.TimeEnd.toString().isNotEmpty()){
+                Text(text = timeText.TimeEnd.toString())
+
+            }else{
+                if(timePost.TimeEnd!=null)
+                    Text(text = timePost.TimeEnd.toString())
+                else
+                    Text(text = "")
+            }
         }
         Row(Modifier.height(30.dp).width(50.dp)
             .clickable {
