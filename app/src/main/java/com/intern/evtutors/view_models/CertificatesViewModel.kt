@@ -33,15 +33,15 @@ class CertificatesViewModel @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun checkValidDate (dateBegin:String, dateEnd:String):Boolean {
-        if(dateBegin == "Date of issue" || dateEnd == "Date of expiration") {
+        return if(dateBegin == "Date of issue" || dateEnd == "Date of expiration") {
             stateValidData = false
-            return false
+            false
         } else {
             val now = LocalDate.now()
             var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             var localDateBegin = LocalDate.parse(dateBegin, formatter)
             var localDateEnd = LocalDate.parse(dateEnd, formatter)
-            return localDateEnd.isBefore(localDateBegin) && now.isBefore(localDateBegin)
+            localDateEnd.isBefore(localDateBegin) && now.isBefore(localDateBegin)
         }
     }
 

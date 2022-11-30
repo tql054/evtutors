@@ -1,4 +1,4 @@
-package com.intern.evtutors.ui.customer.register
+package com.intern.evtutors.view_models
 
 import android.util.Log
 import androidx.lifecycle.LiveData

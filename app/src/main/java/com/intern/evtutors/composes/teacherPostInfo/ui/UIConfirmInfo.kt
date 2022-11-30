@@ -20,7 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.TeacherPost
 import com.intern.evtutors.data.models.TimePost
-import com.intern.evtutors.ui.customer.profile.ui.theme.GrayText
 import com.intern.evtutors.view_models.TeacherPostViewModel
 import com.miggue.mylogin01.ui.theme.*
 

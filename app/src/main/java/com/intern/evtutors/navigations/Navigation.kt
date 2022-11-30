@@ -17,9 +17,9 @@ import com.intern.evtutors.composes.lesson.lesson_test.CreateTestScreen
 import com.intern.evtutors.composes.lesson.lesson_test.TestBaseScreen
 import com.intern.evtutors.composes.notification.NotificationScreen
 import com.intern.evtutors.composes.profile.ProfileScreen
+import com.intern.evtutors.composes.profile.Profile_Greeting
+import com.intern.evtutors.composes.profile.profileTeacher
 import com.intern.evtutors.composes.schedule.ScheduleScreen
-import com.intern.evtutors.ui.customer.profile.Profile_Greeting
-import com.intern.evtutors.ui.customer.profile.profileTeacher
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

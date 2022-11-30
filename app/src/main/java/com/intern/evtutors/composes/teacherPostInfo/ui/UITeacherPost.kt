@@ -51,8 +51,6 @@ import com.intern.evtutors.R
 import com.intern.evtutors.common.Screen.width
 import com.intern.evtutors.data.models.TeacherPost
 import com.intern.evtutors.data.models.TimePost
-import com.intern.evtutors.ui.customer.profile.ui.theme.Purple700
-import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
 import com.intern.evtutors.view_models.TeacherPostViewModel
 import com.miggue.mylogin01.ui.theme.*
 

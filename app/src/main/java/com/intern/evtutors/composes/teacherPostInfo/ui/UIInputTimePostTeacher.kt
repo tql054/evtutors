@@ -1,13 +1,16 @@
 package com.intern.evtutors.composes.teacherPostInfo.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.icu.util.Calendar
+import android.os.Build
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,16 +40,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.R
 import com.intern.evtutors.data.models.TimePost
-import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
 import com.intern.evtutors.view_models.TeacherPostViewModel
 import com.miggue.mylogin01.ui.theme.Blue300
 import com.miggue.mylogin01.ui.theme.Brown300
+import com.miggue.mylogin01.ui.theme.whitebacground
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun UIInputTimePostTeacher(onchaneCount:(Int)->Unit){
     var colorItem1 by remember{ mutableStateOf(whitebacground) }
@@ -177,6 +181,8 @@ fun UIInputTimePostTeacher(onchaneCount:(Int)->Unit){
 
     }
 }
+@SuppressLint("UnrememberedMutableState")
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun itemTimeInDay(nameDay:String,teacherPostViewModel: TeacherPostViewModel = hiltViewModel()){
 
@@ -344,6 +350,8 @@ fun itemTimeInDay(nameDay:String,teacherPostViewModel: TeacherPostViewModel = hi
 
 
 }
+@SuppressLint("UnrememberedMutableState")
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun ItemHoursShifts1(i:String,nameDay: String,
                     onClick: (TimePost) -> Unit,
@@ -443,6 +451,8 @@ fun ItemHoursShifts1(i:String,nameDay: String,
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun ItemHoursShifts(timePost:TimePost,nameDay: String,
                         onClick: (TimePost) -> Unit,
@@ -568,6 +578,7 @@ fun ItemHoursShifts(timePost:TimePost,nameDay: String,
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun TimePickerDialog(onchane: (String) -> Unit){
 

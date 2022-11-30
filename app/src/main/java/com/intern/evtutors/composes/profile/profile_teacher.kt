@@ -1,5 +1,6 @@
-    package com.intern.evtutors.ui.customer.profile
+    package com.intern.evtutors.composes.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,7 +8,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -30,16 +30,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.intern.evtutors.R
-import com.intern.evtutors.composes.profile.CertificateItem
-import com.intern.evtutors.composes.profile.CertificateItemTeacher
 import com.intern.evtutors.data.model_json.TeacherDegree
-import com.intern.evtutors.data.repositories.JsonLoginRepositories
 import com.intern.evtutors.screens.Screens
-import com.intern.evtutors.ui.customer.profile.ui.theme.redbacground
-import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
-import com.intern.evtutors.ui.customer.profile.ui.theme.yellowbacground
 import com.intern.evtutors.view_models.LoginViewModel
-
+import com.miggue.mylogin01.ui.theme.whitebacground
+import com.miggue.mylogin01.ui.theme.yellowbacground
+import com.miggue.mylogin01.ui.theme.redbacground
+import androidx.compose.runtime.mutableStateOf
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +54,8 @@ class profile_teacher : ComponentActivity() {
         }
     }
 }
+
+@SuppressLint("CoroutineCreationDuringComposition", "UnrememberedMutableState")
 @Composable
  fun profileTeacher( navHostController: NavHostController,loginViewModel  : LoginViewModel = hiltViewModel()){
 

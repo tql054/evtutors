@@ -19,13 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
-import com.intern.evtutors.ui.customer.profile.validate
 import com.intern.evtutors.view_models.TeacherPostViewModel
-import com.miggue.mylogin01.ui.theme.BlackText
-import com.miggue.mylogin01.ui.theme.Blue300
-import com.miggue.mylogin01.ui.theme.Gray200
-import com.miggue.mylogin01.ui.theme.Grayy100
+import com.miggue.mylogin01.ui.theme.*
 
 
 @Composable

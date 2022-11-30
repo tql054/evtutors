@@ -14,10 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.composes.teacherPostInfo.ui.UITeacherPost
-import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
 import com.intern.evtutors.view_models.ProfileViewModel
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.LightBlue
+import com.miggue.mylogin01.ui.theme.whitebacground
 
 
 @Composable

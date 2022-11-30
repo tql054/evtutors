@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.composes.loading.CircularIndeterminateProgressBar
-import com.intern.evtutors.ui.customer.register.RegisterViewModel
+import com.intern.evtutors.view_models.RegisterViewModel
 
 import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
 import com.miggue.mylogin01.ui.theme.SecondaryColor
@@ -79,7 +79,7 @@ fun RegisterActivity() {
     }
 }
 @Composable
-fun view(registerViewModel: RegisterViewModel  = hiltViewModel()){
+fun view(registerViewModel: RegisterViewModel = hiltViewModel()){
     val selectedValue = remember { mutableStateOf("") }
     val nameValue = remember { mutableStateOf("") }
     val usernameValue = remember { mutableStateOf("") }

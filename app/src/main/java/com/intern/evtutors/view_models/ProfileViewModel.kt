@@ -26,19 +26,26 @@ class ProfileViewModel @Inject constructor(
     var stateConfirmCancel by mutableStateOf(false)
     var stateConfirmSave by mutableStateOf(false)
     var stateLoadingSaving by mutableStateOf(false)
-    var localUser by mutableStateOf<CustomerEntity?>(null)
+    var localUser by mutableStateOf<CustomerEntity>(
+        CustomerEntity(0,0,"",0,"","","","","","","",0)
+    )
     var oldCertificates by mutableStateOf(mutableListOf<CertificateJson>())
-//    New formatting about certificates
     var userCertificates by mutableStateOf(mutableListOf<CertificateJson>())
     var currentCertificate  by mutableStateOf<CertificateJson?>(null)
 
-
+//    var user: CustomerEntity= CustomerEntity(0,0,"",0,"","","","","","","",0)
+//    var myuser : CustomerEntity by mutableStateOf(user)
+//
+//    fun getuser(){
+//        parentJob = viewModelScope.launch  (handler){
+//            myuser =customerRepository.getcustomer()
+//
+//        }
+//    }
     fun toggleUpdating() {
         stateUpdating = !stateUpdating
     }
-    fun toggleAdding() {
-        stateAdding = !stateAdding
-    }
+
     fun toggle() {
         stateUpdating = !stateUpdating
         stateAdding = !stateAdding

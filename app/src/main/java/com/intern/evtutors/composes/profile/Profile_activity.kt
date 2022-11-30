@@ -1,4 +1,4 @@
-package com.intern.evtutors.ui.customer.profile
+package com.intern.evtutors.composes.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -50,7 +50,9 @@ import com.intern.evtutors.data.models.Role
 import com.intern.evtutors.data.models.User
 import com.intern.evtutors.data.models.getjwtToken
 import com.intern.evtutors.view_models.LoginViewModel
-import com.intern.evtutors.ui.customer.profile.ui.theme.*
+import com.intern.evtutors.view_models.ProfileViewModel
+import com.miggue.mylogin01.ui.theme.FatherOfAppsTheme
+import com.miggue.mylogin01.ui.theme.*
 import com.miggue.mylogin01.ui.theme.SecondaryColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -77,7 +79,7 @@ class Profile_activity : ComponentActivity() {
 
 @Composable
 fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : ProfileViewModel = hiltViewModel(), loginViewModel: LoginViewModel= hiltViewModel()) {
-    ProfileViewModel.getuser()
+    ProfileViewModel.getUser()
 //    used to RadioButton{
     val items = listOf("Male", "Female")
     val selectedValue = remember { mutableStateOf("") }
@@ -102,8 +104,8 @@ fun Profile_Greeting(navHostController: NavHostController, ProfileViewModel  : P
     var user = CustomerEntity(0, 0, "", 0, "", "", "", "", "", "", "", 0)
 
     val update = remember { mutableStateOf(false) }
-    var myuser = remember { mutableStateOf(user) }
-    myuser.value= ProfileViewModel.myuser
+    var myuser = remember { mutableStateOf<CustomerEntity>(user) }
+    myuser.value= ProfileViewModel.localUser
     var role: MutableSet<Role> = mutableSetOf(Role(myuser.value.roleID,""))
     var userupdate = User(myuser.value.id,myuser.value.name,myuser.value.age,myuser.value.gender,myuser.value.address,myuser.value.phone,myuser.value.avatar,myuser.value.email,myuser.value.userName, password = null,role = role)
     var myuserUpdate = remember { mutableStateOf(userupdate) }

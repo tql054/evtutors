@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.intern.evtutors.data.models.TeacherPost
-import com.intern.evtutors.ui.customer.profile.ui.theme.whitebacground
 import com.miggue.mylogin01.ui.theme.Blue300
+import com.miggue.mylogin01.ui.theme.whitebacground
 
 @Composable
 fun UIInputInfoRoomTeacher(status:Boolean,teacherPost: TeacherPost,
