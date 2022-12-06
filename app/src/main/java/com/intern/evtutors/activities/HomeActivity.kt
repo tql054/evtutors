@@ -31,13 +31,6 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val config = HashMap<Any?, Any?>()
-        config["cloud_name"] = DataLocal.CLOUD_NAME
-        config["api_key"] = DataLocal.API_KEY
-        config["api_secret"] = DataLocal.API_SECRET
-//        config.put("secure", true);
-
-        MediaManager.init(this, config)
         setContent {
             val viewModel = viewModel<ProfileViewModel>()
             viewModel.getUser()

@@ -1,6 +1,7 @@
 package com.intern.evtutors.composes.lesson.lesson_test
 
 import android.opengl.Visibility
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -15,6 +16,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,14 +33,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.intern.evtutors.composes.loading.CircularLoading
 import com.intern.evtutors.composes.schedule.HeaderLine
+import com.intern.evtutors.data.models.Question
 import com.intern.evtutors.view_models.LessonTestViewModel
+import com.intern.evtutors.view_models.QuizAndTestViewModel
 import com.miggue.mylogin01.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CreateTestScreen(
-    lessonTestViewModel: LessonTestViewModel = hiltViewModel()
+    quizId:Int?,
+    quizTitle:String,
+    backAction: ()->Unit,
+    quizAndTestViewModel: QuizAndTestViewModel = hiltViewModel()
 ) {
     FatherOfAppsTheme {
         LazyColumn(
@@ -44,23 +55,23 @@ fun CreateTestScreen(
                 .background(FourthColor)
         ) {
             stickyHeader {
-                CreateTestHeader()
+                CreateTestHeader(quizId, backAction)
             }
             item {
-                CreateTestBody(lessonTestViewModel)
+                CreateTestBody(quizId, quizAndTestViewModel)
             }
         }
 
-        if(lessonTestViewModel.stateAddQuestion) {
+        if(quizAndTestViewModel.stateAddQuestion) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(ModalColor)
-                    .clickable { lessonTestViewModel.stateAddQuestion = false }
+                    .clickable { quizAndTestViewModel.switchAddingQuestion(false) }
             )
         }
         AnimatedVisibility(
-            visible = lessonTestViewModel.stateAddQuestion,
+            visible = quizAndTestViewModel.stateAddQuestion,
             enter = slideInVertically(
                 initialOffsetY = { 1000 },
                 animationSpec = tween(
@@ -86,7 +97,10 @@ fun CreateTestScreen(
                         .fillMaxWidth()
                         .weight(.92f)
                 ) {
-                    QuestionBox(index = 1)
+                    QuestionBox(
+                        null,
+                        quizAndTestViewModel
+                    )
                 }
             }
         }
@@ -94,7 +108,10 @@ fun CreateTestScreen(
 }
 
 @Composable
-fun CreateTestHeader() {
+fun CreateTestHeader(
+    quizId:Int?,
+    backAction: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,21 +121,36 @@ fun CreateTestHeader() {
         Text(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(start = 10.dp),
+                .padding(start = 10.dp)
+                .clickable { backAction() },
             text = "Cancel",
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
         )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
-            text = "Create test",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center,
-        )
+
+        if(quizId==null) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
+                text = "Create test",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.ExtraBold,
+                textAlign = TextAlign.Center,
+            )
+        } else {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
+                text = "Edit test",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.ExtraBold,
+                textAlign = TextAlign.Center,
+            )
+        }
+
         Text(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
@@ -134,8 +166,10 @@ fun CreateTestHeader() {
 
 @Composable
 fun CreateTestBody(
-    lessonTestViewModel: LessonTestViewModel
+    quizId:Int?,
+    quizAndTestViewModel: QuizAndTestViewModel
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -144,16 +178,21 @@ fun CreateTestBody(
         TitleInput(
             title = "Title",
             placeHolder = "Enter title",
-        )
+            quizAndTestViewModel
+        ) {
+            quizAndTestViewModel.stateQuizTitle = it
+        }
         Spacer(Modifier.height(5.dp))
-        ListOfQuestions(lessonTestViewModel)
+        ListOfQuestions(quizId, quizAndTestViewModel)
     }
 }
 
 @Composable
 fun TitleInput(
     title:String,
-    placeHolder:String
+    placeHolder:String,
+    quizAndTestViewModel: QuizAndTestViewModel,
+    onChange: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -177,8 +216,8 @@ fun TitleInput(
                 }
                 .background(Color.White)
             ,
-            value = "",
-            onValueChange = {  },
+            value = quizAndTestViewModel.stateQuizTitle,
+            onValueChange = onChange,
             textStyle = TextStyle(fontSize = 18.sp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Black,
@@ -209,18 +248,19 @@ fun TitleInput(
 @Composable
 fun ListOfQuestions(
 //    view model to get number of question
-    lessonTestViewModel: LessonTestViewModel
+    quizId:Int?,
+    quizAndTestViewModel: QuizAndTestViewModel
 ) {
     Column() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 5.dp),
+                .padding(bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Questions (2)",
+                text = "Questions (${quizAndTestViewModel.stateListQuestion.size + 1})",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -228,7 +268,7 @@ fun ListOfQuestions(
             Button(
                 modifier = Modifier
                     .padding(end = 10.dp),
-                onClick = {lessonTestViewModel.stateAddQuestion = true},
+                onClick = {quizAndTestViewModel.switchAddingQuestion(true)},
                 contentPadding = PaddingValues(15.dp, 0.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
             ) {
@@ -241,16 +281,26 @@ fun ListOfQuestions(
                 )
             }
         }
+        val listQuestion = quizAndTestViewModel.stateListQuestion
+        if(quizId!=null) {
+            if (listQuestion.isNotEmpty()) {
+                listQuestion.forEachIndexed { index, question ->
+                    QuestionItem(index, question)
+                }
+            } else {
+                CircularLoading(size = 30)
+                quizAndTestViewModel.getAllQuestion(8)
+            }
+        } else {
 
-        QuestionItem(index = 1, question = "There is question")
-        QuestionItem(index = 2, question = "There is question")
+        }
     }
 }
 
 @Composable
 fun QuestionItem(
     index:Int,
-    question:String
+    question: Question
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -269,10 +319,8 @@ fun QuestionItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(.03f)
-//                .clip(RoundedCornerShape(topStart = 40.dp, bottomStart = 40.dp))
                     .background(GreenColor500)
             )
-
             Column(
                 Modifier
                     .padding(8.dp)
@@ -287,7 +335,7 @@ fun QuestionItem(
                 )
                 Spacer(modifier = Modifier.height(0.dp))
                 Text(
-                    text = "Question fhdasi fhuasdifh",
+                    text = question.question?:"",
                     fontSize = 9.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Gray300

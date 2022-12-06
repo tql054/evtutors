@@ -28,7 +28,7 @@ val Grayy100=Color(0xFFC8C6C6)
 val Gray200=Color(0xFF818181)
 val LightBlue=Color(0xFFA2B6F5)
 val DarkText = Color(0xFF6D6A6A)
-val NoColor = Color(0xB3F5F5F5)
+val NoColor = Color(0xF5F5F5)
 
 val Purple200 = Color(0xFFBB86FC)
 val Purple500 = Color(0xFF6200EE)

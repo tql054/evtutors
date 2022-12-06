@@ -3,31 +3,38 @@ package com.intern.evtutors.composes.lesson.lesson_test
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.intern.evtutors.view_models.QuizAndTestViewModel
 import com.miggue.mylogin01.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuestionBox(
-    index:Int,
+    index:Int?,
+    quizAndTestViewModel: QuizAndTestViewModel
 ) {
     Column(
         modifier = Modifier
@@ -79,21 +86,12 @@ fun QuestionBox(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            item {
-                AnswerItem(
-                    answer = "There will be a answer session The respondents " +
-                            "were asked two follow-up questions to their ...\n" +
-                        "\n"
-                )
-            }
-            item() {
-                AnswerItem(answer = "")
-            }
-            item() {
-                AnswerItem(answer = "")
-            }
-            item() {
-                AnswerItem(answer = "")
+            quizAndTestViewModel.stateListAnswer.forEachIndexed { index, answer ->
+                item() {
+                    AnswerItem(answer = answer.answer?:"") {
+                        quizAndTestViewModel.switchAddingAnswer(index, answer)
+                    }
+                }
             }
         }
 
@@ -111,13 +109,20 @@ fun QuestionBox(
                 color = Color.White
             )
         }
-//        AddQuestionPopup()
+
+        if(quizAndTestViewModel.stateCurrentAnswer != null) {
+            AddQuestionPopup(
+                quizAndTestViewModel.stateCurrentAnswer!!.index!!,
+                quizAndTestViewModel.stateCurrentAnswer!!.answer!!.answer!!,
+                quizAndTestViewModel.stateCurrentAnswer!!.answer!!.status!!
+            )
+        }
     }
 }
 
 @Composable
 fun QuestionHeader(
-    index:Int
+    index:Int?
 ) {
     Box(
         modifier = Modifier
@@ -130,7 +135,7 @@ fun QuestionHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
-            text = "Question $index",
+            text = "Question ${index?:0}",
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
@@ -159,7 +164,14 @@ fun QuestionHeader(
 }
 
 @Composable
-fun AddQuestionPopup() {
+fun AddQuestionPopup(
+    index:Int,
+    answer:String,
+    status:Boolean
+) {
+    var stateAnswer by rememberSaveable { mutableStateOf(answer) }
+    var stateStatus by rememberSaveable { mutableStateOf(status) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -194,8 +206,8 @@ fun AddQuestionPopup() {
                     .clip(RoundedCornerShape(10.dp))
                     .border(2.dp, PrimaryColor, RoundedCornerShape(10.dp))
                 ,
-                value = "",
-                onValueChange = {  },
+                value = stateAnswer,
+                onValueChange = { stateAnswer = it },
                 textStyle = TextStyle(fontSize = 18.sp),
                 singleLine = false,
                 maxLines = 4,
@@ -227,8 +239,8 @@ fun AddQuestionPopup() {
                     )
 
                     Switch(
-                        checked = true,
-                        onCheckedChange = {  }
+                        checked = stateStatus,
+                        onCheckedChange = { stateStatus = it }
                     )
                 }
             }
@@ -238,7 +250,8 @@ fun AddQuestionPopup() {
 
 @Composable
 fun AnswerItem(
-    answer:String
+    answer:String,
+    onClick:()->Unit
 ) {
     val borderColor = PrimaryColor
     Box(
@@ -247,6 +260,10 @@ fun AnswerItem(
             .clip(RoundedCornerShape(10.dp))
             .background(Color.White)
             .border(3.dp, borderColor, RoundedCornerShape(10.dp))
+            .clickable {
+                //set current answer
+                onClick()
+            }
     ) {
         if(answer=="") {
             Text(
@@ -273,5 +290,5 @@ fun AnswerItem(
 @Preview(showSystemUi = true)
 @Composable
 fun QuestionBoxPreview() {
-    QuestionBox(index = 1)
+//    QuestionBox(index = 1)
 }

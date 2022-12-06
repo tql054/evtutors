@@ -82,12 +82,12 @@ fun WeeklySchedule(
                     if(scheduleViewModel.stateDateOfWeek.isEmpty())
                         scheduleViewModel.getListDayOfWeek()
                     scheduleViewModel.stateDateOfWeek.forEachIndexed() {
-                            index, _ ->
-                        WeeklyScheduleItem(
-                            index,
-                            scheduleViewModel,
-                            false
-                        )
+                        index, _ ->
+                            WeeklyScheduleItem(
+                                index,
+                                scheduleViewModel,
+                                false
+                            )
                     }
                 }
             }
