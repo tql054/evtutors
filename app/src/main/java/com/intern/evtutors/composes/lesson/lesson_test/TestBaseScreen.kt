@@ -33,8 +33,8 @@ import com.miggue.mylogin01.ui.theme.*
 @Composable
 fun TestBaseScreen(
     lessonId:Int,
-    openEditTest: (quizId:Int, quizTitle:String) -> Unit,
-    openAddTest: () -> Unit,
+    openEditTest: (quizId:Int, lessonId:Int, quizTitle:String) -> Unit,
+    openAddTest: (lessonId:Int) -> Unit,
     backAction: () -> Unit,
     quizAndTestViewModel: QuizAndTestViewModel = hiltViewModel()
 ) {
@@ -44,7 +44,7 @@ fun TestBaseScreen(
             content = {
                 LazyColumn() {
                     stickyHeader {
-                        TestHeader(openAddTest, backAction)
+                        TestHeader(lessonId, openAddTest, backAction)
                         HeaderLine()
                     }
                     item {
@@ -61,6 +61,7 @@ fun TestBaseScreen(
                                     TestItem(
                                         testId = quiz.id,
                                         testName = quiz.title,
+                                        lessonId = lessonId,
                                         openEditTest = openEditTest
                                     )
                                 }
@@ -75,7 +76,8 @@ fun TestBaseScreen(
 
 @Composable
 fun TestHeader(
-    openAddTest: () -> Unit,
+    lessonId: Int,
+    openAddTest: (lessonId:Int) -> Unit,
     backAction: () -> Unit
 ) {
     Box(
@@ -98,7 +100,7 @@ fun TestHeader(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 10.dp),
-            onClick = { openAddTest() },
+            onClick = { openAddTest(lessonId) },
             contentPadding = PaddingValues(8.dp, 0.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
         ) {
@@ -116,14 +118,15 @@ fun TestHeader(
 fun TestItem(
     testId:Int,
     testName:String,
-    openEditTest: (quizId: Int, quizTitle:String) -> Unit
+    lessonId:Int,
+    openEditTest: (quizId: Int, lessonId:Int, quizTitle:String) -> Unit
 ) {
 //     Box() {
          Column(
              modifier = Modifier
                  .size(160.dp, 120.dp)
                  .clip(RoundedCornerShape(bottomStart = 15.dp, bottomEnd = 15.dp))
-                 .clickable { openEditTest(testId, testName) }
+                 .clickable { openEditTest(testId, lessonId, testName) }
                  .background(SecondaryColor)
          ) {
             Box(

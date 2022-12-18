@@ -1,6 +1,7 @@
 package com.intern.evtutors.data.repositories
 
 import com.intern.evtutors.base.network.NetworkResult
+import com.intern.evtutors.data.models.Question
 import com.intern.evtutors.data.services.QuestionServices
 import com.intern.evtutors.data.services.QuizServices
 import com.intern.evtutors.di.IoDispatcher
@@ -18,6 +19,18 @@ class QuestionRepository @Inject constructor(
                 result.data.map {
                     it.toQuestion()
                 }
+            }
+
+            is NetworkResult.Error -> {
+                throw result.exception
+            }
+        }
+    }
+
+    suspend fun insertQuestion(question: Question) = withContext(dispatcher) {
+        when(val result = questionServices.insertQuestion(question)) {
+            is NetworkResult.Success -> {
+                result.data.toQuestion()
             }
 
             is NetworkResult.Error -> {

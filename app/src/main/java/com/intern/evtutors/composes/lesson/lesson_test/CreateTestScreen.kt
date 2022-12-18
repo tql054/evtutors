@@ -44,10 +44,12 @@ import com.miggue.mylogin01.ui.theme.*
 @Composable
 fun CreateTestScreen(
     quizId:Int?,
+    lessonId: Int,
     quizTitle:String,
     backAction: ()->Unit,
     quizAndTestViewModel: QuizAndTestViewModel = hiltViewModel()
 ) {
+    quizAndTestViewModel.stateQuizInput = quizTitle
     FatherOfAppsTheme {
         LazyColumn(
             modifier = Modifier
@@ -55,23 +57,23 @@ fun CreateTestScreen(
                 .background(FourthColor)
         ) {
             stickyHeader {
-                CreateTestHeader(quizId, backAction)
+                CreateTestHeader(quizId, lessonId, backAction, quizAndTestViewModel)
             }
             item {
                 CreateTestBody(quizId, quizAndTestViewModel)
             }
         }
 
-        if(quizAndTestViewModel.stateAddQuestion) {
+        if(quizAndTestViewModel.stateAddQuestion!="disable") {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(ModalColor)
-                    .clickable { quizAndTestViewModel.switchAddingQuestion(false) }
+                    .clickable { quizAndTestViewModel.switchAddingQuestion("disable", null) }
             )
         }
         AnimatedVisibility(
-            visible = quizAndTestViewModel.stateAddQuestion,
+            visible = quizAndTestViewModel.getOpeningQuestionBoxStatus(),
             enter = slideInVertically(
                 initialOffsetY = { 1000 },
                 animationSpec = tween(
@@ -98,7 +100,7 @@ fun CreateTestScreen(
                         .weight(.92f)
                 ) {
                     QuestionBox(
-                        null,
+                        quizId,
                         quizAndTestViewModel
                     )
                 }
@@ -110,7 +112,9 @@ fun CreateTestScreen(
 @Composable
 fun CreateTestHeader(
     quizId:Int?,
-    backAction: () -> Unit
+    lessonId: Int,
+    backAction: () -> Unit,
+    quizAndTestViewModel: QuizAndTestViewModel,
 ) {
     Box(
         modifier = Modifier
@@ -139,6 +143,19 @@ fun CreateTestHeader(
                 fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
             )
+
+            Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 10.dp)
+                        .clickable {
+                            quizAndTestViewModel.addQuiz(lessonId = lessonId)
+                        },
+            text = "Save",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            )
         } else {
             Text(
                 modifier = Modifier
@@ -149,17 +166,22 @@ fun CreateTestHeader(
                 fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
             )
+
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 10.dp)
+                    .clickable {
+                        //update question
+                    },
+                text = "Save",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
         }
 
-        Text(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 10.dp),
-            text = "Save",
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-        )
+
     }
     HeaderLine()
 }
@@ -180,7 +202,7 @@ fun CreateTestBody(
             placeHolder = "Enter title",
             quizAndTestViewModel
         ) {
-            quizAndTestViewModel.stateQuizTitle = it
+            quizAndTestViewModel.stateQuizInput = it
         }
         Spacer(Modifier.height(5.dp))
         ListOfQuestions(quizId, quizAndTestViewModel)
@@ -216,7 +238,7 @@ fun TitleInput(
                 }
                 .background(Color.White)
             ,
-            value = quizAndTestViewModel.stateQuizTitle,
+            value = quizAndTestViewModel.stateQuizInput,
             onValueChange = onChange,
             textStyle = TextStyle(fontSize = 18.sp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -260,7 +282,7 @@ fun ListOfQuestions(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Questions (${quizAndTestViewModel.stateListQuestion.size + 1})",
+                text = "Questions (${quizAndTestViewModel.stateListQuestion?.size?:0})",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -268,7 +290,7 @@ fun ListOfQuestions(
             Button(
                 modifier = Modifier
                     .padding(end = 10.dp),
-                onClick = {quizAndTestViewModel.switchAddingQuestion(true)},
+                onClick = {quizAndTestViewModel.switchAddingQuestion("adding", null)},
                 contentPadding = PaddingValues(15.dp, 0.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
             ) {
@@ -283,16 +305,22 @@ fun ListOfQuestions(
         }
         val listQuestion = quizAndTestViewModel.stateListQuestion
         if(quizId!=null) {
-            if (listQuestion.isNotEmpty()) {
+            if (listQuestion != null) {
                 listQuestion.forEachIndexed { index, question ->
-                    QuestionItem(index, question)
+                    QuestionItem(index, question, quizAndTestViewModel)
                 }
             } else {
                 CircularLoading(size = 30)
-                quizAndTestViewModel.getAllQuestion(8)
+                quizAndTestViewModel.getAllQuestion(quizId)
             }
         } else {
-
+            if (listQuestion != null) {
+                listQuestion.forEachIndexed { index, question ->
+                    QuestionItem(index, question, quizAndTestViewModel)
+                }
+            } else {
+                quizAndTestViewModel.stateListQuestion = mutableListOf<Question>()
+            }
         }
     }
 }
@@ -300,7 +328,8 @@ fun ListOfQuestions(
 @Composable
 fun QuestionItem(
     index:Int,
-    question: Question
+    question: Question,
+    quizAndTestViewModel: QuizAndTestViewModel
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -319,6 +348,7 @@ fun QuestionItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(.03f)
+                    .clickable { quizAndTestViewModel.switchAddingQuestion("disable", index) }
                     .background(GreenColor500)
             )
             Column(
@@ -326,9 +356,12 @@ fun QuestionItem(
                     .padding(8.dp)
                     .fillMaxHeight()
                     .weight(.6f)
+                    .clickable {
+                        quizAndTestViewModel.switchAddingQuestion("editing", index)
+                    }
             ) {
                 Text(
-                    text = "Question $index:",
+                    text = "Question ${index + 1}:",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White
