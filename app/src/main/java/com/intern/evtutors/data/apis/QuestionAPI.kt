@@ -3,10 +3,7 @@ package com.intern.evtutors.data.apis
 import com.intern.evtutors.data.model_json.QuestionJson
 import com.intern.evtutors.data.models.Question
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface QuestionAPI {
     @GET("/api/question/quizId={quizId}")
@@ -16,6 +13,12 @@ interface QuestionAPI {
 
     @POST("/api/addQuestion")
     suspend fun insertQuestion(
+        @Body question: Question
+    ):Response<QuestionJson>
+
+    @PUT("/api/updateQuestion/{id_question}")
+    suspend fun updateQuestion(
+        @Path("id_question") id_question:Int,
         @Body question: Question
     ):Response<QuestionJson>
 }

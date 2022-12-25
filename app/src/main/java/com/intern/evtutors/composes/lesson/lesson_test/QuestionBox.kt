@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +39,8 @@ fun QuestionBox(
     quizId: Int?,
     quizAndTestViewModel: QuizAndTestViewModel
 ) {
+    val focusManager = LocalFocusManager.current
+    focusManager.clearFocus()
     if(quizAndTestViewModel.stateListAnswer==null) {
         if(quizAndTestViewModel.stateIndexCurrentQuestion!=null) {
             quizAndTestViewModel.stateQuestionInput = quizAndTestViewModel.getCurrentQuestion().question?:""
@@ -188,6 +191,7 @@ fun AnswerItem(
     status:Boolean,
     onClick:()->Unit
 ) {
+    val focusManager = LocalFocusManager.current
     var borderColor = PrimaryColor
     if(status) {
         borderColor = GreenColor700
@@ -199,6 +203,7 @@ fun AnswerItem(
             .background(Color.White)
             .border(3.dp, borderColor, RoundedCornerShape(10.dp))
             .clickable {
+                focusManager.clearFocus()
                 onClick()
             }
     ) {
@@ -231,7 +236,6 @@ fun AddQuestionPopup(
     val currentAnswer = quizAndTestViewModel.getCurrentAnswer()
     var stateAnswer by rememberSaveable { mutableStateOf(currentAnswer.answer?:"") }
     var stateStatus by rememberSaveable { mutableStateOf(currentAnswer.status?:false) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -304,6 +308,8 @@ fun AddQuestionPopup(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(120.dp))
         }
     }
 }

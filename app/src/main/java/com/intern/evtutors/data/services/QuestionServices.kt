@@ -4,6 +4,7 @@ import com.intern.evtutors.base.network.BaseRemoteService
 import com.intern.evtutors.base.network.NetworkResult
 import com.intern.evtutors.data.apis.QuestionAPI
 import com.intern.evtutors.data.model_json.QuestionJson
+import com.intern.evtutors.data.model_json.QuizJson
 import com.intern.evtutors.data.models.Question
 import javax.inject.Inject
 
@@ -16,5 +17,9 @@ class QuestionServices @Inject constructor(
 
     suspend fun insertQuestion(question: Question): NetworkResult<QuestionJson> {
         return  callApi { questionAPI.insertQuestion(question) }
+    }
+
+    suspend fun updateQuestion(questionId:Int, question: Question):NetworkResult<QuestionJson> {
+        return  callApi { questionAPI.updateQuestion(questionId, question) }
     }
 }

@@ -1,7 +1,7 @@
 package com.intern.evtutors.data.models
 
 class Question (
-    val id:String? = "",
+    var id:Int?=0,
     var quizId:Long? = 1,
     var question:String? = "",
     var answer_a: String? = "",

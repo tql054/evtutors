@@ -37,4 +37,16 @@ class QuizRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun updateQuiz(quizId:Int, quizJson: QuizJson) = withContext(dispatcher) {
+        when(val result = quizServices.updateQuiz(quizId, quizJson)) {
+            is NetworkResult.Success -> {
+                result.data.toQuiz()
+            }
+
+            is NetworkResult.Error -> {
+                throw result.exception
+            }
+        }
+    }
 }

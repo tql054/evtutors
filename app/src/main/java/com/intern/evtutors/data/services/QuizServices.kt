@@ -17,4 +17,8 @@ class QuizServices @Inject constructor(
     suspend fun insertQuiz(quizJson: QuizJson):NetworkResult<QuizJson> {
         return  callApi { quizAPI.postQuiz(quizJson) }
     }
+
+    suspend fun updateQuiz(quizId:Int, quizJson: QuizJson):NetworkResult<QuizJson> {
+        return  callApi { quizAPI.updateQuiz(quizId, quizJson) }
+    }
 }

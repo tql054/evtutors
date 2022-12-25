@@ -1,6 +1,8 @@
 package com.intern.evtutors.data.repositories
 
 import com.intern.evtutors.base.network.NetworkResult
+import com.intern.evtutors.data.model_json.QuestionJson
+import com.intern.evtutors.data.model_json.QuizJson
 import com.intern.evtutors.data.models.Question
 import com.intern.evtutors.data.services.QuestionServices
 import com.intern.evtutors.data.services.QuizServices
@@ -29,6 +31,18 @@ class QuestionRepository @Inject constructor(
 
     suspend fun insertQuestion(question: Question) = withContext(dispatcher) {
         when(val result = questionServices.insertQuestion(question)) {
+            is NetworkResult.Success -> {
+                result.data.toQuestion()
+            }
+
+            is NetworkResult.Error -> {
+                throw result.exception
+            }
+        }
+    }
+
+    suspend fun updateQuestion(questionId:Int, question: Question) = withContext(dispatcher) {
+        when(val result = questionServices.updateQuestion(questionId, question)) {
             is NetworkResult.Success -> {
                 result.data.toQuestion()
             }

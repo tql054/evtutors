@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.composes.loading.CircularLoading
 import com.intern.evtutors.composes.schedule.HeaderLine
+import com.intern.evtutors.data.model_json.QuizJson
 import com.intern.evtutors.data.models.Question
 import com.intern.evtutors.view_models.LessonTestViewModel
 import com.intern.evtutors.view_models.QuizAndTestViewModel
@@ -50,59 +52,63 @@ fun CreateTestScreen(
     quizAndTestViewModel: QuizAndTestViewModel = hiltViewModel()
 ) {
     quizAndTestViewModel.stateQuizInput = quizTitle
-    FatherOfAppsTheme {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(FourthColor)
-        ) {
-            stickyHeader {
-                CreateTestHeader(quizId, lessonId, backAction, quizAndTestViewModel)
-            }
-            item {
-                CreateTestBody(quizId, quizAndTestViewModel)
-            }
-        }
-
-        if(quizAndTestViewModel.stateAddQuestion!="disable") {
-            Box(
+    if(quizAndTestViewModel.stateSavingLoading) {
+        CircularLoading(size = 40)
+    } else {
+        FatherOfAppsTheme {
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(ModalColor)
-                    .clickable { quizAndTestViewModel.switchAddingQuestion("disable", null) }
-            )
-        }
-        AnimatedVisibility(
-            visible = quizAndTestViewModel.getOpeningQuestionBoxStatus(),
-            enter = slideInVertically(
-                initialOffsetY = { 1000 },
-                animationSpec = tween(
-                    easing = LinearEasing // interpolator
-                )
-            )+ fadeIn(),
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 57.dp)
+                    .background(FourthColor)
             ) {
+                stickyHeader {
+                    CreateTestHeader(quizId, lessonId, backAction, quizAndTestViewModel)
+                }
+                item {
+                    CreateTestBody(quizId, quizAndTestViewModel)
+                }
+            }
+
+            if(quizAndTestViewModel.stateAddQuestion!="disable") {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(.08f)
-                        .background(NoColor)
+                        .fillMaxSize()
+                        .background(ModalColor)
+                        .clickable { quizAndTestViewModel.switchAddingQuestion("disable", null) }
                 )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(.92f)
-                ) {
-                    QuestionBox(
-                        quizId,
-                        quizAndTestViewModel
+            }
+            AnimatedVisibility(
+                visible = quizAndTestViewModel.getOpeningQuestionBoxStatus(),
+                enter = slideInVertically(
+                    initialOffsetY = { 1000 },
+                    animationSpec = tween(
+                        easing = LinearEasing // interpolator
                     )
+                )+ fadeIn(),
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 57.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(.08f)
+                            .background(NoColor)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(.92f)
+                    ) {
+                        QuestionBox(
+                            quizId,
+                            quizAndTestViewModel
+                        )
+                    }
                 }
             }
         }
@@ -145,16 +151,16 @@ fun CreateTestHeader(
             )
 
             Text(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 10.dp)
-                        .clickable {
-                            quizAndTestViewModel.addQuiz(lessonId = lessonId)
-                        },
-            text = "Save",
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 10.dp)
+                    .clickable {
+                        quizAndTestViewModel.addQuiz(lessonId = lessonId, backAction)
+                    },
+                text = "Save",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
             )
         } else {
             Text(
@@ -172,7 +178,7 @@ fun CreateTestHeader(
                     .align(Alignment.CenterEnd)
                     .padding(end = 10.dp)
                     .clickable {
-                        //update question
+                        quizAndTestViewModel.editQuiz(quizId, lessonId, backAction)
                     },
                 text = "Save",
                 fontSize = 11.sp,
@@ -180,8 +186,6 @@ fun CreateTestHeader(
                 textAlign = TextAlign.Center,
             )
         }
-
-
     }
     HeaderLine()
 }

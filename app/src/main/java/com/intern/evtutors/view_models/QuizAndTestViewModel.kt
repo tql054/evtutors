@@ -29,9 +29,17 @@ class QuizAndTestViewModel @Inject constructor(
     var stateQuizInput by mutableStateOf("")
     var stateQuestionInput by mutableStateOf("")
     var stateAnswerInput by mutableStateOf("")
+
     var stateIndexCurrentQuestion by mutableStateOf<Int?>(null)
+    var stateListOfEditedQuestion by mutableStateOf(mutableListOf<QuestionEdited>())
     var stateIndexCurrentAnswer by mutableStateOf<Int?>(null)
+
     var stateAddQuestion by mutableStateOf("disable") // adding-editing-disable
+    var stateSavingLoading by mutableStateOf(false)
+
+    fun switchSavingLoading(status:Boolean) {
+        stateSavingLoading = status
+    }
 
     fun switchAddingQuestion(status:String, index:Int?) {
         stateAddQuestion = status
@@ -60,8 +68,9 @@ class QuizAndTestViewModel @Inject constructor(
         }
     }
 
-    fun addQuiz(lessonId: Int) {
+    fun addQuiz(lessonId: Int, backAction:() -> Unit) {
         viewModelScope.launch(handler) {
+            stateSavingLoading = true
             val newQuiz = quizRepository.insertQuiz(QuizJson(0, stateQuizInput, lessonId))
             if(newQuiz != null) {
                 val listQuestion = stateListQuestion
@@ -70,9 +79,41 @@ class QuizAndTestViewModel @Inject constructor(
                         question.quizId = newQuiz.id.toLong()
                         questionRepository.insertQuestion(question)
                     }
+                    backAction()
                 }
             }
-            Log.d("state new quiz", newQuiz.toString())
+            stateSavingLoading = false
+        }
+    }
+
+    fun editQuiz(quizId: Int, lessonId: Int, backAction:() -> Unit) {
+        viewModelScope.launch(handler) {
+            stateSavingLoading = true
+            val newQuiz = quizRepository.updateQuiz(quizId, QuizJson(0, stateQuizInput, lessonId))
+            if(newQuiz != null) {
+                val listQuestion = stateListOfEditedQuestion
+                listQuestion?.let {
+                    for (question in listQuestion) {
+                        when(question.status) {
+                            "Added" -> {
+                                questionRepository.insertQuestion(question.question)
+                            }
+
+                            "Edited" -> {
+                                questionRepository.updateQuestion(question.question.id!!, question.question)
+                                Log.d("State edit", question.question.quizId.toString()+"  " + question.question.id)
+
+                            }
+
+                            "Deleted" -> {
+
+                            }
+                        }
+                    }
+                }
+            }
+            stateSavingLoading = false
+            backAction()
         }
     }
 
@@ -112,25 +153,30 @@ class QuizAndTestViewModel @Inject constructor(
 
     fun addQuestion(quizId: Int?) {
         val newListQuestion = mutableListOf<Question>()
-        val newQuestion = generateNewQuestion()
+        var newQuestion = generateNewQuestion()
         newQuestion.question = stateQuestionInput
         newQuestion.quizId = quizId?.toLong()?:null
         stateListQuestion?.let {
             if(stateIndexCurrentQuestion==null) {
                 for(question in stateListQuestion!!) newListQuestion.add(question)
                 newListQuestion.add(newQuestion)
+                stateListOfEditedQuestion.add(QuestionEdited(null, newQuestion, "Added"))
             } else {
                 stateListQuestion!!.forEachIndexed { index, question ->
                     if(stateIndexCurrentQuestion == index) {
+                        newQuestion.id = getCurrentQuestion().id
                         newListQuestion.add(newQuestion)
+                        stateListOfEditedQuestion.add(QuestionEdited(stateIndexCurrentQuestion!!, newQuestion, "Edited"))
                     } else {
                         newListQuestion.add(question)
                     }
                 }
             }
             stateListQuestion = newListQuestion
+            stateIndexCurrentQuestion=null
             switchAddingQuestion("disable", null)
         }
+        Log.d("Edited question: ", stateListOfEditedQuestion.toString())
     }
 
     private fun generateNewQuestion():Question {
@@ -149,10 +195,6 @@ class QuizAndTestViewModel @Inject constructor(
         return result
     }
 
-    fun removeQuestion() {
-
-    }
-
     fun addAnswer(answer:String, status:Boolean) {
         val newListAnswer = mutableListOf<Answer>()
         if(status) {
@@ -168,4 +210,6 @@ class QuizAndTestViewModel @Inject constructor(
         newListAnswer[stateIndexCurrentAnswer!!] = Answer(answer, status)
         stateListAnswer = newListAnswer
     }
+
+    data class QuestionEdited(val index:Int?, val question: Question, val status:String)
 }

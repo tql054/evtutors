@@ -4,7 +4,7 @@ import com.intern.evtutors.data.models.Answer
 import com.intern.evtutors.data.models.Question
 
 class QuestionJson(
-    val id:String? = "",
+    val id:Int? = 0,
     val quizId:Long? = 1,
     val question:String? = "",
     val answer_a: String? = "",
