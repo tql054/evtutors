@@ -70,17 +70,18 @@ fun Navigation(navController:NavHostController, startScreen:String) {
                 route="lesson/details/{lessonId}",
                 arguments = listOf(
                     navArgument(name = "lessonId") {
-                        type = NavType.StringType
+                        type = NavType.IntType
                     }
                 )
             ){
                 backStrategyEntry ->
-                val lessonId = backStrategyEntry.arguments?.getString("lessonId")?.toInt()
+                val lessonId = backStrategyEntry.arguments?.getInt("lessonId")
                 requireNotNull(lessonId) //handle not null exception
                 LessonDetailScreen(
                     lessonId = lessonId,
                     openCreateTest = {
-                        navController.navigate("lesson/createTest")
+                        lessonId ->
+                            navController.navigate("lesson/createTest/$lessonId")
                     },
                     backAction = {
                         navController.popBackStack()
@@ -88,10 +89,26 @@ fun Navigation(navController:NavHostController, startScreen:String) {
                 )
             }
 
-            composable(route="lesson/createTest") {
+            composable(
+                route="lesson/createTest/{lessonId}",
+                arguments = listOf(
+                    navArgument(name = "lessonId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) {
+                backStrategyEntry ->
+                val lessonId = backStrategyEntry.arguments?.getInt("lessonId")
+                requireNotNull(lessonId) // need to handle not null exception
                 TestBaseScreen(
+                    lessonId,
                     openAddTest = {
-                        navController.navigate("lesson/createQuiz")
+                        lessonId ->
+                            navController.navigate("lesson/createQuiz/$lessonId")
+                    },
+                    openEditTest = {
+                        quizId,lessonId, quizTitle ->
+                            navController.navigate("lesson/createQuiz/$quizId/$quizTitle/${lessonId}")
                     },
                     backAction = {
                         navController.popBackStack()
@@ -99,8 +116,36 @@ fun Navigation(navController:NavHostController, startScreen:String) {
                 )
             }
 
-            composable(route="lesson/createQuiz") {
-                CreateTestScreen()
+            composable(route="lesson/createQuiz/{quizId}/{quizTitle}/{lessonId}") {
+                backStrategyEntry ->
+                    val quizId = backStrategyEntry.arguments?.getString("quizId")?.toInt()
+                    val quizTitle = backStrategyEntry.arguments?.getString("quizTitle")
+                    val lessonId = backStrategyEntry.arguments?.getString("lessonId")?.toInt()
+                    requireNotNull(quizId)
+                    requireNotNull(quizTitle)
+                    requireNotNull(lessonId)
+                CreateTestScreen(
+                        quizId,
+                        lessonId,
+                        quizTitle,
+                        backAction = {
+                            navController.popBackStack()
+                        }
+                    )
+            }
+
+            composable(route="lesson/createQuiz/{lessonId}") {
+                backStrategyEntry ->
+                    val lessonId = backStrategyEntry.arguments?.getString("lessonId")?.toInt()
+                    requireNotNull(lessonId)
+                    CreateTestScreen(
+                        null,
+                        lessonId,
+                        "",
+                        backAction = {
+                            navController.popBackStack()
+                        }
+                    )
             }
         }
     }

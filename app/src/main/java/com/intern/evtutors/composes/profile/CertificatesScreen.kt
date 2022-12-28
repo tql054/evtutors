@@ -38,28 +38,6 @@ fun ProfileScreen(
 ) {
     profileViewModel.getUser()
     FatherOfAppsTheme {
-//        when(TypeOfUser) {
-//            2 -> {
-//                val context = LocalContext.current
-//                Surface() {
-//                    Column() {
-//                        var user = profileViewModel.localUser
-//                       // Text(text = "Count: ${user?.roleID}")
-//                        Text(text = "ADD",Modifier.clickable {
-//                            var intent: Intent = Intent(context, UITeacherPost::class.java)
-//                            context.startActivity(intent)
-//                        })
-//
-//                    }
-//                }
-//            }
-//
-//            3 -> {
-//                TutorInfoPage(
-//                    profileViewModel
-//                )
-//            }
-//        }
         TutorInfoPage(
             profileViewModel
         )

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.R
 import com.intern.evtutors.composes.home.CircleAvatar
+import com.intern.evtutors.composes.loading.CircularLoading
 import com.intern.evtutors.composes.schedule.HeaderLine
 import com.intern.evtutors.view_models.LessonViewModel
 import com.miggue.mylogin01.ui.theme.*
@@ -34,24 +35,13 @@ import com.miggue.mylogin01.ui.theme.*
 @Composable
 fun LessonDetailScreen(
     lessonId:Int,
-    openCreateTest:()->Unit,
+    openCreateTest:(lessonId:Int)->Unit,
     backAction:()->Unit,
     lessonViewModel: LessonViewModel = hiltViewModel()
 ) {
     val lessonInfo = lessonViewModel.stateLesson
     if(lessonInfo==null) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(top=100.dp)
-                    .align(Alignment.TopCenter),
-                color = PrimaryColor
-            )
-        }
+        CircularLoading(size = 50)
         lessonViewModel.getLessonById(lessonId)
     } else {
         Surface() {
@@ -66,7 +56,8 @@ fun LessonDetailScreen(
                 JoinCallButton()
                 Spacer(Modifier.height(10.dp))
                 TeachersLessonContent(
-                    lessonInfo.idStudent, //need to handler student and teacher role
+                    lessonInfo.idStudent,
+                    lessonId, //need to handler student and teacher role
                     openCreateTest
                 )
             }
@@ -139,7 +130,7 @@ fun LessonTitle(title:String) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top=10.dp, start = 20.dp),
+            .padding(top = 10.dp, start = 20.dp),
         text = title,
         fontSize = 25.sp,
         fontWeight = FontWeight.Bold,
@@ -184,7 +175,8 @@ fun JoinCallButton() {
 @Composable
 fun TeachersLessonContent(
     idUser:Int,
-    openCreateTest: () -> Unit
+    lessonId:Int,
+    openCreateTest: (lessonId:Int) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -211,7 +203,7 @@ fun TeachersLessonContent(
                     Box(
                         modifier = Modifier
                             .size(150.dp)
-                            .clickable { openCreateTest() }
+                            .clickable { openCreateTest(lessonId) }
                     ) {
                         LessonFeatureItem(
                             title = "Quiz          and test",

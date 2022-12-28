@@ -32,6 +32,16 @@ class NetworkModule {
     }
 
     @Provides
+    fun provideQuizApi(@Named("LessonSite") retrofit: Retrofit):QuizAPI {
+        return retrofit.create(QuizAPI::class.java)
+    }
+
+    @Provides
+    fun provideQuestionApi(@Named("LessonSite") retrofit: Retrofit):QuestionAPI {
+        return retrofit.create(QuestionAPI::class.java)
+    }
+
+    @Provides
     fun provideCertificateAPI(@Named("RegisterStudent") retrofit: Retrofit): ProfileAPI{
         return retrofit.create(ProfileAPI::class.java)
     }

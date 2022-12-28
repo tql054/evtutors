@@ -116,12 +116,12 @@ class ScheduleViewModel @Inject constructor(
             }
             "FRIDAY" -> {
                 plusDays = 2
-                minusDays = 3
+                minusDays = 4
                 plusDaysToNextWeek = 3
             }
             "SATURDAY" -> {
                 plusDays = 1
-                minusDays = 4
+                minusDays = 5
                 plusDaysToNextWeek = 2
             }
             "SUNDAY" -> {
@@ -157,7 +157,9 @@ class ScheduleViewModel @Inject constructor(
         }
         stateDateOfWeek =  result
         stateDateOfNextWeek = resultNextWeek
-        Log.d("state next week:", stateDateOfNextWeek.toString())
+        Log.d("state next week:", stateDateOfNextWeek.size.toString())
+        Log.d("state current week:", stateDateOfWeek.size.toString())
+
     }
 
     data class DateItem(

@@ -2,6 +2,7 @@ package com.intern.evtutors.composes.lesson.lesson_test
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,22 +23,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.intern.evtutors.composes.lesson.BackButton
 import com.intern.evtutors.composes.schedule.HeaderLine
+import com.intern.evtutors.view_models.QuizAndTestViewModel
 import com.miggue.mylogin01.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TestBaseScreen(
-    openAddTest: () -> Unit,
-    backAction: () -> Unit
+    lessonId:Int,
+    openEditTest: (quizId:Int, lessonId:Int, quizTitle:String) -> Unit,
+    openAddTest: (lessonId:Int) -> Unit,
+    backAction: () -> Unit,
+    quizAndTestViewModel: QuizAndTestViewModel = hiltViewModel()
 ) {
+    quizAndTestViewModel.getAllQuiz(lessonId)
     FatherOfAppsTheme {
         Scaffold(
             content = {
                 LazyColumn() {
                     stickyHeader {
-                        TestHeader(openAddTest, backAction)
+                        TestHeader(lessonId, openAddTest, backAction)
                         HeaderLine()
                     }
                     item {
@@ -49,8 +56,15 @@ fun TestBaseScreen(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
-                            item {
-                                TestItem(testName = "Test of middle semester")
+                            for(quiz in quizAndTestViewModel.stateListQuiz) {
+                                item {
+                                    TestItem(
+                                        testId = quiz.id,
+                                        testName = quiz.title,
+                                        lessonId = lessonId,
+                                        openEditTest = openEditTest
+                                    )
+                                }
                             }
                         }
                     }
@@ -62,7 +76,8 @@ fun TestBaseScreen(
 
 @Composable
 fun TestHeader(
-    openAddTest: () -> Unit,
+    lessonId: Int,
+    openAddTest: (lessonId:Int) -> Unit,
     backAction: () -> Unit
 ) {
     Box(
@@ -85,7 +100,7 @@ fun TestHeader(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 10.dp),
-            onClick = { openAddTest() },
+            onClick = { openAddTest(lessonId) },
             contentPadding = PaddingValues(8.dp, 0.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Red500),
         ) {
@@ -101,13 +116,17 @@ fun TestHeader(
 
 @Composable
 fun TestItem(
-    testName:String
+    testId:Int,
+    testName:String,
+    lessonId:Int,
+    openEditTest: (quizId: Int, lessonId:Int, quizTitle:String) -> Unit
 ) {
 //     Box() {
          Column(
              modifier = Modifier
                  .size(160.dp, 120.dp)
                  .clip(RoundedCornerShape(bottomStart = 15.dp, bottomEnd = 15.dp))
+                 .clickable { openEditTest(testId, lessonId, testName) }
                  .background(SecondaryColor)
          ) {
             Box(

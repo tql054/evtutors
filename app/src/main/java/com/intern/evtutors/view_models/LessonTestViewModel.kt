@@ -9,5 +9,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LessonTestViewModel @Inject constructor():BaseViewModel() {
-    var stateAddQuestion by mutableStateOf(false)
+
 }
